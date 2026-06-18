@@ -43,10 +43,8 @@
 /assets/characters/mama/*
 !/assets/characters/mama/mama-greeting.png
 
-# Phase 1: keep official Pokémon sprites PRIVATE (copyright) — fetched locally,
-# never committed to the public repo. The app falls back to a placeholder when a
-# sprite is absent (i.e. on the live site). Decision: founder, 2026-06-18.
-/sprites/
-
 # Build-time tooling (sprite fetch, audio manifest/generation) — local, not shipped.
 /tools/
+
+# NOTE: sprites are now PUBLISHED (founder decision 2026-06-19) so the live site
+# shows real Pokémon. The Poké-Ball fallback (js/ui.js) stays as a safety net.
