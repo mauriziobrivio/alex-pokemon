@@ -1,0 +1,115 @@
+/* Professor Dada's Pokémon Academy — Phase 0 splash
+   Audio-first, tap-only, no-fail. The whole screen is one big tap target. */
+
+:root {
+  /* Sunlit Storybook palette (from _docs/art-direction.md) */
+  --sky: #7fc6e6;
+  --sky-soft: #bfe6f2;
+  --meadow: #8fcf5a;
+  --sunny: #ffd54a;
+  --ink: #2b2440;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--sky-soft);
+  /* Lock the page: no scroll, no rubber-band, no zoom, no text select. */
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Segoe UI", system-ui, sans-serif;
+}
+
+/* Fill the screen with the title art on iPad and iPhone, portrait or landscape. */
+.splash {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh; /* honours the dynamic viewport on iOS Safari */
+  margin: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  background-color: var(--sky-soft);
+  background-image: url("../assets/screens/screen-title.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  cursor: pointer;
+  touch-action: manipulation; /* removes the 300ms tap delay, blocks pinch-zoom */
+  outline: none;
+}
+
+/* The "Tap to Play" invitation — sits low, clear of the notch and home indicator. */
+.splash__invite {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 6vh);
+  padding: 0.7em 1.4em;
+  border-radius: 999px;
+  background: rgba(43, 36, 64, 0.55);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: clamp(22px, 5vw, 40px);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28);
+  animation: invite-pulse 1.5s ease-in-out infinite;
+}
+
+.splash__finger {
+  display: inline-block;
+  font-size: 1.1em;
+  animation: finger-bob 1.5s ease-in-out infinite;
+}
+
+.splash__label { white-space: nowrap; }
+
+/* Gentle, friendly attention pulse on the invitation. */
+@keyframes invite-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.92; }
+  50%      { transform: scale(1.06); opacity: 1; }
+}
+
+@keyframes finger-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-0.18em); }
+}
+
+/* A quick satisfying bounce each time the screen is tapped (juice). */
+.splash.is-playing .splash__invite {
+  animation: invite-tap 0.45s ease-out;
+}
+
+@keyframes invite-tap {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+/* Keyboard focus affordance (accessibility). */
+.splash:focus-visible {
+  box-shadow: inset 0 0 0 5px rgba(255, 255, 255, 0.85);
+}
+
+/* Respect users who prefer less motion. */
+@media (prefers-reduced-motion: reduce) {
+  .splash__invite,
+  .splash__finger,
+  .splash.is-playing .splash__invite {
+    animation: none;
+  }
+}

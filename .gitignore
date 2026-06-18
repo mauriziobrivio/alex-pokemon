@@ -1,0 +1,22 @@
+# macOS cruft
+.DS_Store
+**/.DS_Store
+
+# Local dev tooling (not part of the shipped app)
+.claude/
+
+# This repo is PUBLIC (GitHub Pages). Keep it to ONLY the shipped app — the
+# planning docs and unused/future art stay local. (Decision: Phase 0.)
+/_docs/
+/_briefs/
+/_reports/
+/CLAUDE.md
+/STATUS.md
+/README.md
+/assets/README.md
+
+# Ignore everything under assets/ except the one image the Phase 0 splash uses.
+/assets/*
+!/assets/screens
+/assets/screens/*
+!/assets/screens/screen-title.png
