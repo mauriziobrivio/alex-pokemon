@@ -26,6 +26,17 @@ export const clip = {
   name: (id) => url(`name-${id}.mp3`),                // "Pikachu!"
   zone: (id) => url(`zone-${id}.mp3`),                // "Meadow!"
   suggest: (id) => url(`suggest-${id}.mp3`),          // "Let's try the Meadow today!"
+
+  // --- Phase 2: phonics, Train, evolution ---
+  phoneme: (ch) => url(`phoneme-${ch}.mp3`),          // RECORD: the pure sound "/sss/"
+  whichSays: () => url('which-one-says.mp3'),          // carrier "Which one says..."
+  letsBuild: () => url('lets-build.mp3'),              // "Let's build a word!"
+  youTaught: () => url('you-taught.mp3'),              // "You taught..."
+  word: (w) => url(`word-${w}.mp3`),                   // the whole word, e.g. "sat!"
+  pickBuddy: () => url('pick-buddy.mp3'),              // "Which buddy will you train?"
+  feedBerries: () => url('feed-berries.mp3'),          // "Feed it ... berries!"
+  isEvolving: () => url('is-evolving.mp3'),            // "...is evolving!"
+  evolveCheer: () => url('evolve-cheer.mp3'),          // "Wow! Amazing!"
 };
 
 export const PRAISE_COUNT = 4;

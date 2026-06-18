@@ -9,16 +9,17 @@ import { clear } from './ui.js';
 import * as audio from './audio.js';
 import { clip } from './voices.js';
 import { SFX_URLS } from './sfx.js';
-import { ROSTER } from './data.js';
+import { ROSTER, CVC_WORDS } from './data.js';
 import { getStarterId, getSettings } from './game.js';
 import { renderStarter } from './scenes/starter.js';
 import { renderHome } from './scenes/home.js';
 import { renderWorldmap } from './scenes/worldmap.js';
 import { renderCatch } from './scenes/catch.js';
 import { renderPokedex } from './scenes/pokedex.js';
+import { renderTrain } from './scenes/train.js';
 
 const app = document.getElementById('app');
-const scenes = { starter: renderStarter, home: renderHome, worldmap: renderWorldmap, catch: renderCatch, pokedex: renderPokedex };
+const scenes = { starter: renderStarter, home: renderHome, worldmap: renderWorldmap, catch: renderCatch, pokedex: renderPokedex, train: renderTrain };
 
 let epoch = 0;
 
@@ -54,7 +55,7 @@ function boot() {
     audio.unlock();
     audio.play(clip.greeting());
     go(getStarterId() ? 'home' : 'starter');
-    warmNameClips(); // populate the SW cache so names work offline later
+    warmCache(); // populate the SW cache so names/words/sprites work offline later
   };
   splash.addEventListener('pointerup', enter);
   splash.addEventListener('keydown', (e) => {
@@ -62,11 +63,18 @@ function boot() {
   });
 }
 
-// Background warm-fetch of the 151 name clips (gentle concurrency). On first
-// online launch this fills the service-worker cache so names play offline later.
-function warmNameClips() {
+// Background warm-fetch (gentle concurrency) of the long-tail assets the SW
+// doesn't precache: the 151 name clips, the 72 word clips, and all 151 sprites.
+// On first online launch this fills the service-worker cache so names, the
+// build-a-word blend, and any caught/evolved Pokémon's art all work offline.
+// Already-cached items are served by the SW with no network hit.
+function warmCache() {
   setTimeout(() => {
-    const urls = ROSTER.map((p) => clip.name(p.id));
+    const urls = [
+      ...ROSTER.map((p) => clip.name(p.id)),
+      ...CVC_WORDS.map((w) => clip.word(w)),
+      ...ROSTER.map((p) => p.sprite),
+    ];
     let i = 0;
     const pump = () => { if (i >= urls.length) return; const u = urls[i++]; fetch(u).catch(() => {}).finally(pump); };
     for (let k = 0; k < 4; k++) pump();

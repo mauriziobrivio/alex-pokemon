@@ -32,3 +32,46 @@ export const pokemonById = (id) => BY_ID.get(id) || null;
 export function zonePool(zoneId) {
   return ROSTER.filter((p) => p.zones.includes(zoneId));
 }
+
+// The next evolution stage (direct child, first that exists in the Gen-1 roster),
+// or null at the end of the line. Uses evolvesTo so branches (Eevee) don't
+// mis-route. Evolution is earned by Training, independent of catch-zones.
+export function nextStageId(id) {
+  const p = pokemonById(id);
+  if (!p || !p.evolvesTo) return null;
+  for (const nid of p.evolvesTo) if (pokemonById(nid)) return nid;
+  return null;
+}
+
+// --- Phonics: letter-sounds in Jolly Phonics order (groups 1–3 for Phase 2) ---
+// Group 1 alone (s a t i p n) builds real CVC words — the whole point of the order.
+export const LETTERS = [
+  's', 'a', 't', 'i', 'p', 'n',        // group 1
+  'c', 'k', 'e', 'h', 'r', 'm', 'd',   // group 2
+  'g', 'o', 'u', 'l', 'f', 'b',        // group 3
+];
+export const LETTER_START_UNLOCKED = 6; // group 1 is available from the start
+export const isVowel = (ch) => 'aeiou'.includes(ch);
+
+// The SOUND each letter makes (phoneme key). 'c' and 'k' both say /k/ — homophones
+// must never be each other's distractor (a correct sound can't be a "wrong" answer).
+export const LETTER_SOUND = { s: 's', a: 'a', t: 't', i: 'i', p: 'p', n: 'n', c: 'k', k: 'k',
+  e: 'e', h: 'h', r: 'r', m: 'm', d: 'd', g: 'g', o: 'o', u: 'u', l: 'l', f: 'f', b: 'b' };
+export const sameSound = (a, b) => LETTER_SOUND[a] === LETTER_SOUND[b];
+
+// CVC words for build-a-word. Train only offers words whose letters are all
+// unlocked, so the buildable set grows as Alex masters more sounds.
+export const CVC_WORDS = [
+  'sat', 'tap', 'pin', 'nap', 'pat', 'tip', 'sit', 'tin', 'pit', 'pan', 'tan', 'sap',
+  'cat', 'hat', 'mat', 'rat', 'hen', 'men', 'ten', 'pen', 'net', 'can', 'man', 'ran',
+  'mad', 'sad', 'had', 'dad', 'cap', 'map', 'ram', 'ham', 'kit', 'kid', 'red', 'set',
+  'dog', 'log', 'fog', 'big', 'dig', 'pig', 'sun', 'fun', 'run', 'bun', 'bug', 'hug',
+  'mug', 'rug', 'bed', 'leg', 'lip', 'hot', 'pot', 'top', 'mop', 'hop', 'cup', 'cut',
+  'bat', 'bad', 'bag', 'fan', 'fin', 'gap', 'lab', 'lad', 'nut', 'tub', 'bin', 'fit',
+];
+export const wordBuildable = (word, unlocked) => [...word].every((c) => unlocked.has(c));
+
+// Bond meter cost (Train interactions to evolve). The first evolution is a touch
+// cheaper for the early dopamine; tune from watching Alex.
+export const BOND_COST = 10;
+export const BOND_FIRST_COST = 8;

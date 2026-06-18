@@ -1,9 +1,8 @@
 // Tiny DOM helpers + the sprite image with a graceful fallback.
 //
-// Sprites are kept private (not on the public site), so on the live URL the PNGs
-// 404. spriteImg() detects that and shows a friendly Poké Ball placeholder, so
-// the game stays delightful everywhere; locally (sprites present) it shows the
-// real artwork.
+// Sprites are public (committed), so the live site shows real Pokémon. spriteImg()
+// keeps a friendly Poké-Ball fallback as a safety net for any individual sprite
+// that fails to load, so the game stays delightful even if one is missing.
 
 export function el(tag, props = {}, ...children) {
   const node = document.createElement(tag);

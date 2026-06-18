@@ -9,7 +9,7 @@
 // in a catch). As 1–10 settle into Box 3, the struggling teens come to dominate
 // what Alex meets, with zero tuning from us.
 
-import { NUMBERS, isTeen } from './data.js';
+import { NUMBERS, isTeen, LETTERS, LETTER_START_UNLOCKED } from './data.js';
 import { read, write } from './storage.js';
 
 const KEY = 'mastery.numbers';
@@ -64,3 +64,53 @@ export const choiceCount = (n) => (getBox(n) >= 3 ? 4 : 3);
 
 // Snapshot for a debug/parent view (not shown to Alex).
 export const snapshot = () => ({ ...boxes });
+
+// --- Letter-sounds: a parallel 3-box Leitner over the Jolly Phonics letters ---
+// Unlocked letters have box >= 1; locked letters have box 0. Mastering a letter
+// (reaching Box 3) unlocks the next one, so the buildable word set grows.
+
+const LKEY = 'mastery.letters';
+const LUKEY = 'mastery.lettersUnlocked';
+
+let unlockedCount = read(LUKEY, LETTER_START_UNLOCKED);
+let letterBoxes = (() => {
+  const saved = read(LKEY, null) || {};
+  const b = {};
+  for (const ch of LETTERS) b[ch] = saved[ch] || 0;
+  for (let i = 0; i < unlockedCount; i++) if (!b[LETTERS[i]]) b[LETTERS[i]] = 1;
+  return b;
+})();
+
+const saveLetters = () => { write(LKEY, letterBoxes); write(LUKEY, unlockedCount); };
+
+export const unlockedLetters = () => LETTERS.slice(0, unlockedCount);
+export const unlockedLetterSet = () => new Set(unlockedLetters());
+export const getLetterBox = (ch) => letterBoxes[ch] || 0;
+
+export function recordLetter(ch, firstTryCorrect) {
+  const cur = letterBoxes[ch] || 1;
+  if (firstTryCorrect) {
+    letterBoxes[ch] = Math.min(3, cur + 1);
+    if (letterBoxes[ch] === 3 && unlockedCount < LETTERS.length) {
+      unlockedCount += 1;                       // master one -> introduce the next
+      const next = LETTERS[unlockedCount - 1];
+      if (!letterBoxes[next]) letterBoxes[next] = 1;
+    }
+  } else {
+    letterBoxes[ch] = 1;
+  }
+  saveLetters();
+}
+
+export function pickLetterTarget(avoid = null) {
+  const pool = unlockedLetters().filter((c) => c !== avoid);
+  const candidates = pool.length ? pool : unlockedLetters();
+  const weighted = [];
+  for (const c of candidates) {
+    const w = BOX_WEIGHT[getLetterBox(c) || 1] || 1;
+    for (let i = 0; i < w; i++) weighted.push(c);
+  }
+  return weighted[Math.floor(Math.random() * weighted.length)];
+}
+
+export const letterChoiceCount = (ch) => (getLetterBox(ch) >= 3 ? 4 : 3);

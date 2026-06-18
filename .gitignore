@@ -30,6 +30,7 @@
 !/assets/screens/bg-lab.png
 !/assets/screens/screen-worldmap.png
 !/assets/screens/scene-starter-select.png
+!/assets/screens/bg-evolution.png
 !/assets/characters
 /assets/characters/*
 !/assets/characters/alex
@@ -39,6 +40,7 @@
 !/assets/characters/dada
 /assets/characters/dada/*
 !/assets/characters/dada/dada-greeting.png
+!/assets/characters/dada/dada-cheering.png
 !/assets/characters/mama
 /assets/characters/mama/*
 !/assets/characters/mama/mama-greeting.png

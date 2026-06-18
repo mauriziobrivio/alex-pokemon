@@ -29,6 +29,8 @@ export function renderHome(_params, ctx) {
   const menu = el('div', { class: 'home__menu' },
     el('button', { class: 'btn btn--big btn--catch', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('worldmap'); } },
       el('span', { class: 'btn__emoji', 'aria-hidden': 'true' }, '⚪'), 'Catch'),
+    el('button', { class: 'btn btn--big btn--train', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('train'); } },
+      el('span', { class: 'btn__emoji', 'aria-hidden': 'true' }, '⭐'), 'Train'),
     el('button', { class: 'btn btn--big btn--dex', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('pokedex'); } },
       el('span', { class: 'btn__emoji', 'aria-hidden': 'true' }, '📖'), 'Pokédex'),
   );

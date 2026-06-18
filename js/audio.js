@@ -117,6 +117,35 @@ export function play(url) {
   return Promise.resolve(0);
 }
 
+// Play on a single "voice channel": stop the previous exclusive clip before
+// starting the next, so rapid counts ("one… two… three…") replace rather than
+// overlap. Returns the clip duration.
+let exclusiveSrc = null;
+export function playExclusive(url) {
+  if (useWebAudio) {
+    const c = getCtx();
+    if (c) {
+      const go = async () => {
+        let buf = buffers.get(url);
+        if (buf === undefined) buf = await preload(url);
+        if (!buf) { playFallback(url); return 0; }
+        if (exclusiveSrc) { try { exclusiveSrc.stop(); } catch (_) {} }
+        const src = c.createBufferSource();
+        src.buffer = buf;
+        src.connect(master || c.destination);
+        src.onended = () => { if (exclusiveSrc === src) exclusiveSrc = null; };
+        src.start(0);
+        exclusiveSrc = src;
+        return buf.duration;
+      };
+      if (c.state !== 'running') return c.resume().then(go, () => { playFallback(url); return 0; });
+      return go();
+    }
+  }
+  playFallback(url);
+  return Promise.resolve(0);
+}
+
 // Play clips back-to-back with a small gap (e.g. cheer → Pokémon name).
 export async function playSequence(urls, gap = 0.12) {
   for (const url of urls) {
