@@ -1,24 +1,33 @@
-// Voice routing layer.
+// Voice routing layer — the ONLY place voice-clip paths are defined.
 //
-// The game always plays clips from the ACTIVE voice's folder, so a second voice
-// could be added later by dropping in a folder and flipping ACTIVE_VOICE — with
-// no other code change. This is the ONLY place audio file paths are defined.
+// Everything resolves to a file in audio/<ACTIVE_VOICE>/. To ship Dada's real
+// voice, drop the recordings in by filename (see tools/audio-manifest.json) —
+// no code changes here. Adding a second voice later = a new folder + flip
+// ACTIVE_VOICE. Filenames here are the contract the manifest/recordings honour.
 
 export const ACTIVE_VOICE = 'dada';
 
-// Logical clip name -> filename inside audio/<voice>/.
-// To ship the real voice: replace audio/dada/greeting.mp3 with Dada's recorded
-// "Hi Alex!" clip (same filename) — no code change needed. The service worker
-// uses stale-while-revalidate, so an already-installed device picks up the new
-// clip on its next launch; bump CACHE in service-worker.js to force it instantly.
-const CLIPS = {
-  greeting: 'greeting.mp3',
+const url = (file) => `audio/${ACTIVE_VOICE}/${file}`;
+
+// Resolvers (parametric clips) + fixed lines. All speech goes through these.
+export const clip = {
+  greeting: () => url('greeting.mp3'),               // "Hi Alex!"
+  homeWelcome: () => url('home-welcome.mp3'),         // "Ready to catch some Pokémon, Alex?"
+  starterIntro: () => url('starter-intro.mp3'),       // "Choose your very first Pokémon!"
+  greatChoice: () => url('great-choice.mp3'),         // "Great choice, Alex!"
+
+  number: (n) => url(`number-${n}.mp3`),              // "fourteen"
+  prompt: (n) => url(`prompt-${n}.mp3`),              // "Tap the fourteen!"
+  reprompt: (n) => url(`reprompt-${n}.mp3`),          // "Let's find the fourteen!"
+
+  praise: (i) => url(`praise-${i}.mp3`),              // "Amazing, Alex!"
+  catchCheer: (i) => url(`catch-cheer-${i}.mp3`),     // "You caught..."
+
+  name: (id) => url(`name-${id}.mp3`),                // "Pikachu!"
+  zone: (id) => url(`zone-${id}.mp3`),                // "Meadow!"
+  suggest: (id) => url(`suggest-${id}.mp3`),          // "Let's try the Meadow today!"
 };
 
-// Returns a path RELATIVE to the page, so it resolves correctly whether the app
-// is served from a domain root, a GitHub Pages project subpath, or localhost.
-export function clipUrl(name) {
-  const file = CLIPS[name];
-  if (!file) throw new Error(`Unknown clip: "${name}"`);
-  return `audio/${ACTIVE_VOICE}/${file}`;
-}
+export const PRAISE_COUNT = 4;
+export const CATCH_CHEER_COUNT = 3;
+export const rnd = (n) => 1 + Math.floor(Math.random() * n);

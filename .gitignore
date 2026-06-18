@@ -15,8 +15,38 @@
 /README.md
 /assets/README.md
 
-# Ignore everything under assets/ except the one image the Phase 0 splash uses.
+# assets/: publish ONLY the art the live game actually uses. Unused poses, the 5
+# deferred zones, and reference frames stay private. (Pokémon sprites: private, above.)
 /assets/*
+!/assets/backgrounds
+/assets/backgrounds/*
+!/assets/backgrounds/bg-meadow.png
+!/assets/backgrounds/bg-forest.png
+!/assets/backgrounds/bg-beach.png
+!/assets/backgrounds/bg-mountain.png
 !/assets/screens
 /assets/screens/*
 !/assets/screens/screen-title.png
+!/assets/screens/bg-lab.png
+!/assets/screens/screen-worldmap.png
+!/assets/screens/scene-starter-select.png
+!/assets/characters
+/assets/characters/*
+!/assets/characters/alex
+/assets/characters/alex/*
+!/assets/characters/alex/alex-ready.png
+!/assets/characters/alex/alex-throwing.png
+!/assets/characters/dada
+/assets/characters/dada/*
+!/assets/characters/dada/dada-greeting.png
+!/assets/characters/mama
+/assets/characters/mama/*
+!/assets/characters/mama/mama-greeting.png
+
+# Phase 1: keep official Pokémon sprites PRIVATE (copyright) — fetched locally,
+# never committed to the public repo. The app falls back to a placeholder when a
+# sprite is absent (i.e. on the live site). Decision: founder, 2026-06-18.
+/sprites/
+
+# Build-time tooling (sprite fetch, audio manifest/generation) — local, not shipped.
+/tools/

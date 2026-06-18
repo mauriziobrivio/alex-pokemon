@@ -21,13 +21,15 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <!-- The whole splash is the tap target (big, forgiving, no-fail). -->
-  <main id="splash" class="splash" role="button" tabindex="0" aria-label="Tap to play">
-    <div class="splash__invite" aria-hidden="true">
-      <span class="splash__finger">👆</span>
-      <span class="splash__label">Tap to Play</span>
-    </div>
-  </main>
+  <div id="app">
+    <!-- Splash (Phase 0). The whole screen is the tap target; first tap unlocks audio. -->
+    <main id="splash" class="splash scene" role="button" tabindex="0" aria-label="Tap to play">
+      <div class="splash__invite" aria-hidden="true">
+        <span class="splash__finger">👆</span>
+        <span class="splash__label">Tap to Play</span>
+      </div>
+    </main>
+  </div>
 
   <script type="module" src="js/main.js"></script>
 </body>

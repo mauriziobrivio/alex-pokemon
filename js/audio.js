@@ -1,21 +1,18 @@
-// Audio engine.
+// Audio engine (Phase 0 spine, extended for the game).
 //
-// Uses the Web Audio API (the reliable iOS path: create a context, decode the
-// clip ahead of time, then resume() inside the first user gesture). Falls back
-// to an <audio> element if Web Audio is unavailable so playback is rock-solid.
-//
-// iOS Safari blocks all audio until the first user gesture. It also has an
-// iOS-only context state, 'interrupted', entered after a phone call, Siri,
-// Control Center sounds, or a lock/unlock. We recover from ANY non-running
-// state on every tap (a tap is a user gesture, the only guaranteed way back),
-// and opportunistically on return-to-foreground — so sound never dies silently.
-
-import { clipUrl } from './voices.js';
+// URL-based: callers pass a resolved URL (voices.js for speech, sfx.js for SFX).
+// Web Audio with a master gain (volume/mute), an <audio> fallback, and the iOS
+// unlock kept intact — resume() inside the first gesture, recovery from the
+// iOS-only 'interrupted' state on every play and on return-to-foreground.
 
 let ctx = null;
+let master = null;
 let unlocked = false;
 let useWebAudio = true;
+let volume = 1;
+let muted = false;
 const buffers = new Map();   // url -> AudioBuffer
+const pending = new Map();   // url -> Promise<AudioBuffer|null>
 const elements = new Map();  // url -> HTMLAudioElement (fallback)
 
 function getCtx() {
@@ -23,6 +20,9 @@ function getCtx() {
     const AC = window.AudioContext || window.webkitAudioContext;
     if (AC) {
       ctx = new AC();
+      master = ctx.createGain();
+      master.gain.value = muted ? 0 : volume;
+      master.connect(ctx.destination);
     } else {
       useWebAudio = false;
     }
@@ -30,62 +30,55 @@ function getCtx() {
   return ctx;
 }
 
-// Resume the context if it is in any non-running state ('suspended' or the
-// iOS-only 'interrupted'). Safe to call repeatedly; no-op when already running.
 function resumeIfNeeded() {
   if (!useWebAudio || !ctx) return;
   if (ctx.state !== 'running' && typeof ctx.resume === 'function') {
-    ctx.resume().catch(() => { /* will retry on the next tap */ });
+    ctx.resume().catch(() => {});
   }
 }
 
-// When the app comes back to the foreground (after lock/unlock or app-switch),
-// try to revive an interrupted context. A subsequent tap guarantees recovery.
 if (typeof document !== 'undefined') {
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) resumeIfNeeded();
-  });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) resumeIfNeeded(); });
 }
 
-// Safari historically needed the callback form of decodeAudioData; modern
-// Safari returns a promise. Support both.
 function decode(audioCtx, data) {
   try {
     const p = audioCtx.decodeAudioData(data);
     if (p && typeof p.then === 'function') return p;
-  } catch (_) { /* fall through to callback form */ }
+  } catch (_) {}
   return new Promise((resolve, reject) => audioCtx.decodeAudioData(data, resolve, reject));
 }
 
-// Fetch + decode a clip ahead of time so the first tap plays instantly.
-// Safe to call before any user gesture (decoding works on a suspended context).
-export async function preload(name) {
-  const url = clipUrl(name);
-
-  if (useWebAudio) {
-    const c = getCtx();
-    if (c) {
-      if (buffers.has(url)) return;
-      try {
-        const res = await fetch(url);
-        const data = await res.arrayBuffer();
-        buffers.set(url, await decode(c, data));
-        return;
-      } catch (err) {
-        console.warn('[audio] Web Audio preload failed; using <audio> fallback.', err);
-        useWebAudio = false;
-      }
+// Fetch + decode a clip ahead of time. Safe before any gesture. Never throws.
+export function preload(url) {
+  if (!useWebAudio) {
+    if (!elements.has(url)) { const el = new Audio(url); el.preload = 'auto'; elements.set(url, el); }
+    return Promise.resolve(null);
+  }
+  const c = getCtx();
+  if (!c) return Promise.resolve(null);
+  if (buffers.has(url)) return Promise.resolve(buffers.get(url));
+  if (pending.has(url)) return pending.get(url);
+  const job = (async () => {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`${res.status}`);
+      const buf = await decode(c, await res.arrayBuffer());
+      buffers.set(url, buf);
+      return buf;
+    } catch (_) {
+      return null; // missing clip (e.g. not yet recorded) — silently skip
+    } finally {
+      pending.delete(url);
     }
-  }
-
-  if (!elements.has(url)) {
-    const el = new Audio(url);
-    el.preload = 'auto';
-    elements.set(url, el);
-  }
+  })();
+  pending.set(url, job);
+  return job;
 }
 
-// Unlock iOS audio. MUST be called synchronously inside a user-gesture handler.
+export function preloadAll(urls) { return Promise.all(urls.map(preload)); }
+
+// MUST be called synchronously inside a user-gesture handler (the first tap).
 export function unlock() {
   if (unlocked) return;
   unlocked = true;
@@ -93,52 +86,63 @@ export function unlock() {
   resumeIfNeeded();
 }
 
-// Play a clip by logical name. Recovers a suspended/interrupted context first,
-// then plays (scheduling the source only once the context is actually running).
-export function play(name) {
-  const url = clipUrl(name);
+function startBuffer(c, buf) {
+  const src = c.createBufferSource();
+  src.buffer = buf;
+  src.connect(master || c.destination);
+  src.start(0);
+  return src;
+}
 
+// Play one clip by URL. Returns a promise that resolves when it (roughly) ends,
+// so callers can chain. Resolves immediately-ish for missing clips.
+export function play(url) {
   if (useWebAudio) {
     const c = getCtx();
     if (c) {
-      const startBuffered = () => {
-        const buf = buffers.get(url);
-        if (!buf) return false;
-        const src = c.createBufferSource();
-        src.buffer = buf;
-        src.connect(c.destination);
-        src.start(0);
-        return true;
+      const go = async () => {
+        let buf = buffers.get(url);
+        if (buf === undefined) buf = await preload(url);
+        if (!buf) { playFallback(url); return 0; }
+        startBuffer(c, buf);
+        return buf.duration;
       };
-      const playNow = () => {
-        if (startBuffered()) return;
-        // Not decoded yet: load on demand, then play (context already running).
-        preload(name).then(() => { if (!startBuffered()) playFallback(url); });
-      };
-
-      // resume() must run synchronously inside the gesture; start once running.
       if (c.state !== 'running') {
-        c.resume().then(playNow, () => playFallback(url));
-      } else {
-        playNow();
+        return c.resume().then(go, () => { playFallback(url); return 0; });
       }
-      return;
+      return go();
     }
   }
-
   playFallback(url);
+  return Promise.resolve(0);
+}
+
+// Play clips back-to-back with a small gap (e.g. cheer → Pokémon name).
+export async function playSequence(urls, gap = 0.12) {
+  for (const url of urls) {
+    const dur = (await play(url)) || 0;
+    if (dur > 0) await new Promise((r) => setTimeout(r, (dur + gap) * 1000));
+  }
 }
 
 function playFallback(url) {
   let el = elements.get(url);
   if (!el) { el = new Audio(url); elements.set(url, el); }
+  el.muted = muted;
+  el.volume = volume;
   try {
     el.currentTime = 0;
     const p = el.play();
-    if (p && typeof p.catch === 'function') {
-      p.catch((err) => console.warn('[audio] playback blocked', err));
-    }
-  } catch (err) {
-    console.warn('[audio] playback failed', err);
-  }
+    if (p && p.catch) p.catch(() => {});
+  } catch (_) {}
 }
+
+export function setVolume(v) {
+  volume = Math.max(0, Math.min(1, v));
+  if (master) master.gain.value = muted ? 0 : volume;
+}
+export function setMuted(m) {
+  muted = !!m;
+  if (master) master.gain.value = muted ? 0 : volume;
+}
+export const isMuted = () => muted;
