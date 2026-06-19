@@ -54,6 +54,11 @@ export const clip = {
   // --- Phase 5: Catch, deeper ---
   escape: () => url('escape.mp3'),                     // "Aw, it hopped away! Here comes another!"
   outingEnd: () => url('outing-end.mp3'),              // "What a great adventure — let's head home!"
+
+  // --- Phase 6: The Collection ---
+  revealFoil: () => url('reveal-foil.mp3'),            // "Ooh, a sparkly one!" (earned foil)
+  peek: () => url('peek.mp3'),                         // "Who could this be? Keep exploring!"
+  milestone: (m) => url(`milestone-${m === 251 ? 'all' : m}.mp3`), // "Fifty Pokémon! Amazing, Alex!"
 };
 
 export const PRAISE_COUNT = 4;

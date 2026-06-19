@@ -11,10 +11,11 @@ import { el, clear, spriteImg, charImg, icon } from '../ui.js';
 import * as audio from '../audio.js';
 import { clip, PRAISE_COUNT, CATCH_CHEER_COUNT, rnd } from '../voices.js';
 import { sfx } from '../sfx.js';
-import { isTeen, zoneById, zonePool, sameSound, pokemonById, MISSES_TO_ESCAPE, OUTING_LENGTH } from '../data.js';
+import { isTeen, zoneById, zonePool, sameSound, MISSES_TO_ESCAPE, OUTING_LENGTH } from '../data.js';
 import * as mastery from '../mastery.js';
 import { tenFrame } from '../tenframe.js';
-import { isCaught, recordCatch } from '../game.js';
+import { isCaught, recordCatch, markFoil } from '../game.js';
+import { openPack } from '../cards.js';
 import * as quests from '../quests.js';
 import { confetti, sparkleBurst, centerOf } from '../fx.js';
 
@@ -233,6 +234,7 @@ export function renderCatch({ zoneId }, ctx) {
     sparkleBurst(root, c.x, c.y, 22);
     confetti(root);
     recordCatch(pokemon.id);
+    if (firstTry) markFoil(pokemon.id); // earn the card's foil by a first-try catch — skill, never luck
     quests.onCatch(zone.id); // passive quest progress (gentle, no pressure)
     outingCatches.push(pokemon.id);
     encountersDone += 1;
@@ -264,32 +266,13 @@ export function renderCatch({ zoneId }, ctx) {
     root.append(overlay);
   }
 
-  // Warm soft-stop after a bounded outing — a happy stopping place, never a
-  // lockout. "Go again!" starts a fresh outing immediately (no wait, no scarcity).
+  // The outing's warm soft-stop IS the earned pack-reveal ceremony (Phase 6):
+  // the trip's haul flips into the binder as cards (the occasional earned foil
+  // sparkles), then "Go again!" restarts at once — pacing & joy, never scarcity.
   function showOutingEnd() {
     clearTimeout(idleTimer);
     clearTimeout(repromptTimer);
-    audio.play(clip.outingEnd());
-    const overlay = el('div', { class: 'caught outing-end' });
-    const uniq = [...new Set(outingCatches)];
-    const haul = el('div', { class: 'outing-end__haul' });
-    uniq.slice(0, 12).forEach((id) => {
-      const mon = pokemonById(id);
-      if (!mon) return;
-      const s = spriteImg(mon);
-      s.classList.add('outing-end__mon');
-      haul.append(s);
-    });
-    const card = el('div', { class: 'caught__card outing-end__card' },
-      el('div', { class: 'caught__badge' }, 'What an adventure!'),
-      uniq.length ? haul : el('div', { class: 'outing-end__none' }, 'So many friends out there!'),
-      el('div', { class: 'caught__actions' },
-        el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); startNewOuting(); } }, 'Go again!'),
-        el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, 'Home'),
-      ),
-    );
-    overlay.append(card);
-    root.append(overlay);
+    openPack(root, ctx, outingCatches, { onGoAgain: startNewOuting });
   }
 
   function startNewOuting() {

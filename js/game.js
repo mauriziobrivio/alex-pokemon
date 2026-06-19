@@ -40,6 +40,37 @@ export function recordCatch(id) {
   return dex;
 }
 
+// --- Collection (Phase 6): foils + discovery milestones ---
+// A card earns its FOIL when its Pokémon is caught on the FIRST try — earned by
+// skill (instant recognition), NEVER gambled, no luck, no rarity tier. Once
+// earned it persists. markFoil returns true only on the first time it's earned,
+// so the pack reveal can add an extra sparkle.
+export const getFoils = () => read('foils', {});
+export const isFoil = (id) => !!getFoils()[id];
+export function markFoil(id) {
+  if (id == null) return false;
+  const f = getFoils();
+  if (f[id]) return false;
+  f[id] = 1;
+  write('foils', f);
+  return true;
+}
+
+// Discovery milestones — spoken warmly when the collection crosses a threshold,
+// once each, ascending. CELEBRATORY, never a nag: we announce what's *found*,
+// never what's missing, and there's no "complete the set" pressure anywhere.
+export const MILESTONES = [10, 25, 50, 100, 150, 200, 251];
+// Returns the highest milestone just crossed (or null) and records it so each is
+// spoken exactly once. Call at the end of a pack reveal (the moment of earning).
+export function takeMilestone() {
+  const count = caughtCount();
+  const last = read('milestone', 0);
+  let hit = null;
+  for (const m of MILESTONES) if (count >= m && m > last) hit = m;
+  if (hit != null) write('milestone', hit);
+  return hit;
+}
+
 // Settings (grown-up): volume + mute
 export const getSettings = () => read('settings', { volume: 1, muted: false });
 export const setSettings = (s) => write('settings', s);

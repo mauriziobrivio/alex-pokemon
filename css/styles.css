@@ -243,10 +243,6 @@ html, body {
   100% { transform: translate(38%, -58%) scale(0.5); opacity: 0; }
 }
 
-/* Outing soft-stop — the happy haul; reuses the .caught overlay + card. */
-.outing-end__haul { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: min(440px, 82vw); margin: 6px 0 2px; }
-.outing-end__mon { width: clamp(46px, 12vw, 68px); height: clamp(46px, 12vw, 68px); }
-.outing-end__none { font-size: clamp(18px, 4vw, 24px); font-weight: 800; color: var(--ink); margin: 10px 0; }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 
 /* ---------- Pokédex ---------- */
@@ -282,6 +278,76 @@ html, body {
 .type--electric{background:#e4b007}.type--bug{background:#a6b91a}.type--normal{background:#a8a77a}.type--flying{background:#7aa9f7}
 .type--rock{background:#b6a136}.type--ground{background:#cf8c4b}.type--fighting{background:#c22e28}.type--psychic{background:#f95587}
 .type--ghost{background:#735797}.type--ice{background:#96d9d6}.type--dragon{background:#6f35fc}.type--fairy{background:#d685ad}.type--steel{background:#b7b7ce}
+
+/* ====================================================================
+   The Collection (Phase 6) — card binder, earned pack reveal, living cards.
+   TCG joy, zero gacha: cards are framed sprites, foils are earned by a
+   first-try catch, the pack reveals the trip's real haul. ==================== */
+@keyframes pulse { 0%,100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.08); opacity: 1; } }
+@keyframes foilSweep { 0% { background-position: 120% 0; } 100% { background-position: -40% 0; } }
+@keyframes bob { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-5%) scale(1.02); } }
+@keyframes cardFlip { 0% { transform: rotateY(90deg) scale(0.8); opacity: 0; } 60% { transform: rotateY(-8deg) scale(1.05); opacity: 1; } 100% { transform: none; } }
+@keyframes packPop { 0% { transform: scale(1); } 40% { transform: scale(1.12) rotate(-2deg); } 100% { transform: scale(0.2); opacity: 0; } }
+
+/* --- Binder --- */
+.binder { justify-content: flex-start; background: linear-gradient(160deg, var(--sky-soft), var(--cream)); }
+.binder__header { width: 100%; text-align: center; padding: 6px 0 2px; }
+.binder__title { margin: 0; font-size: clamp(24px, 5.5vw, 38px); font-weight: 900; color: var(--ink); }
+.binder__count { font-size: 17px; font-weight: 800; color: var(--ink-soft); }
+.binder__tabs { display: flex; gap: 8px; overflow-x: auto; width: 100%; padding: 8px 12px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.binder__tabs::-webkit-scrollbar { display: none; }
+.binder__tab { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 0; min-height: 0; padding: 8px 16px; border-radius: 16px;
+  background: rgba(255,255,255,0.7); border: 3px solid transparent; color: var(--ink); font-weight: 800; }
+.binder__tab.is-active { border-color: var(--sunny); background: #fff; box-shadow: var(--shadow); }
+.binder__tabname { font-size: 15px; }
+.binder__tabcount { font-size: 12px; color: var(--ink-soft); font-weight: 800; }
+.binder__page { width: 100%; flex: 1; min-height: 0; overflow-y: auto; padding: 6px 12px 18px; }
+.binder__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)); gap: 12px; width: min(900px, 100%); margin: 0 auto; }
+
+/* --- Card --- */
+.card { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 8px 10px; border: none; cursor: pointer;
+  background: linear-gradient(165deg, #fffdf6, #ffe9b8); border-radius: 18px; box-shadow: 0 4px 0 rgba(0,0,0,0.10), 0 8px 16px rgba(0,0,0,0.14); border-top: 3px solid #fff; }
+.card:active { transform: scale(0.96); }
+.card__frame { position: relative; width: 100%; aspect-ratio: 1; border-radius: 12px; overflow: hidden; display: grid; place-items: center;
+  background: radial-gradient(circle at 50% 35%, #ffffff, #eaf4ff 78%); }
+.card__frame .sprite { width: 88%; height: 88%; }
+.card__name { font-size: clamp(13px, 3vw, 16px); font-weight: 800; color: var(--ink); text-align: center; line-height: 1.05; }
+.card--back { background: linear-gradient(165deg, #efeaf6, #d8cfe8); }
+.card--back .card__frame { background: rgba(90,81,112,0.12); }
+.card--back .card__name { color: var(--ink-soft); }
+.card--mini { padding: 6px; gap: 2px; }
+.card--foil { background: linear-gradient(165deg, #fffbe8, #ffe08a); box-shadow: 0 4px 0 rgba(0,0,0,0.10), 0 8px 22px rgba(255,180,40,0.45); }
+.card__shine { position: absolute; inset: 0; border-radius: 12px; pointer-events: none; mix-blend-mode: screen; background-size: 250% 250%;
+  background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.85) 45%, rgba(120,220,255,0.5) 50%, rgba(255,160,220,0.5) 55%, transparent 70%);
+  animation: foilSweep 3.2s ease-in-out infinite; }
+
+/* --- Pack reveal ceremony --- */
+.pack-overlay { position: absolute; inset: 0; z-index: 18; background: rgba(43,36,64,0.62); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 18px; overflow-y: auto; animation: fade 0.3s ease; }
+.pack__title { font-size: clamp(24px, 6vw, 38px); font-weight: 900; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.3); text-align: center; }
+.pack__sub { color: #fff; font-weight: 700; font-size: 18px; text-align: center; }
+.pack { display: flex; flex-direction: column; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; }
+.pack__art { width: clamp(150px, 44vw, 220px); aspect-ratio: 3/4; border-radius: 20px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+  background: linear-gradient(150deg, var(--coral) 0%, var(--grape) 60%, var(--sky) 100%); }
+.pack__art::after { content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 46%; aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle at 50% 38%, #fff 0 30%, #ff5a5f 30% 49%, #fff 49% 56%, #f3f3f3 56% 100%); box-shadow: inset 0 0 0 4px var(--ink); }
+.pack__art::before { content: ""; position: absolute; inset: 0; background-size: 250% 100%; background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.6) 50%, transparent 60%); animation: foilSweep 2.6s ease-in-out infinite; }
+.pack__hint { color: #fff; font-weight: 900; font-size: 20px; animation: pulse 1.4s ease-in-out infinite; }
+.pack.is-opening .pack__art { animation: packPop 0.42s ease forwards; }
+.pack__stage { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: min(680px, 94%); }
+.pack__stage .card { width: clamp(92px, 22vw, 128px); }
+.card.is-revealing { animation: cardFlip 0.5s ease both; }
+.pack__actions { display: flex; flex-direction: column; gap: 10px; width: min(360px, 86%); }
+.pack__done { background: var(--cream); border-radius: 28px; box-shadow: var(--shadow); padding: 22px; display: flex; flex-direction: column; align-items: center; gap: 12px; width: min(420px, 92%); text-align: center; }
+.pack__done .pack__title { color: var(--ink); text-shadow: none; }
+
+/* --- Living card (immersive) --- */
+.living-overlay { position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; background: var(--ink); animation: fade 0.3s ease; }
+.living__stage { position: relative; flex: 1 1 56%; min-height: 38%; background-size: cover; background-position: center; display: grid; place-items: center; overflow: hidden; }
+.living__scene { position: relative; display: grid; place-items: center; width: min(64%, 320px); aspect-ratio: 1; }
+.living__sprite { width: 100%; height: 100%; filter: drop-shadow(0 12px 12px rgba(0,0,0,0.3)); animation: bob 3s ease-in-out infinite; }
+.living__scene.is-foil .living__shine { position: absolute; inset: -12%; pointer-events: none; mix-blend-mode: screen; background: radial-gradient(circle at 50% 40%, rgba(255,255,255,0.55), transparent 62%); animation: pulse 2.4s ease-in-out infinite; }
+.living__panel { flex: 0 0 auto; background: var(--cream); border-radius: 28px 28px 0 0; padding: 16px 18px calc(18px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; align-items: center; gap: 8px; box-shadow: 0 -6px 20px rgba(0,0,0,0.2); }
+.living__name { font-size: clamp(26px, 6vw, 38px); font-weight: 900; color: var(--ink); cursor: pointer; }
 
 /* ---------- FX ---------- */
 .fx-layer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 18; }

@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v12';
+const CACHE = 'dada-academy-v13';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -49,6 +49,8 @@ for (const f of ['quest-catch', 'quest-evolve']) CORE.push(`./audio/dada/${f}.mp
 // Phase 5: Catch-deeper lines (gentle escape + outing soft-stop). The ~100 new
 // Gen-2 name clips warm into cache at runtime like the other names (not precached).
 for (const f of ['escape', 'outing-end']) CORE.push(`./audio/dada/${f}.mp3`);
+// Phase 6: collection lines (pack reveal + discovery milestones) — small, precache.
+for (const f of ['reveal-foil', 'peek', 'milestone-10', 'milestone-25', 'milestone-50', 'milestone-100', 'milestone-150', 'milestone-200', 'milestone-all']) CORE.push(`./audio/dada/${f}.mp3`);
 // Starter evolution lines' sprites (1-6, 25-26) so the first evolutions show offline.
 for (const id of [1, 2, 3, 4, 5, 6, 25, 26]) CORE.push(`./sprites/${id}.png`);
 // build-a-word whole-word clips (the blend climax) — small; precache all 72.
