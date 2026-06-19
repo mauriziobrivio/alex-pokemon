@@ -15,7 +15,7 @@ import { CVC_WORDS, wordBuildable, isTeen, pokemonById, nextStageId, sameSound }
 import * as mastery from '../mastery.js';
 import { tenFrame } from '../tenframe.js';
 import { getPokedex, getBond, addBond, bondCost } from '../game.js';
-import { canEvolve, commitEvolution, playEvolution } from '../evolve.js';
+import { canEvolve, triggerEvolution } from '../evolve.js';
 import { sparkleBurst, centerOf } from '../fx.js';
 
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
@@ -83,8 +83,7 @@ export function renderTrain(_params, ctx) {
     if (nextStageId(buddyId)) {
       addBond(buddyId, 1);
       if (canEvolve(buddyId)) {
-        const newId = commitEvolution(buddyId);
-        playEvolution(root, ctx, buddyId, newId, (evolvedId) => { buddyId = evolvedId; showActivityPicker(); });
+        triggerEvolution(root, ctx, buddyId, (evolvedId) => { buddyId = evolvedId; showActivityPicker(); });
         return;
       }
     }

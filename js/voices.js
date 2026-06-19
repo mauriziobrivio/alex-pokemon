@@ -46,6 +46,10 @@ export const clip = {
   yourMove: () => url('your-move.mp3'),                // "Your move is..." (number plays after)
   youWin: () => url('you-win.mp3'),                    // "You win, Alex!"
   fainted: () => url('fainted.mp3'),                   // "Night night!" (sleepy, happy)
+
+  // --- Phase 4: gentle quests (catch-in-zone reuses suggest()) ---
+  questCatch: () => url('quest-catch.mp3'),            // "Let's catch lots of Pokémon!"
+  questEvolve: () => url('quest-evolve.mp3'),          // "Can you help a Pokémon evolve?"
 };
 
 export const PRAISE_COUNT = 4;

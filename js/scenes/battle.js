@@ -11,7 +11,7 @@ import { sfx } from '../sfx.js';
 import { isTeen, pokemonById, ZONES, sameSound } from '../data.js';
 import { tenFrame } from '../tenframe.js';
 import { getPokedex, addBond } from '../game.js';
-import { canEvolve, commitEvolution, playEvolution } from '../evolve.js';
+import { canEvolve, triggerEvolution } from '../evolve.js';
 import { sparkleBurst, confetti, centerOf } from '../fx.js';
 import * as mastery from '../mastery.js';
 import * as battle from '../battle.js';
@@ -269,8 +269,7 @@ export function renderBattle(_params, ctx) {
       addBond(buddyId, battle.BATTLE_BOND);
       audio.play(clip.youWin());
       if (canEvolve(buddyId)) {
-        const newId = commitEvolution(buddyId); // consumes the bond into an evolution
-        playEvolution(root, ctx, buddyId, newId, (evolvedId) => { buddyId = evolvedId; showWinCard(true); });
+        triggerEvolution(root, ctx, buddyId, (evolvedId) => { buddyId = evolvedId; showWinCard(true); });
       } else {
         showWinCard(false);
       }

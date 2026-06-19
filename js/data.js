@@ -13,12 +13,18 @@ export const PLAYER_NAME = 'Alex';
 export const NUMBERS = Array.from({ length: 20 }, (_, i) => i + 1);
 export const isTeen = (n) => n >= 11 && n <= 20;
 
-// The four Phase 1 zones — one Catch engine, four backdrops + spawn pools.
+// All nine zones — one Catch engine, nine backdrops + spawn pools. Openly
+// selectable (no locks); Dada may suggest one. Backgrounds lazy-load per zone.
 export const ZONES = [
   { id: 'meadow', name: 'Meadow', background: 'assets/backgrounds/bg-meadow.png', suggested: true },
   { id: 'forest', name: 'Forest', background: 'assets/backgrounds/bg-forest.png' },
   { id: 'beach', name: 'Beach', background: 'assets/backgrounds/bg-beach.png' },
   { id: 'mountain', name: 'Mountain', background: 'assets/backgrounds/bg-mountain.png' },
+  { id: 'desert', name: 'Desert', background: 'assets/backgrounds/bg-desert.png' },
+  { id: 'volcano', name: 'Volcano', background: 'assets/backgrounds/bg-volcano.png' },
+  { id: 'snowfield', name: 'Snowfield', background: 'assets/backgrounds/bg-snowfield.png' },
+  { id: 'grove', name: 'Mystic Grove', background: 'assets/backgrounds/bg-grove.png' },
+  { id: 'cave', name: 'Cave', background: 'assets/backgrounds/bg-cave.png' },
 ];
 export const zoneById = (id) => ZONES.find((z) => z.id === id) || ZONES[0];
 

@@ -11,6 +11,7 @@ import { isTeen, zoneById, zonePool, sameSound } from '../data.js';
 import * as mastery from '../mastery.js';
 import { tenFrame } from '../tenframe.js';
 import { isCaught, recordCatch } from '../game.js';
+import * as quests from '../quests.js';
 import { confetti, sparkleBurst, centerOf } from '../fx.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -195,6 +196,7 @@ export function renderCatch({ zoneId }, ctx) {
     sparkleBurst(root, c.x, c.y, 22);
     confetti(root);
     recordCatch(pokemon.id);
+    quests.onCatch(zone.id); // passive quest progress (gentle, no pressure)
 
     audio.playSequence([clip.catchCheer(rnd(CATCH_CHEER_COUNT)), clip.name(pokemon.id)]);
     ctx.after(1700, () => audio.play(clip.praise(rnd(PRAISE_COUNT))));

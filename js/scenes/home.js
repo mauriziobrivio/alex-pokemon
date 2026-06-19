@@ -1,13 +1,15 @@
-// Home base (bg-lab): Dada greets Alex by name, his companion is visible, and two
-// big destinations — Catch and Pokédex. A grown-up settings panel hides behind a
-// press-and-hold gear (a child tapping won't trigger it).
+// Home base (bg-lab): Dada greets Alex by name, Mama and his companion are here,
+// the four destinations, and a GENTLE optional quest + sticker collection. A
+// grown-up settings panel hides behind a press-and-hold gear.
 
 import { el, spriteImg, charImg } from '../ui.js';
 import * as audio from '../audio.js';
-import { clip } from '../voices.js';
+import { clip, PRAISE_COUNT, rnd } from '../voices.js';
 import { sfx } from '../sfx.js';
 import { PLAYER_NAME, pokemonById, ZONES } from '../data.js';
 import { getStarterId, getSettings, setSettings, resetAll, caughtCount } from '../game.js';
+import * as quests from '../quests.js';
+import { confetti, sparkleBurst } from '../fx.js';
 
 export function renderHome(_params, ctx) {
   const root = el('div', { class: 'scene home', style: { backgroundImage: "url('assets/screens/bg-lab.png')" } });
@@ -17,7 +19,7 @@ export function renderHome(_params, ctx) {
     charImg('assets/characters/mama/mama-greeting.png', 'char char--mama'),
     charImg('assets/characters/dada/dada-greeting.png', 'char char--dada', 'Professor Dada'),
   );
-  const starter = pokemonById(getStarterId()); // validated; unknown id -> no companion
+  const starter = pokemonById(getStarterId());
   if (starter) {
     const comp = spriteImg(starter);
     comp.classList.add('home__companion');
@@ -37,20 +39,77 @@ export function renderHome(_params, ctx) {
       el('span', { class: 'btn__emoji', 'aria-hidden': 'true' }, '📖'), 'Pokédex'),
   );
 
+  // If a quest finished during play, take it now (rolls a fresh one) so the
+  // banner below advertises the NEW invitation, not the just-completed one.
+  const completed = quests.takeCompleted();
+
+  // Gentle quest — an invitation, tap to hear it or just ignore it. No pressure.
+  const quest = quests.getActiveQuest();
+  const speakQuest = () => {
+    if (quest.kind === 'catch-in-zone') audio.play(clip.suggest(quest.zone));
+    else if (quest.kind === 'evolve') audio.play(clip.questEvolve());
+    else audio.play(clip.questCatch());
+  };
+  const questBanner = el('button', { class: 'quest-banner', type: 'button', 'aria-label': quest.prompt, onClick: () => { audio.play(sfx.pop()); speakQuest(); } },
+    el('span', { class: 'quest-banner__bulb', 'aria-hidden': 'true' }, '💡'),
+    el('span', { class: 'quest-banner__text' }, quest.prompt));
+
+  const stickerStrip = buildStickerStrip(root);
   const gear = buildGearAndPanel(root);
 
-  root.append(cast, hello, menu, gear);
+  root.append(cast, hello, questBanner, menu, stickerStrip, gear);
 
-  // Welcome + a gentle zone suggestion (Dada suggests; Alex chooses).
-  // ctx.after no-ops if Alex has already tapped through to another scene.
-  ctx.after(400, () => audio.play(clip.homeWelcome()));
-  const suggested = ZONES.find((z) => z.suggested) || ZONES[0];
-  ctx.after(2200, () => audio.play(clip.suggest(suggested.id)));
+  // Celebrate a completed quest (taken above) gently, on return.
+  ctx.after(500, () => audio.play(clip.homeWelcome()));
+  if (completed) {
+    ctx.after(1400, () => { if (ctx.alive()) celebrateQuest(root, completed.reward); });
+  } else {
+    const sz = quests.questZoneSuggest(quest) || (ZONES.find((z) => z.suggested) || ZONES[0]).id;
+    ctx.after(2400, () => audio.play(clip.suggest(sz)));
+  }
 
   return root;
 }
 
-// Press-and-hold gear -> grown-up settings (volume, replay, reset).
+function celebrateQuest(root, reward) {
+  confetti(root);
+  audio.play(sfx.catch());
+  audio.play(clip.praise(rnd(PRAISE_COUNT)));
+  const overlay = el('div', { class: 'sticker-pop' },
+    el('div', { class: 'sticker-pop__card' },
+      el('div', { class: 'sticker-pop__badge' }, 'You earned a sticker!'),
+      el('div', { class: 'sticker-pop__sticker' }, reward || '🌟'),
+      el('button', { class: 'btn btn--big', type: 'button', onClick: () => overlay.remove() }, 'Yay!'),
+    ));
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+  root.append(overlay);
+}
+
+function buildStickerStrip(root) {
+  const stickers = quests.getStickers();
+  const strip = el('button', { class: 'sticker-strip', type: 'button', 'aria-label': 'My stickers', onClick: () => openStickers(root) });
+  strip.append(el('span', { class: 'sticker-strip__cap', 'aria-hidden': 'true' }, '🎖️'));
+  if (!stickers.length) strip.append(el('span', { class: 'sticker-strip__hint' }, 'Stickers'));
+  else {
+    stickers.slice(-6).forEach((s) => strip.append(el('span', { class: 'sticker-strip__one' }, s)));
+    if (stickers.length > 6) strip.append(el('span', { class: 'sticker-strip__more' }, `+${stickers.length - 6}`));
+  }
+  return strip;
+}
+
+function openStickers(root) {
+  const stickers = quests.getStickers();
+  const overlay = el('div', { class: 'panel-overlay' });
+  const grid = el('div', { class: 'sticker-grid' });
+  if (!stickers.length) grid.append(el('div', { class: 'sticker-grid__empty' }, 'Finish a quest to earn stickers!'));
+  else stickers.forEach((s) => grid.append(el('span', { class: 'sticker-grid__one' }, s)));
+  overlay.append(el('div', { class: 'panel' }, el('h2', { class: 'panel__title' }, 'My Stickers'), grid,
+    el('button', { class: 'btn', type: 'button', onClick: () => overlay.remove() }, 'Done')));
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+  root.append(overlay);
+}
+
+// Press-and-hold gear -> grown-up settings (volume, replay voice, reset).
 function buildGearAndPanel(root) {
   const gear = el('button', { class: 'gear', type: 'button', 'aria-label': 'Grown-ups (hold)' }, '⚙️');
   let timer = null;
@@ -82,6 +141,7 @@ function buildGearAndPanel(root) {
         volLabel,
         el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => { setVol((s.volume ?? 1) + 0.2); } }, '+'),
       ),
+      el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => audio.play(clip.homeWelcome()) }, '🔊 Replay voice'),
       el('div', { class: 'panel__row' }, el('span', {}, `Pokémon caught: ${caughtCount()}`)),
       resetBtn,
       el('button', { class: 'btn', type: 'button', onClick: () => panel.remove() }, 'Done'),

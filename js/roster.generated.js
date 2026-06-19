@@ -100,7 +100,10 @@ export const ROSTER = [
       "fire"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "desert",
+      "volcano"
+    ],
     "evolutionChain": [
       {
         "id": 4,
@@ -127,7 +130,10 @@ export const ROSTER = [
       "fire"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "desert",
+      "volcano"
+    ],
     "evolutionChain": [
       {
         "id": 4,
@@ -157,7 +163,9 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "beach",
-      "mountain"
+      "mountain",
+      "desert",
+      "volcano"
     ],
     "evolutionChain": [
       {
@@ -184,7 +192,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -213,7 +222,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -242,7 +252,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -751,7 +762,9 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "mountain"
+      "mountain",
+      "desert",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -776,7 +789,9 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "mountain"
+      "mountain",
+      "desert",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -859,7 +874,9 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "forest",
-      "mountain"
+      "mountain",
+      "desert",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -946,7 +963,9 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "forest",
-      "mountain"
+      "mountain",
+      "desert",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -974,7 +993,8 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "meadow",
-      "forest"
+      "forest",
+      "grove"
     ],
     "evolutionChain": [
       {
@@ -1004,7 +1024,8 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "meadow",
-      "forest"
+      "forest",
+      "grove"
     ],
     "evolutionChain": [
       {
@@ -1030,7 +1051,10 @@ export const ROSTER = [
       "fire"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "desert",
+      "volcano"
+    ],
     "evolutionChain": [
       {
         "id": 37,
@@ -1053,7 +1077,10 @@ export const ROSTER = [
       "fire"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "desert",
+      "volcano"
+    ],
     "evolutionChain": [
       {
         "id": 37,
@@ -1077,7 +1104,8 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "meadow",
-      "forest"
+      "forest",
+      "grove"
     ],
     "evolutionChain": [
       {
@@ -1108,7 +1136,8 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "meadow",
-      "forest"
+      "forest",
+      "grove"
     ],
     "evolutionChain": [
       {
@@ -1407,7 +1436,9 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "mountain"
+      "mountain",
+      "desert",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -1432,7 +1463,9 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "mountain"
+      "mountain",
+      "desert",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -1512,7 +1545,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -1537,7 +1571,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -1617,7 +1652,10 @@ export const ROSTER = [
       "fire"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "desert",
+      "volcano"
+    ],
     "evolutionChain": [
       {
         "id": 58,
@@ -1640,7 +1678,10 @@ export const ROSTER = [
       "fire"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "desert",
+      "volcano"
+    ],
     "evolutionChain": [
       {
         "id": 58,
@@ -1662,7 +1703,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -1695,7 +1737,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -1731,7 +1774,8 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "beach",
-      "mountain"
+      "mountain",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -1761,7 +1805,9 @@ export const ROSTER = [
       "psychic"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "grove"
+    ],
     "evolutionChain": [
       {
         "id": 63,
@@ -1788,7 +1834,9 @@ export const ROSTER = [
       "psychic"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "grove"
+    ],
     "evolutionChain": [
       {
         "id": 63,
@@ -1815,7 +1863,9 @@ export const ROSTER = [
       "psychic"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "grove"
+    ],
     "evolutionChain": [
       {
         "id": 63,
@@ -2019,7 +2069,8 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "forest",
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -2046,7 +2097,8 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "forest",
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -2070,7 +2122,10 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "mountain"
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -2100,7 +2155,10 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "mountain"
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -2130,7 +2188,10 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "mountain"
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -2156,7 +2217,10 @@ export const ROSTER = [
       "fire"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "desert",
+      "volcano"
+    ],
     "evolutionChain": [
       {
         "id": 77,
@@ -2179,7 +2243,10 @@ export const ROSTER = [
       "fire"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "desert",
+      "volcano"
+    ],
     "evolutionChain": [
       {
         "id": 77,
@@ -2202,7 +2269,9 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield",
+      "grove"
     ],
     "evolutionChain": [
       {
@@ -2233,7 +2302,9 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield",
+      "grove"
     ],
     "evolutionChain": [
       {
@@ -2261,7 +2332,9 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "meadow"
+      "meadow",
+      "desert",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -2291,7 +2364,9 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "meadow"
+      "meadow",
+      "desert",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -2402,7 +2477,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -2428,7 +2504,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -2499,7 +2576,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -2525,7 +2603,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -2549,7 +2628,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "forest"
+      "forest",
+      "grove"
     ],
     "evolutionChain": [
       {
@@ -2579,7 +2659,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "forest"
+      "forest",
+      "grove"
     ],
     "evolutionChain": [
       {
@@ -2609,7 +2690,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "forest"
+      "forest",
+      "grove"
     ],
     "evolutionChain": [
       {
@@ -2637,7 +2719,10 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "mountain"
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -2661,7 +2746,9 @@ export const ROSTER = [
       "psychic"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "grove"
+    ],
     "evolutionChain": [
       {
         "id": 96,
@@ -2684,7 +2771,9 @@ export const ROSTER = [
       "psychic"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "grove"
+    ],
     "evolutionChain": [
       {
         "id": 96,
@@ -2706,7 +2795,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -2731,7 +2821,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -2804,7 +2895,8 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "meadow",
-      "forest"
+      "forest",
+      "grove"
     ],
     "evolutionChain": [
       {
@@ -2831,7 +2923,8 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "meadow",
-      "forest"
+      "forest",
+      "grove"
     ],
     "evolutionChain": [
       {
@@ -2854,7 +2947,9 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "mountain"
+      "mountain",
+      "desert",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -2879,7 +2974,9 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "mountain"
+      "mountain",
+      "desert",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -3038,7 +3135,10 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "mountain"
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -3068,7 +3168,10 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "mountain"
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -3171,7 +3274,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -3200,7 +3304,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -3229,7 +3334,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -3254,7 +3360,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -3277,7 +3384,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -3303,7 +3411,9 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield",
+      "grove"
     ],
     "evolutionChain": [
       {
@@ -3328,7 +3438,8 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "meadow",
-      "forest"
+      "forest",
+      "grove"
     ],
     "evolutionChain": [
       {
@@ -3391,7 +3502,10 @@ export const ROSTER = [
       "psychic"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "snowfield",
+      "grove"
+    ],
     "evolutionChain": [
       {
         "id": 238,
@@ -3441,7 +3555,10 @@ export const ROSTER = [
       "fire"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "desert",
+      "volcano"
+    ],
     "evolutionChain": [
       {
         "id": 240,
@@ -3508,7 +3625,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -3535,7 +3653,8 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "beach",
-      "mountain"
+      "mountain",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -3559,7 +3678,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -3657,7 +3777,8 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "beach"
+      "beach",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -3758,7 +3879,10 @@ export const ROSTER = [
       "fire"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "desert",
+      "volcano"
+    ],
     "evolutionChain": [
       {
         "id": 133,
@@ -3839,7 +3963,11 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "beach",
-      "mountain"
+      "mountain",
+      "desert",
+      "volcano",
+      "snowfield",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -3866,7 +3994,11 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "beach",
-      "mountain"
+      "mountain",
+      "desert",
+      "volcano",
+      "snowfield",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -3891,7 +4023,11 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "beach",
-      "mountain"
+      "mountain",
+      "desert",
+      "volcano",
+      "snowfield",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -3918,7 +4054,11 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "beach",
-      "mountain"
+      "mountain",
+      "desert",
+      "volcano",
+      "snowfield",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -3943,7 +4083,10 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "beach",
-      "mountain"
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -3987,7 +4130,8 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "beach",
-      "mountain"
+      "mountain",
+      "snowfield"
     ],
     "evolutionChain": [
       {
@@ -4030,7 +4174,9 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "beach",
-      "mountain"
+      "mountain",
+      "desert",
+      "volcano"
     ],
     "evolutionChain": [
       {
@@ -4049,7 +4195,9 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "mountain"
+      "mountain",
+      "volcano",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -4078,7 +4226,9 @@ export const ROSTER = [
     ],
     "generation": "generation-i",
     "zones": [
-      "mountain"
+      "mountain",
+      "volcano",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -4109,7 +4259,9 @@ export const ROSTER = [
     "generation": "generation-i",
     "zones": [
       "beach",
-      "mountain"
+      "mountain",
+      "volcano",
+      "cave"
     ],
     "evolutionChain": [
       {
@@ -4135,7 +4287,9 @@ export const ROSTER = [
       "psychic"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "grove"
+    ],
     "evolutionChain": [
       {
         "id": 150,
@@ -4152,7 +4306,9 @@ export const ROSTER = [
       "psychic"
     ],
     "generation": "generation-i",
-    "zones": [],
+    "zones": [
+      "grove"
+    ],
     "evolutionChain": [
       {
         "id": 151,

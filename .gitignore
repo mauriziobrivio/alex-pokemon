@@ -24,6 +24,11 @@
 !/assets/backgrounds/bg-forest.png
 !/assets/backgrounds/bg-beach.png
 !/assets/backgrounds/bg-mountain.png
+!/assets/backgrounds/bg-desert.png
+!/assets/backgrounds/bg-volcano.png
+!/assets/backgrounds/bg-snowfield.png
+!/assets/backgrounds/bg-grove.png
+!/assets/backgrounds/bg-cave.png
 !/assets/screens
 /assets/screens/*
 !/assets/screens/screen-title.png
@@ -44,6 +49,7 @@
 !/assets/characters/mama
 /assets/characters/mama/*
 !/assets/characters/mama/mama-greeting.png
+!/assets/characters/mama/mama-cheering.png
 
 # Build-time tooling (sprite fetch, audio manifest/generation) — local, not shipped.
 /tools/
