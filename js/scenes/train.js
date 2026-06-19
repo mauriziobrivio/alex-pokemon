@@ -7,7 +7,7 @@
 // bumps it, so a just-finished activity's deferred success can't fire into the
 // next view (no phantom bond, no surprise evolution, no null-buddy crash).
 
-import { el, clear, spriteImg } from '../ui.js';
+import { el, clear, spriteImg, icon } from '../ui.js';
 import * as audio from '../audio.js';
 import { clip, PRAISE_COUNT, rnd } from '../voices.js';
 import { sfx } from '../sfx.js';
@@ -35,12 +35,12 @@ export function renderTrain(_params, ctx) {
   function bondMeter() {
     if (!nextStageId(buddyId)) {
       // terminal stage — nothing to evolve into; a warm "best friends" badge, no fillable meter
-      return el('div', { class: 'bondmeter bondmeter--max' }, el('span', { class: 'bondmeter__label' }, '❤ Best friends!'));
+      return el('div', { class: 'bondmeter bondmeter--max' }, el('span', { class: 'bondmeter__label' }, icon('bond', 'bondmeter__icon'), ' Best friends!'));
     }
     const cur = getBond(buddyId), cost = bondCost();
     return el('div', { class: 'bondmeter' },
       el('div', { class: 'bondmeter__track' }, el('div', { class: 'bondmeter__fill', style: { width: `${Math.min(100, (cur / cost) * 100)}%` } })),
-      el('span', { class: 'bondmeter__label' }, `❤ ${Math.min(cur, cost)} / ${cost}`),
+      el('span', { class: 'bondmeter__label' }, icon('bond', 'bondmeter__icon'), ` ${Math.min(cur, cost)} / ${cost}`),
     );
   }
 
@@ -72,8 +72,8 @@ export function renderTrain(_params, ctx) {
       el('div', { class: 'train__buddy' }, spriteImg(p), el('div', { class: 'train__buddyname' }, p.name)),
       bondMeter(),
       el('div', { class: 'train__activities' },
-        el('button', { class: 'btn btn--big btn--catch', type: 'button', onClick: () => { audio.play(sfx.pop()); startBuildWord(); } }, '🔤 Build a word'),
-        el('button', { class: 'btn btn--big btn--dex', type: 'button', onClick: () => { audio.play(sfx.pop()); startFeed(); } }, '🍓 Feed berries'),
+        el('button', { class: 'btn btn--big btn--catch', type: 'button', onClick: () => { audio.play(sfx.pop()); startBuildWord(); } }, icon('build-word'), ' Build a word'),
+        el('button', { class: 'btn btn--big btn--dex', type: 'button', onClick: () => { audio.play(sfx.pop()); startFeed(); } }, icon('feed'), ' Feed berries'),
       ),
       el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => showBuddyPicker() }, 'Pick another buddy'),
     );

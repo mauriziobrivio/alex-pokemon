@@ -60,6 +60,26 @@ export function charImg(src, className, alt = '') {
   return img;
 }
 
+// On-style art (UI icons + reward stickers), replacing system emoji. Each is an
+// <img>; if the PNG isn't present yet (art is generated/dropped in by filename),
+// it falls back to a tasteful warm rounded chip — never an emoji, never a broken
+// image. Decorative by default (aria-hidden); pass alt for a meaningful label.
+export function artImg(src, { className = '', alt = '' } = {}) {
+  const wrap = el('span', { class: `art ${className}`.trim() });
+  if (alt) wrap.setAttribute('aria-label', alt);
+  else wrap.setAttribute('aria-hidden', 'true');
+  const img = el('img', { src, alt: '', draggable: false });
+  img.addEventListener('error', () => { wrap.classList.add('is-fallback'); img.remove(); });
+  wrap.append(img);
+  return wrap;
+}
+
+// A named UI icon: assets/ui/ic-<name>.png (e.g. icon('catch')).
+export const icon = (name, className = '') => artImg(`assets/ui/ic-${name}.png`, { className: `ic ${className}`.trim() });
+
+// A reward sticker by its stored asset path (assets/stickers/st-*.png).
+export const stickerImg = (src, className = '') => artImg(src, { className: `sticker-img ${className}`.trim() });
+
 // A big, forgiving tap button (>=88px target via CSS).
 export function bigButton(label, onTap, extraClass = '') {
   return el('button', { class: `btn ${extraClass}`.trim(), type: 'button', onClick: onTap }, label);

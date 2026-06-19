@@ -4,7 +4,7 @@
 // or be hurt. A wrong answer just re-prompts (errorless), the wild gives a
 // harmless wiggle, and the encounter still ends in a win + a bond reward.
 
-import { el, clear, spriteImg } from '../ui.js';
+import { el, clear, spriteImg, icon } from '../ui.js';
 import * as audio from '../audio.js';
 import { clip, PRAISE_COUNT, rnd } from '../voices.js';
 import { sfx } from '../sfx.js';
@@ -283,7 +283,7 @@ export function renderBattle(_params, ctx) {
     overlay.append(el('div', { class: 'win__card' },
       el('div', { class: 'win__badge' }, 'You win!'),
       sprite,
-      didEvolve ? null : el('div', { class: 'win__bond' }, `❤ +${battle.BATTLE_BOND} bond`),
+      didEvolve ? null : el('div', { class: 'win__bond' }, icon('bond'), ` +${battle.BATTLE_BOND} bond`),
       el('div', { class: 'win__actions' },
         el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); startBattle(); } }, 'Play again!'),
         el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, 'Home'),

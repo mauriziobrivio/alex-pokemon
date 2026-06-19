@@ -8,8 +8,14 @@
 import { read, write } from './storage.js';
 import { ZONES, zoneById } from './data.js';
 
-// Visible rewards only (no numbers). Cycled so the collection stays varied.
-const STICKERS = ['🌟', '🏅', '🎀', '🌈', '🦄', '🍭', '🎈', '🌻', '⚡', '🐚', '🍀', '🌙'];
+// Visible rewards only (no numbers). On-style art (assets/stickers/st-*.png),
+// the agreed Pokémon-world + cute mix. Cycled so the collection stays varied.
+const STICKERS = [
+  'assets/stickers/st-pokeball.png', 'assets/stickers/st-greatball.png', 'assets/stickers/st-badge.png',
+  'assets/stickers/st-berry.png', 'assets/stickers/st-bolt.png', 'assets/stickers/st-star.png',
+  'assets/stickers/st-medal.png', 'assets/stickers/st-trophy.png', 'assets/stickers/st-rainbow.png',
+  'assets/stickers/st-balloon.png', 'assets/stickers/st-sunflower.png', 'assets/stickers/st-moon.png',
+];
 
 const pickZone = () => ZONES[Math.floor(Math.random() * ZONES.length)];
 

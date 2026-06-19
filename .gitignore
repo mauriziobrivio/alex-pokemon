@@ -50,6 +50,14 @@
 /assets/characters/mama/*
 !/assets/characters/mama/mama-greeting.png
 !/assets/characters/mama/mama-cheering.png
+# UI icons + reward stickers (brief 6) — the live app uses these. Forward-ready:
+# when Operations drops the cut PNGs in, they commit automatically.
+!/assets/ui
+/assets/ui/*
+!/assets/ui/*.png
+!/assets/stickers
+/assets/stickers/*
+!/assets/stickers/*.png
 
 # Build-time tooling (sprite fetch, audio manifest/generation) — local, not shipped.
 /tools/

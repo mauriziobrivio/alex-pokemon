@@ -2,7 +2,7 @@
 // the four destinations, and a GENTLE optional quest + sticker collection. A
 // grown-up settings panel hides behind a press-and-hold gear.
 
-import { el, spriteImg, charImg } from '../ui.js';
+import { el, spriteImg, charImg, icon, stickerImg } from '../ui.js';
 import * as audio from '../audio.js';
 import { clip, PRAISE_COUNT, rnd } from '../voices.js';
 import { sfx } from '../sfx.js';
@@ -30,13 +30,13 @@ export function renderHome(_params, ctx) {
 
   const menu = el('div', { class: 'home__menu' },
     el('button', { class: 'btn btn--big btn--catch', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('worldmap'); } },
-      el('span', { class: 'btn__emoji', 'aria-hidden': 'true' }, '⚪'), 'Catch'),
+      icon('catch', 'btn__icon'), 'Catch'),
     el('button', { class: 'btn btn--big btn--train', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('train'); } },
-      el('span', { class: 'btn__emoji', 'aria-hidden': 'true' }, '⭐'), 'Train'),
+      icon('train', 'btn__icon'), 'Train'),
     el('button', { class: 'btn btn--big btn--battle', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('battle'); } },
-      el('span', { class: 'btn__emoji', 'aria-hidden': 'true' }, '⚡'), 'Battle'),
+      icon('battle', 'btn__icon'), 'Battle'),
     el('button', { class: 'btn btn--big btn--dex', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('pokedex'); } },
-      el('span', { class: 'btn__emoji', 'aria-hidden': 'true' }, '📖'), 'Pokédex'),
+      icon('pokedex', 'btn__icon'), 'Pokédex'),
   );
 
   // If a quest finished during play, take it now (rolls a fresh one) so the
@@ -51,7 +51,7 @@ export function renderHome(_params, ctx) {
     else audio.play(clip.questCatch());
   };
   const questBanner = el('button', { class: 'quest-banner', type: 'button', 'aria-label': quest.prompt, onClick: () => { audio.play(sfx.pop()); speakQuest(); } },
-    el('span', { class: 'quest-banner__bulb', 'aria-hidden': 'true' }, '💡'),
+    icon('quest', 'quest-banner__icon'),
     el('span', { class: 'quest-banner__text' }, quest.prompt));
 
   const stickerStrip = buildStickerStrip(root);
@@ -78,7 +78,7 @@ function celebrateQuest(root, reward) {
   const overlay = el('div', { class: 'sticker-pop' },
     el('div', { class: 'sticker-pop__card' },
       el('div', { class: 'sticker-pop__badge' }, 'You earned a sticker!'),
-      el('div', { class: 'sticker-pop__sticker' }, reward || '🌟'),
+      el('div', { class: 'sticker-pop__sticker' }, stickerImg(reward || 'assets/stickers/st-star.png')),
       el('button', { class: 'btn btn--big', type: 'button', onClick: () => overlay.remove() }, 'Yay!'),
     ));
   overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
@@ -88,10 +88,10 @@ function celebrateQuest(root, reward) {
 function buildStickerStrip(root) {
   const stickers = quests.getStickers();
   const strip = el('button', { class: 'sticker-strip', type: 'button', 'aria-label': 'My stickers', onClick: () => openStickers(root) });
-  strip.append(el('span', { class: 'sticker-strip__cap', 'aria-hidden': 'true' }, '🎖️'));
+  strip.append(icon('stickers', 'sticker-strip__cap'));
   if (!stickers.length) strip.append(el('span', { class: 'sticker-strip__hint' }, 'Stickers'));
   else {
-    stickers.slice(-6).forEach((s) => strip.append(el('span', { class: 'sticker-strip__one' }, s)));
+    stickers.slice(-6).forEach((s) => strip.append(stickerImg(s, 'sticker-strip__one')));
     if (stickers.length > 6) strip.append(el('span', { class: 'sticker-strip__more' }, `+${stickers.length - 6}`));
   }
   return strip;
@@ -102,7 +102,7 @@ function openStickers(root) {
   const overlay = el('div', { class: 'panel-overlay' });
   const grid = el('div', { class: 'sticker-grid' });
   if (!stickers.length) grid.append(el('div', { class: 'sticker-grid__empty' }, 'Finish a quest to earn stickers!'));
-  else stickers.forEach((s) => grid.append(el('span', { class: 'sticker-grid__one' }, s)));
+  else stickers.forEach((s) => grid.append(stickerImg(s, 'sticker-grid__one')));
   overlay.append(el('div', { class: 'panel' }, el('h2', { class: 'panel__title' }, 'My Stickers'), grid,
     el('button', { class: 'btn', type: 'button', onClick: () => overlay.remove() }, 'Done')));
   overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
@@ -111,7 +111,7 @@ function openStickers(root) {
 
 // Press-and-hold gear -> grown-up settings (volume, replay voice, reset).
 function buildGearAndPanel(root) {
-  const gear = el('button', { class: 'gear', type: 'button', 'aria-label': 'Grown-ups (hold)' }, '⚙️');
+  const gear = el('button', { class: 'gear', type: 'button', 'aria-label': 'Grown-ups (hold)' }, icon('settings'));
   let timer = null;
   const start = () => { timer = setTimeout(openPanel, 650); };
   const cancel = () => { if (timer) { clearTimeout(timer); timer = null; } };
@@ -141,7 +141,7 @@ function buildGearAndPanel(root) {
         volLabel,
         el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => { setVol((s.volume ?? 1) + 0.2); } }, '+'),
       ),
-      el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => audio.play(clip.homeWelcome()) }, '🔊 Replay voice'),
+      el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => audio.play(clip.homeWelcome()) }, icon('replay'), ' Replay voice'),
       el('div', { class: 'panel__row' }, el('span', {}, `Pokémon caught: ${caughtCount()}`)),
       resetBtn,
       el('button', { class: 'btn', type: 'button', onClick: () => panel.remove() }, 'Done'),

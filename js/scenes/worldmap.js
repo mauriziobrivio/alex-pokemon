@@ -2,7 +2,7 @@
 // quest's zone if there is one), but Alex chooses. Mama rides along as the
 // visual journey companion. Tapping a zone speaks its name and enters Catch.
 
-import { el, charImg } from '../ui.js';
+import { el, charImg, icon } from '../ui.js';
 import * as audio from '../audio.js';
 import { clip } from '../voices.js';
 import { sfx } from '../sfx.js';
@@ -24,7 +24,7 @@ export function renderWorldmap(_params, ctx) {
       style: { backgroundImage: `url('${z.background}')` },
       onClick: () => { audio.play(sfx.pop()); audio.play(clip.zone(z.id)); ctx.after(350, () => ctx.go('catch', { zoneId: z.id })); } },
       el('span', { class: 'zone-card__label' }, z.name),
-      z.id === starZone ? el('span', { class: 'zone-card__star', 'aria-hidden': 'true' }, '⭐') : null,
+      z.id === starZone ? icon('star', 'zone-card__star') : null,
     );
     grid.append(card);
   });

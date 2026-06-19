@@ -58,7 +58,7 @@ html, body {
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35); box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28);
   animation: invite-pulse 1.5s ease-in-out infinite;
 }
-.splash__finger { font-size: 1.1em; animation: finger-bob 1.5s ease-in-out infinite; }
+.splash__finger { width: 1.2em; height: 1.2em; object-fit: contain; animation: finger-bob 1.5s ease-in-out infinite; }
 @keyframes invite-pulse { 0%,100% { transform: scale(1); opacity: 0.92; } 50% { transform: scale(1.06); opacity: 1; } }
 @keyframes finger-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-0.18em); } }
 
@@ -77,7 +77,14 @@ html, body {
 .btn--confirm { background: var(--meadow); font-size: clamp(22px, 4.4vw, 34px); min-height: 84px; padding: 0.8em 1.6em; }
 .btn--catch { background: var(--coral); }
 .btn--dex { background: var(--grape); }
-.btn__emoji { font-size: 1.3em; }
+/* On-style art icons + reward stickers (replacing system emoji). Until the PNGs
+   are dropped in by filename, each shows a tasteful warm rounded chip (.is-fallback)
+   — never an emoji, never a broken image. */
+.art { display: inline-grid; place-items: center; line-height: 0; vertical-align: middle; flex: none; }
+.art img { width: 100%; height: 100%; object-fit: contain; }
+.art.is-fallback { border-radius: 28%; background: var(--cream); box-shadow: inset 0 0 0 2px rgba(255, 143, 163, 0.5), 0 1px 2px rgba(0,0,0,0.12); }
+.ic { width: 1.3em; height: 1.3em; }
+.btn__icon { width: 1.6em; height: 1.6em; margin-bottom: 2px; }
 .btn--back {
   position: absolute; top: calc(env(safe-area-inset-top) + 12px); left: calc(env(safe-area-inset-left) + 12px);
   width: 76px; height: 76px; min-height: 0; padding: 0; border-radius: 50%;
@@ -161,7 +168,7 @@ html, body {
 .zone-card:active { transform: scale(0.97); }
 .zone-card__label { position: absolute; left: 0; right: 0; bottom: 0; padding: 10px; background: linear-gradient(transparent, rgba(43,36,64,0.7));
   color: #fff; font-size: clamp(20px, 4vw, 30px); font-weight: 800; text-align: center; }
-.zone-card__star { position: absolute; top: 8px; right: 10px; font-size: 26px; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)); }
+.zone-card__star { position: absolute; top: 8px; right: 10px; width: 30px; height: 30px; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)); }
 
 /* ---------- Catch ---------- */
 .catch { justify-content: flex-end; }
@@ -290,7 +297,8 @@ html, body {
 .bondmeter { display: flex; flex-direction: column; align-items: center; gap: 4px; width: min(320px, 80%); }
 .bondmeter__track { width: 100%; height: 22px; border-radius: 999px; background: rgba(43,36,64,0.12); overflow: hidden; border: 3px solid #fff; }
 .bondmeter__fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--coral), var(--sunny)); transition: width 0.5s ease; }
-.bondmeter__label { font-weight: 800; color: var(--coral); }
+.bondmeter__label { font-weight: 800; color: var(--coral); display: inline-flex; align-items: center; gap: 0.2em; }
+.bondmeter__icon { width: 1.2em; height: 1.2em; }
 .bondmeter--max .bondmeter__label { font-size: clamp(18px, 3.6vw, 24px); }
 
 /* Build-a-word */
@@ -384,14 +392,15 @@ html, body {
   animation: invite-pulse 2.4s ease-in-out infinite;
 }
 .quest-banner:active { transform: scale(0.97); }
-.quest-banner__bulb { font-size: 1.3em; }
+.quest-banner__icon { width: 1.5em; height: 1.5em; }
 .quest-banner__text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .sticker-strip { display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; margin-bottom: 1vh;
   padding: 0.35em 0.8em; border-radius: 999px; border: none; background: rgba(255,255,255,0.7);
   font-size: clamp(18px, 4vw, 26px); cursor: pointer; z-index: 2; }
 .sticker-strip:active { transform: scale(0.96); }
-.sticker-strip__cap { font-size: 1.1em; }
+.sticker-strip__cap { width: 1.3em; height: 1.3em; }
+.sticker-strip__one { width: 1.4em; height: 1.4em; }
 .sticker-strip__hint { font-size: 0.7em; font-weight: 800; color: var(--ink-soft); }
 .sticker-strip__more { font-size: 0.6em; font-weight: 800; color: var(--ink-soft); }
 
@@ -399,10 +408,11 @@ html, body {
 .sticker-pop__card { background: var(--cream); border-radius: 32px; box-shadow: var(--shadow); padding: 24px 28px; text-align: center;
   display: flex; flex-direction: column; align-items: center; gap: 12px; animation: popIn 0.5s cubic-bezier(0.2,1.4,0.4,1); }
 .sticker-pop__badge { font-size: clamp(22px, 5vw, 32px); font-weight: 900; color: var(--coral); }
-.sticker-pop__sticker { font-size: clamp(70px, 18vw, 120px); animation: celebrate 0.9s ease-in-out infinite; }
+.sticker-pop__sticker { width: clamp(70px, 18vw, 120px); height: clamp(70px, 18vw, 120px); animation: celebrate 0.9s ease-in-out infinite; }
+.sticker-pop__sticker .art { width: 100%; height: 100%; }
 
 .sticker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); gap: 10px; max-height: 50vh; overflow-y: auto; padding: 6px; }
-.sticker-grid__one { font-size: clamp(30px, 7vw, 44px); text-align: center; }
+.sticker-grid__one { width: clamp(40px, 9vw, 56px); height: clamp(40px, 9vw, 56px); }
 .sticker-grid__empty { font-size: 18px; font-weight: 700; color: var(--ink-soft); text-align: center; padding: 16px; }
 
 .worldmap__mama { position: absolute; bottom: calc(env(safe-area-inset-bottom) + 8px); right: 4%; height: clamp(110px, 26vh, 220px);
@@ -429,7 +439,7 @@ html, body {
   .home__hello { font-size: clamp(22px, 5vw, 32px); }
   .home__menu { margin: 8px 0; gap: 10px; }
   .home__menu .btn { flex-direction: row; min-height: 56px; padding: 0.45em 1em; gap: 0.4em; font-size: clamp(17px, 3.6vw, 24px); }
-  .home__menu .btn__emoji { font-size: 1.1em; }
+  .home__menu .btn__icon { width: 1.2em; height: 1.2em; margin: 0; }
   .home .char { height: clamp(100px, 26vh, 180px); bottom: 2vh; }
   .quest-banner { margin-bottom: 8px; }
 }
