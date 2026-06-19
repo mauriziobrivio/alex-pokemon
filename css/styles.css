@@ -225,6 +225,28 @@ html, body {
 .caught__sprite { width: clamp(140px, 34vw, 200px); height: clamp(140px, 34vw, 200px); }
 .caught__name { font-size: clamp(24px, 5vw, 36px); font-weight: 900; }
 .caught__actions { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+
+/* ---------- Catch, deeper (Phase 5): outing cue, escape, soft-stop ---------- */
+/* A calm progress cue — pips fill as encounters resolve. Never a countdown/timer. */
+.catch__outing { position: absolute; top: calc(env(safe-area-inset-top) + 14px); left: 50%; transform: translateX(-50%);
+  display: flex; gap: 7px; padding: 7px 12px; border-radius: 999px; background: rgba(255,255,255,0.5); z-index: 4; }
+.catch__pip { width: 13px; height: 13px; border-radius: 50%; background: rgba(43,36,64,0.16);
+  box-shadow: inset 0 0 0 2px rgba(43,36,64,0.10); transition: background 0.3s ease, transform 0.3s ease; }
+.catch__pip.is-filled { background: linear-gradient(#ff5a5f 0 49%, #fff 49% 51%, #f3f3f3 51% 100%);
+  box-shadow: inset 0 0 0 2px var(--ink); transform: scale(1.14); }
+
+/* The wild gently hops away on escape — warm, never sad. */
+.catch__wild.is-escaping { animation: hopAway 0.72s ease-in forwards; pointer-events: none; }
+@keyframes hopAway {
+  0%   { transform: translate(-50%, 0) scale(0.9); opacity: 1; }
+  35%  { transform: translate(-46%, -34%) scale(0.84); opacity: 1; }
+  100% { transform: translate(38%, -58%) scale(0.5); opacity: 0; }
+}
+
+/* Outing soft-stop — the happy haul; reuses the .caught overlay + card. */
+.outing-end__haul { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: min(440px, 82vw); margin: 6px 0 2px; }
+.outing-end__mon { width: clamp(46px, 12vw, 68px); height: clamp(46px, 12vw, 68px); }
+.outing-end__none { font-size: clamp(18px, 4vw, 24px); font-weight: 800; color: var(--ink); margin: 10px 0; }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 
 /* ---------- Pokédex ---------- */
@@ -447,7 +469,7 @@ html, body {
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, .splash__invite, .splash__finger, .pop-in, .celebrate, .numbtn.is-wrong,
-  .catch__ball.is-thrown, .catch__ball.is-wobbling, .pokeball-btn.is-selected .pokeball {
+  .catch__ball.is-thrown, .catch__ball.is-wobbling, .catch__wild.is-escaping, .pokeball-btn.is-selected .pokeball {
     animation: none !important;
   }
   .scene-enter, .scene-enter-active { transition: none; opacity: 1; transform: none; }

@@ -64,17 +64,18 @@ function boot() {
   });
 }
 
-// Background warm-fetch (gentle concurrency) of the long-tail assets the SW
-// doesn't precache: the 151 name clips, the 72 word clips, and all 151 sprites.
-// On first online launch this fills the service-worker cache so names, the
-// build-a-word blend, and any caught/evolved Pokémon's art all work offline.
-// Already-cached items are served by the SW with no network hit.
+// Background warm-fetch (gentle concurrency) of long-tail assets the SW doesn't
+// precache: all 251 name clips, the 72 word clips, and the Gen-1 sprites. On
+// first online launch this fills the SW cache so names, the build-a-word blend,
+// and Gen-1 art work offline. The ~100 Gen-2 sprites are deliberately NOT
+// bulk-warmed (~34 MB) — they lazily runtime-cache on first encounter, keeping
+// the offline budget in check (brief 008). Cached items hit no network.
 function warmCache() {
   setTimeout(() => {
     const urls = [
       ...ROSTER.map((p) => clip.name(p.id)),
       ...CVC_WORDS.map((w) => clip.word(w)),
-      ...ROSTER.map((p) => p.sprite),
+      ...ROSTER.filter((p) => p.id <= 151).map((p) => p.sprite),
     ];
     let i = 0;
     const pump = () => { if (i >= urls.length) return; const u = urls[i++]; fetch(u).catch(() => {}).finally(pump); };

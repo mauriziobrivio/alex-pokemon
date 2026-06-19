@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v11';
+const CACHE = 'dada-academy-v12';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -46,10 +46,13 @@ for (const f of ['which-one-says', 'lets-build', 'you-taught', 'pick-buddy', 'fe
 for (const f of ['battle-start', 'hit-bigger', 'hit-smaller', 'charge-up', 'your-move', 'you-win', 'fainted']) CORE.push(`./audio/dada/${f}.mp3`);
 // Phase 4: quest lines.
 for (const f of ['quest-catch', 'quest-evolve']) CORE.push(`./audio/dada/${f}.mp3`);
+// Phase 5: Catch-deeper lines (gentle escape + outing soft-stop). The ~100 new
+// Gen-2 name clips warm into cache at runtime like the other names (not precached).
+for (const f of ['escape', 'outing-end']) CORE.push(`./audio/dada/${f}.mp3`);
 // Starter evolution lines' sprites (1-6, 25-26) so the first evolutions show offline.
 for (const id of [1, 2, 3, 4, 5, 6, 25, 26]) CORE.push(`./sprites/${id}.png`);
 // build-a-word whole-word clips (the blend climax) — small; precache all 72.
-// (Other sprites + the 151 name clips warm into cache at runtime via main.js.)
+// (Other sprites + the 251 name clips warm into cache at runtime via main.js.)
 const WORDS = ['sat', 'tap', 'pin', 'nap', 'pat', 'tip', 'sit', 'tin', 'pit', 'pan', 'tan', 'sap',
   'cat', 'hat', 'mat', 'rat', 'hen', 'men', 'ten', 'pen', 'net', 'can', 'man', 'ran',
   'mad', 'sad', 'had', 'dad', 'cap', 'map', 'ram', 'ham', 'kit', 'kid', 'red', 'set',

@@ -1,13 +1,17 @@
-// The Catch loop — the encode step. Phase 2 interleaves two prompt types:
-// number recognition (1–20, teen ten-frame) and letter-sounds (Jolly Phonics,
-// "Which one says /sss/?"). Both are errorless and audio-first; every encounter
-// ends in a catch. The shared throw/wobble/celebration is reused for both.
+// The Catch loop — the encode step. Phase 2 interleaves number recognition
+// (1–20, teen ten-frame) and letter-sounds (Jolly Phonics). Phase 5 makes it
+// deeper, within the refined errorless / no-shame, no-dead-end rule:
+//   • a wrong tap removes ONLY that option (a narrowing hint) and re-prompts;
+//   • a second wrong (rare) lets the wild gently HOP AWAY — warm, never sad —
+//     and the next encounter begins right away (the wild isn't gone forever);
+//   • a trip is a bounded ~10-encounter "outing" that ends in a happy soft-stop.
+// Stakes stay kind: never the child's fault, never scary, never a dead end.
 
 import { el, clear, spriteImg, charImg, icon } from '../ui.js';
 import * as audio from '../audio.js';
 import { clip, PRAISE_COUNT, CATCH_CHEER_COUNT, rnd } from '../voices.js';
 import { sfx } from '../sfx.js';
-import { isTeen, zoneById, zonePool, sameSound } from '../data.js';
+import { isTeen, zoneById, zonePool, sameSound, pokemonById, MISSES_TO_ESCAPE, OUTING_LENGTH } from '../data.js';
 import * as mastery from '../mastery.js';
 import { tenFrame } from '../tenframe.js';
 import { isCaught, recordCatch } from '../game.js';
@@ -25,6 +29,12 @@ export function renderCatch({ zoneId }, ctx) {
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': 'Back to the map',
     onClick: () => { if (busy) return; audio.play(sfx.pop()); ctx.go('worldmap'); } }, icon('back'));
 
+  // Outing progress cue — a calm row of pips that fill as encounters resolve.
+  // Pacing & closure, never a stressful timer (no countdown, no numbers).
+  const outingRow = el('div', { class: 'catch__outing', 'aria-hidden': 'true' });
+  const pips = Array.from({ length: OUTING_LENGTH }, () => el('span', { class: 'catch__pip' }));
+  pips.forEach((p) => outingRow.append(p));
+
   const stage = el('div', { class: 'catch__stage' });
   const wildSlot = el('div', { class: 'catch__wild' });
   const grass = el('div', { class: 'catch__grass', 'aria-hidden': 'true' });
@@ -35,7 +45,7 @@ export function renderCatch({ zoneId }, ctx) {
   const tenframeSlot = el('div', { class: 'catch__tenframe' });
   const choicesRow = el('div', { class: 'catch__choices' });
   const tray = el('div', { class: 'catch__tray' }, tenframeSlot, choicesRow);
-  root.append(back, stage, tray);
+  root.append(back, outingRow, stage, tray);
 
   let pokemon = null;
   let challenge = null;
@@ -46,6 +56,11 @@ export function renderCatch({ zoneId }, ctx) {
   let idleTimer = null;
   let lastNumber = null;
   let lastLetter = null;
+  let misses = 0;                 // wrong taps this encounter (-> escape at MISSES_TO_ESCAPE)
+  let encountersDone = 0;         // caught OR escaped, toward OUTING_LENGTH
+  const outingCatches = [];       // ids caught this outing (for the soft-stop haul)
+
+  const fillPips = () => pips.forEach((p, i) => p.classList.toggle('is-filled', i < encountersDone));
 
   function pickWild() {
     if (!pool.length) return null;
@@ -118,9 +133,10 @@ export function renderCatch({ zoneId }, ctx) {
     });
   }
 
-  function nextEncounter() {
+  function startEncounter() {
     busy = false;
     firstTry = true;
+    misses = 0;
     clearTimeout(repromptTimer);
     pokemon = pickWild();
     if (!pokemon) { ctx.go('worldmap'); return; }
@@ -129,7 +145,7 @@ export function renderCatch({ zoneId }, ctx) {
 
     clear(wildSlot);
     wildSlot.append(spriteImg(pokemon));
-    wildSlot.classList.remove('is-revealed');
+    wildSlot.classList.remove('is-revealed', 'is-escaping');
     grass.classList.remove('is-parted');
     ball.classList.remove('is-thrown', 'is-wobbling', 'is-gone');
     alex.src = 'assets/characters/alex/alex-ready.png';
@@ -147,26 +163,47 @@ export function renderCatch({ zoneId }, ctx) {
       choicesRow.append(btn);
     });
 
-    ctx.after(350, () => challenge.speak());
+    ctx.after(450, () => challenge.speak()); // a calm beat before the prompt
     scheduleIdle();
-  }
-
-  function progressiveDim(except) {
-    const live = [...choicesRow.children].filter((b) => !b.classList.contains('is-dimmed') && b.textContent !== String(challenge.target) && b !== except);
-    if (live.length > 0) live[Math.floor(Math.random() * live.length)].classList.add('is-dimmed');
   }
 
   function onChoice(value, btn) {
     if (busy) return;
     scheduleIdle();
     if (value === challenge.target) { success(); return; }
+    // Wrong tap: remove ONLY this option (a narrowing hint) and re-prompt warmly.
+    // No harsh sound, no red X — the answer is still right there, easier to find.
     firstTry = false;
+    misses += 1;
     audio.play(sfx.soft());
+    btn.disabled = true;
     btn.classList.add('is-wrong', 'is-dimmed');
     btn.addEventListener('animationend', () => btn.classList.remove('is-wrong'), { once: true });
-    progressiveDim(btn);
+    if (misses >= MISSES_TO_ESCAPE) { escape(); return; }
     clearTimeout(repromptTimer);
     repromptTimer = ctx.after(550, () => challenge.reprompt());
+  }
+
+  // Gentle escape — the only new "stake", and it must read as warm and matter-of-
+  // fact: a little hop-away, a kind line, no fail sound, then another wild at once.
+  async function escape() {
+    if (busy) return;
+    busy = true;
+    clearTimeout(idleTimer);
+    clearTimeout(repromptTimer);
+    challenge.record(false);          // one gentle "needs practice" — no extra penalty, no scold
+    [...choicesRow.children].forEach((b) => (b.disabled = true));
+    audio.play(sfx.pop());            // soft & friendly — never a fail sound
+    wildSlot.classList.add('is-escaping');
+    await sleep(720);
+    if (!ctx.alive()) return;
+    audio.play(clip.escape());        // "Aw, it hopped away! Here comes another!"
+    encountersDone += 1;
+    fillPips();
+    ctx.after(1200, () => {
+      if (!ctx.alive()) return;
+      encountersDone >= OUTING_LENGTH ? showOutingEnd() : startEncounter();
+    });
   }
 
   async function success() {
@@ -197,6 +234,9 @@ export function renderCatch({ zoneId }, ctx) {
     confetti(root);
     recordCatch(pokemon.id);
     quests.onCatch(zone.id); // passive quest progress (gentle, no pressure)
+    outingCatches.push(pokemon.id);
+    encountersDone += 1;
+    fillPips();
 
     audio.playSequence([clip.catchCheer(rnd(CATCH_CHEER_COUNT)), clip.name(pokemon.id)]);
     ctx.after(1700, () => audio.play(clip.praise(rnd(PRAISE_COUNT))));
@@ -205,6 +245,8 @@ export function renderCatch({ zoneId }, ctx) {
   }
 
   function showCaughtCard() {
+    const last = encountersDone >= OUTING_LENGTH;
+    const advance = () => { last ? showOutingEnd() : startEncounter(); };
     const overlay = el('div', { class: 'caught' });
     const sprite = spriteImg(pokemon);
     sprite.classList.add('caught__sprite');
@@ -213,15 +255,62 @@ export function renderCatch({ zoneId }, ctx) {
       sprite,
       el('div', { class: 'caught__name' }, pokemon.name),
       el('div', { class: 'caught__actions' },
-        el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); nextEncounter(); } }, 'Keep going!'),
+        el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); advance(); } }, last ? 'See who we met!' : 'Keep going!'),
         el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, 'Home'),
       ),
     );
     overlay.append(card);
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) { overlay.remove(); nextEncounter(); } });
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) { overlay.remove(); advance(); } });
     root.append(overlay);
   }
 
-  nextEncounter();
+  // Warm soft-stop after a bounded outing — a happy stopping place, never a
+  // lockout. "Go again!" starts a fresh outing immediately (no wait, no scarcity).
+  function showOutingEnd() {
+    clearTimeout(idleTimer);
+    clearTimeout(repromptTimer);
+    audio.play(clip.outingEnd());
+    const overlay = el('div', { class: 'caught outing-end' });
+    const uniq = [...new Set(outingCatches)];
+    const haul = el('div', { class: 'outing-end__haul' });
+    uniq.slice(0, 12).forEach((id) => {
+      const mon = pokemonById(id);
+      if (!mon) return;
+      const s = spriteImg(mon);
+      s.classList.add('outing-end__mon');
+      haul.append(s);
+    });
+    const card = el('div', { class: 'caught__card outing-end__card' },
+      el('div', { class: 'caught__badge' }, 'What an adventure!'),
+      uniq.length ? haul : el('div', { class: 'outing-end__none' }, 'So many friends out there!'),
+      el('div', { class: 'caught__actions' },
+        el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); startNewOuting(); } }, 'Go again!'),
+        el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, 'Home'),
+      ),
+    );
+    overlay.append(card);
+    root.append(overlay);
+  }
+
+  function startNewOuting() {
+    encountersDone = 0;
+    outingCatches.length = 0;
+    fillPips();
+    startEncounter();
+  }
+
+  // Inert test/debug hook (no gameplay effect, invisible to Alex): lets the
+  // headless harness read live state to deterministically exercise catch vs.
+  // the gentle escape and the bounded outing.
+  if (typeof window !== 'undefined') {
+    window.__catch = {
+      get target() { return challenge && challenge.target; },
+      get kind() { return challenge && challenge.kind; },
+      get misses() { return misses; },
+      get done() { return encountersDone; },
+    };
+  }
+
+  startEncounter();
   return root;
 }

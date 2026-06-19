@@ -50,6 +50,10 @@ export const clip = {
   // --- Phase 4: gentle quests (catch-in-zone reuses suggest()) ---
   questCatch: () => url('quest-catch.mp3'),            // "Let's catch lots of Pokémon!"
   questEvolve: () => url('quest-evolve.mp3'),          // "Can you help a Pokémon evolve?"
+
+  // --- Phase 5: Catch, deeper ---
+  escape: () => url('escape.mp3'),                     // "Aw, it hopped away! Here comes another!"
+  outingEnd: () => url('outing-end.mp3'),              // "What a great adventure — let's head home!"
 };
 
 export const PRAISE_COUNT = 4;

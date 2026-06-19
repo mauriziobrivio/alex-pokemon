@@ -81,3 +81,13 @@ export const wordBuildable = (word, unlocked) => [...word].every((c) => unlocked
 // cheaper for the early dopamine; tune from watching Alex.
 export const BOND_COST = 10;
 export const BOND_FIRST_COST = 8;
+
+// --- Catch, deeper (Phase 5) — gentle stakes, both one-line tunables ---
+// Wrong taps in ONE encounter before the wild gently hops away. Each wrong tap
+// first just removes that option (a narrowing hint), so 2 = one hint, then a
+// kind escape. Raise to soften (rarer escapes); the encounter stays errorless.
+export const MISSES_TO_ESCAPE = 2;
+// A catching outing is up to this many encounters (caught OR escaped), then a
+// warm soft-stop. This is pacing & a happy stopping place — NEVER scarcity:
+// no energy, no refill wait, no lockout; Alex can start another outing at once.
+export const OUTING_LENGTH = 10;
