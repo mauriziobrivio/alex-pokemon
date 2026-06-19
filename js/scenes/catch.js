@@ -3,7 +3,7 @@
 // "Which one says /sss/?"). Both are errorless and audio-first; every encounter
 // ends in a catch. The shared throw/wobble/celebration is reused for both.
 
-import { el, clear, spriteImg, charImg } from '../ui.js';
+import { el, clear, spriteImg, charImg, icon } from '../ui.js';
 import * as audio from '../audio.js';
 import { clip, PRAISE_COUNT, CATCH_CHEER_COUNT, rnd } from '../voices.js';
 import { sfx } from '../sfx.js';
@@ -23,7 +23,7 @@ export function renderCatch({ zoneId }, ctx) {
 
   const root = el('div', { class: 'scene catch', style: { backgroundImage: `url('${zone.background}')` } });
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': 'Back to the map',
-    onClick: () => { if (busy) return; audio.play(sfx.pop()); ctx.go('worldmap'); } }, '←');
+    onClick: () => { if (busy) return; audio.play(sfx.pop()); ctx.go('worldmap'); } }, icon('back'));
 
   const stage = el('div', { class: 'catch__stage' });
   const wildSlot = el('div', { class: 'catch__wild' });

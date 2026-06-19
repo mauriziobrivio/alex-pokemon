@@ -13,7 +13,7 @@ export function renderWorldmap(_params, ctx) {
   const root = el('div', { class: 'scene worldmap', style: { backgroundImage: "url('assets/screens/screen-worldmap.png')" } });
 
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': 'Back home',
-    onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, '←');
+    onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, icon('back'));
 
   // Star the quest's zone if there's a catch-in-zone quest, else the default suggestion.
   const starZone = questZoneSuggest(getActiveQuest()) || (ZONES.find((z) => z.suggested) || ZONES[0]).id;

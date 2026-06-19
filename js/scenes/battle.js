@@ -21,7 +21,7 @@ const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math
 export function renderBattle(_params, ctx) {
   const root = el('div', { class: 'scene battle', style: { backgroundImage: "url('assets/screens/bg-lab.png')" } });
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': 'Back home',
-    onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, '←'); // always a safe exit; deferred work is epoch-guarded
+    onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, icon('back')); // always a safe exit; deferred work is epoch-guarded
   const stage = el('div', { class: 'battle__stage' });
   const tray = el('div', { class: 'battle__tray' });
   root.append(back, stage, tray);

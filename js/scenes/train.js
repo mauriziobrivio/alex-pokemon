@@ -23,7 +23,7 @@ const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math
 export function renderTrain(_params, ctx) {
   const root = el('div', { class: 'scene train', style: { backgroundImage: "url('assets/backgrounds/bg-meadow.png')" } });
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': 'Back home',
-    onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, '←');
+    onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, icon('back'));
   const panel = el('div', { class: 'train__panel' });
   root.append(back, panel);
 

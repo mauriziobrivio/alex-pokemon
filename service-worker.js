@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v8';
+const CACHE = 'dada-academy-v9';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -57,6 +57,10 @@ const WORDS = ['sat', 'tap', 'pin', 'nap', 'pat', 'tip', 'sit', 'tin', 'pit', 'p
   'mug', 'rug', 'bed', 'leg', 'lip', 'hot', 'pot', 'top', 'mop', 'hop', 'cup', 'cut',
   'bat', 'bad', 'bag', 'fan', 'fin', 'gap', 'lab', 'lad', 'nut', 'tub', 'bin', 'fit'];
 for (const w of WORDS) CORE.push(`./audio/dada/word-${w}.mp3`);
+// Brief 7: the on-style UI icons + reward stickers now exist — precache them so the
+// real art is offline-first (and the fallback chip never shows on a cached device).
+for (const n of ['tap', 'catch', 'train', 'battle', 'pokedex', 'quest', 'star', 'stickers', 'settings', 'replay', 'bond', 'build-word', 'feed', 'back']) CORE.push(`./assets/ui/ic-${n}.png`);
+for (const n of ['pokeball', 'greatball', 'badge', 'berry', 'bolt', 'star', 'medal', 'trophy', 'rainbow', 'balloon', 'sunflower', 'moon']) CORE.push(`./assets/stickers/st-${n}.png`);
 
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {

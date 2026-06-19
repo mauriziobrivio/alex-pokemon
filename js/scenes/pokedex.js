@@ -2,7 +2,7 @@
 // show in colour; uncaught are silhouettes (discovery, never deficit). Tap a
 // caught one to hear its name and see its evolution line (later stages locked).
 
-import { el, clear, spriteImg } from '../ui.js';
+import { el, clear, spriteImg, icon } from '../ui.js';
 import * as audio from '../audio.js';
 import { clip } from '../voices.js';
 import { sfx } from '../sfx.js';
@@ -13,7 +13,7 @@ export function renderPokedex(_params, ctx) {
   const root = el('div', { class: 'scene pokedex' });
 
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': 'Back home',
-    onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, '←');
+    onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, icon('back'));
   const header = el('div', { class: 'pokedex__header' },
     el('h1', { class: 'pokedex__title' }, 'Pokédex'),
     el('div', { class: 'pokedex__count' }, `${caughtCount()} / ${ROSTER.length}`),
