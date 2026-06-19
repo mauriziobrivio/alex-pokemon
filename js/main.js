@@ -17,9 +17,10 @@ import { renderWorldmap } from './scenes/worldmap.js';
 import { renderCatch } from './scenes/catch.js';
 import { renderPokedex } from './scenes/pokedex.js';
 import { renderTrain } from './scenes/train.js';
+import { renderBattle } from './scenes/battle.js';
 
 const app = document.getElementById('app');
-const scenes = { starter: renderStarter, home: renderHome, worldmap: renderWorldmap, catch: renderCatch, pokedex: renderPokedex, train: renderTrain };
+const scenes = { starter: renderStarter, home: renderHome, worldmap: renderWorldmap, catch: renderCatch, pokedex: renderPokedex, train: renderTrain, battle: renderBattle };
 
 let epoch = 0;
 

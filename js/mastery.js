@@ -27,9 +27,12 @@ const save = () => write(KEY, boxes);
 
 export const getBox = (n) => boxes[n] || 1;
 
-// Record the outcome of an encounter for its target number.
-export function record(n, firstTryCorrect) {
-  if (firstTryCorrect) boxes[n] = Math.min(3, getBox(n) + 1);
+// Record the outcome of an encounter for its target number. `maxBox` caps how
+// far a correct answer may promote (without ever demoting) — Battle's magnitude
+// comparison passes maxBox=2 so it can't push a teen to the bare-numeral box and
+// strip the Catch ten-frame, which only genuine recognition (Catch/Train) should.
+export function record(n, firstTryCorrect, maxBox = 3) {
+  if (firstTryCorrect) boxes[n] = Math.max(getBox(n), Math.min(maxBox, getBox(n) + 1));
   else boxes[n] = 1;
   save();
 }

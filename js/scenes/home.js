@@ -31,6 +31,8 @@ export function renderHome(_params, ctx) {
       el('span', { class: 'btn__emoji', 'aria-hidden': 'true' }, '⚪'), 'Catch'),
     el('button', { class: 'btn btn--big btn--train', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('train'); } },
       el('span', { class: 'btn__emoji', 'aria-hidden': 'true' }, '⭐'), 'Train'),
+    el('button', { class: 'btn btn--big btn--battle', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('battle'); } },
+      el('span', { class: 'btn__emoji', 'aria-hidden': 'true' }, '⚡'), 'Battle'),
     el('button', { class: 'btn btn--big btn--dex', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('pokedex'); } },
       el('span', { class: 'btn__emoji', 'aria-hidden': 'true' }, '📖'), 'Pokédex'),
   );

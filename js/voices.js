@@ -37,6 +37,15 @@ export const clip = {
   feedBerries: () => url('feed-berries.mp3'),          // "Feed it ... berries!"
   isEvolving: () => url('is-evolving.mp3'),            // "...is evolving!"
   evolveCheer: () => url('evolve-cheer.mp3'),          // "Wow! Amazing!"
+
+  // --- Phase 3: Battle ---
+  battleStart: () => url('battle-start.mp3'),          // "Let's battle!"
+  hitBigger: () => url('hit-bigger.mp3'),              // "Use the bigger number to hit harder!"
+  hitSmaller: () => url('hit-smaller.mp3'),            // "Tap the smaller one!"
+  chargeUp: () => url('charge-up.mp3'),                // "Charge it up — tap the sounds!"
+  yourMove: () => url('your-move.mp3'),                // "Your move is..." (number plays after)
+  youWin: () => url('you-win.mp3'),                    // "You win, Alex!"
+  fainted: () => url('fainted.mp3'),                   // "Night night!" (sleepy, happy)
 };
 
 export const PRAISE_COUNT = 4;

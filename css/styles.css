@@ -331,6 +331,44 @@ html, body {
 @keyframes evo-sil { 0% { filter: none; } 50% { filter: brightness(0) invert(1) drop-shadow(0 0 14px #fff); } 100% { filter: none; } }
 @keyframes evo-flash { 0% { opacity: 0; } 45% { opacity: 0.96; } 100% { opacity: 0; } }
 
+/* ---------- Battle ---------- */
+.btn--battle { background: #ff9f43; color: #fff; }
+.battle { justify-content: flex-end; }
+.battle__stage { position: relative; width: 100%; flex: 1; min-height: 0; }
+.combatant { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.combatant--wild { top: 6%; right: 7%; }
+.combatant--buddy { bottom: 2%; left: 5%; }
+.combatant__sprite { width: clamp(120px, 28vw, 200px); height: clamp(120px, 28vw, 200px); }
+.combatant--buddy .combatant__sprite { width: clamp(150px, 34vw, 250px); height: clamp(150px, 34vw, 250px); transform: scaleX(-1); }
+.combatant__name { font-size: clamp(15px, 3vw, 20px); font-weight: 800; color: #fff; text-shadow: 0 2px 0 var(--ink); }
+.hpbar { width: clamp(110px, 26vw, 190px); height: 16px; border: 3px solid #fff; border-radius: 999px; background: rgba(43,36,64,0.25); overflow: hidden; box-shadow: var(--shadow); }
+.hpbar__fill { height: 100%; width: 100%; border-radius: 999px; background: linear-gradient(90deg, #8fcf5a, #ffd54a); transition: width 0.5s ease; }
+.combatant--buddy .combatant__sprite.is-attacking { animation: attack 0.4s ease; }
+@keyframes attack { 0% { transform: scaleX(-1) translate(0,0); } 45% { transform: scaleX(-1) translate(40px, -34px) scale(1.06); } 100% { transform: scaleX(-1) translate(0,0); } }
+.combatant--wild .combatant__sprite.is-hit { animation: hit-flinch 0.38s ease; }
+@keyframes hit-flinch { 0%,100% { transform: translate(0,0); filter: none; } 25% { transform: translate(-8px,2px); filter: brightness(1.8); } 75% { transform: translate(8px,-2px); } }
+.combatant--wild .combatant__sprite.is-wiggle { animation: wiggle 0.4s ease; }
+.combatant--wild .combatant__sprite.is-fainted { animation: faint 0.9s ease forwards; }
+@keyframes faint { to { transform: translateY(18px) rotate(18deg) scale(0.8); opacity: 0.35; } }
+
+.battle__title { margin: 0 0 12px; font-size: clamp(22px, 5vw, 34px); font-weight: 900; color: #fff; text-shadow: 0 2px 0 var(--ink), 0 6px 14px rgba(0,0,0,0.25); text-align: center; }
+.battle__tray { width: min(720px, 96%); display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 0 auto 2.5vh; z-index: 3; }
+.battle .train__buddies { background: rgba(255,248,231,0.86); border-radius: 24px; padding: 14px; box-shadow: var(--shadow); }
+.q-prompt { font-size: clamp(20px, 4.2vw, 28px); font-weight: 900; color: #fff; text-shadow: 0 2px 0 var(--ink), 0 4px 10px rgba(0,0,0,0.25); text-align: center; }
+.compare-row { display: flex; gap: clamp(24px, 8vw, 60px); align-items: flex-end; }
+.compare-opt { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.compare-opt .tenframe { transform: scale(0.7); }
+.chargebar { width: min(300px, 80%); height: 18px; border: 3px solid #fff; border-radius: 999px; background: rgba(43,36,64,0.18); overflow: hidden; box-shadow: var(--shadow); }
+.chargebar__fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--sky), var(--grape)); transition: width 0.35s ease; }
+
+.win { position: absolute; inset: 0; background: rgba(43,36,64,0.55); display: grid; place-items: center; z-index: 22; animation: fade 0.3s ease; }
+.win__card { background: var(--cream); border-radius: 32px; box-shadow: var(--shadow); padding: 24px 28px; text-align: center;
+  width: min(440px, 90%); display: flex; flex-direction: column; align-items: center; gap: 12px; animation: popIn 0.5s cubic-bezier(0.2,1.4,0.4,1); }
+.win__badge { font-size: clamp(28px, 6vw, 42px); font-weight: 900; color: var(--sunny); -webkit-text-stroke: 1px var(--ink); transform: rotate(-3deg); }
+.win__sprite { width: clamp(130px, 32vw, 190px); height: clamp(130px, 32vw, 190px); }
+.win__bond { font-size: clamp(20px, 4vw, 28px); font-weight: 800; color: var(--coral); }
+.win__actions { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, .splash__invite, .splash__finger, .pop-in, .celebrate, .numbtn.is-wrong,
@@ -338,4 +376,6 @@ html, body {
     animation: none !important;
   }
   .scene-enter, .scene-enter-active { transition: none; opacity: 1; transform: none; }
+  /* the faint's meaning lives in its end-state — keep a static sleepy pose */
+  .combatant--wild .combatant__sprite.is-fainted { transform: translateY(18px) rotate(18deg) scale(0.8); opacity: 0.35; }
 }
