@@ -71,8 +71,9 @@ export function takeMilestone() {
   return hit;
 }
 
-// Settings (grown-up): volume + mute
-export const getSettings = () => read('settings', { volume: 1, muted: false });
+// Settings (grown-up): voice/SFX volume + mute, and the music bed volume + mute
+// (music defaults to a gentle low level, beneath Dada's voice).
+export const getSettings = () => read('settings', { volume: 1, muted: false, music: 0.5, musicMuted: false });
 export const setSettings = (s) => write('settings', s);
 
 // Grown-up reset — wipes all of this app's saved progress.

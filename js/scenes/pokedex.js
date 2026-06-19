@@ -14,9 +14,11 @@ import { ZONES, zoneById, zonePool, pokemonById } from '../data.js';
 import { isCaught, isFoil, caughtCount } from '../game.js';
 import { cardEl } from '../cards.js';
 import { sparkleBurst, centerOf } from '../fx.js';
+import * as music from '../music.js';
 
 export function renderPokedex(_params, ctx) {
   const root = el('div', { class: 'scene binder' });
+  music.play('home');
 
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': 'Back home',
     onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, icon('back'));

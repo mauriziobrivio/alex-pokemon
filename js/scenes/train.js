@@ -17,6 +17,7 @@ import { tenFrame } from '../tenframe.js';
 import { getPokedex, getBond, addBond, bondCost } from '../game.js';
 import { canEvolve, triggerEvolution } from '../evolve.js';
 import { sparkleBurst, centerOf } from '../fx.js';
+import * as music from '../music.js';
 
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
@@ -26,6 +27,7 @@ export function renderTrain(_params, ctx) {
     onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, icon('back'));
   const panel = el('div', { class: 'train__panel' });
   root.append(back, panel);
+  music.play('home');
 
   let buddyId = null;
   let token = 0;          // any in-scene navigation bumps this
@@ -175,37 +177,61 @@ export function renderTrain(_params, ctx) {
     ctx.after(2600, () => { if (ctx.alive() && myToken === token) afterTrainSuccess(); });
   }
 
-  // ---------- Count-&-feed ----------
+  // ---------- Count-&-feed (true counting: count the target out yourself) ----------
+  // A scattered pile of MORE berries than needed appears; Alex counts them out one
+  // at a time (each tap counted aloud), and must STOP at the target. Reaching it
+  // auto-celebrates; tapping past is gently prevented — never "wrong". (One-to-one
+  // correspondence + cardinality: knowing the last count means "how many" and when
+  // to stop — the real, harder numeracy skill beyond bare recognition.)
   function startFeed() {
     const myToken = bump();
     clear(panel);
     const target = pickCountTarget();
+    const pile = target + 3 + Math.floor(Math.random() * 3); // always MORE than needed (target+3..+5)
     let count = 0;
     let locked = false;
+    let enoughSaid = false;
 
-    panel.append(el('h2', { class: 'train__title' }, 'Feed the berries!'));
+    panel.append(el('h2', { class: 'train__title' }, 'Count the berries!'));
     panel.append(el('div', { class: 'feed-target' }, String(target)));
     if (isTeen(target)) panel.append(tenFrame(target));
     panel.append(el('div', { class: 'train__buddy train__buddy--small' }, spriteImg(pokemonById(buddyId))));
 
     const counter = el('div', { class: 'feed-counter' }, '0');
     const field = el('div', { class: 'berry-field' });
-    for (let i = 0; i < target; i++) field.append(el('button', { class: 'berry', type: 'button', 'aria-label': 'berry', onClick: () => onBerry(field.children[i]) }));
+    for (let i = 0; i < pile; i++) {
+      const b = el('button', { class: 'berry', type: 'button', 'aria-label': 'berry' });
+      b.style.setProperty('--tilt', `${Math.floor(Math.random() * 31) - 15}deg`); // a pile, not a grid
+      b.addEventListener('click', () => onBerry(b));
+      field.append(b);
+    }
 
     function scheduleIdle() {
       clearTimeout(idleTimer);
       idleTimer = ctx.after(7000, () => { if (myToken === token && !locked) { audio.playSequence([clip.feedBerries(), clip.number(target)]); scheduleIdle(); } });
     }
     function onBerry(b) {
-      if (locked || b.classList.contains('is-fed')) return;
+      if (b.classList.contains('is-fed')) return; // already fed — ignore
       clearTimeout(idleTimer);
-      b.classList.add('is-fed');
+
+      // At/over the target — gently STOP. A tap past the target is kind, never a
+      // scold: the warm line (once) + the spoken number ("That's enough — you
+      // counted to sixteen!"), a tiny wobble, and NO berry consumed.
+      if (locked || count >= target) {
+        if (!enoughSaid) { enoughSaid = true; audio.play(sfx.soft()); audio.playSequence([clip.thatsEnough(), clip.number(target)]); }
+        b.classList.add('berry--wobble');
+        b.addEventListener('animationend', () => b.classList.remove('berry--wobble'), { once: true });
+        return;
+      }
+
+      b.classList.add('is-fed'); // flies to the buddy (CSS)
       count += 1;
       audio.play(sfx.pop());
-      audio.playExclusive(clip.number(count)); // count aloud, one at a time (no overlap)
+      audio.playExclusive(clip.number(count)); // count aloud, one at a time (no overlap on fast taps)
       counter.textContent = String(count);
+
       if (count === target) {
-        locked = true;
+        locked = true; // freeze the field the moment we reach the target — the extra berries go inert
         const c = centerOf(field, root);
         sparkleBurst(root, c.x, c.y, 16);
         ctx.after(700, () => { if (myToken === token) audio.play(clip.praise(rnd(PRAISE_COUNT))); });

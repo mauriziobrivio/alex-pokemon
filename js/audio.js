@@ -11,6 +11,7 @@ let unlocked = false;
 let useWebAudio = true;
 let volume = 1;
 let muted = false;
+let duckHook = null;         // { start, end } registered by music.js — engine stays music-agnostic
 const buffers = new Map();   // url -> AudioBuffer
 const pending = new Map();   // url -> Promise<AudioBuffer|null>
 const elements = new Map();  // url -> HTMLAudioElement (fallback)
@@ -94,6 +95,17 @@ function startBuffer(c, buf) {
   return src;
 }
 
+// Music routing (music.js) shares this one iOS-unlocked AudioContext, and registers
+// a duck hook so the bed dips under Dada's voice. SFX never duck (too brief).
+export function getContext() { return getCtx(); }
+export function setDuckHook(h) { duckHook = h; }
+const isVoiceUrl = (url) => typeof url === 'string' && !url.includes('/sfx/');
+function duckFor(url, durationSec) {
+  if (!duckHook || !isVoiceUrl(url)) return;
+  duckHook.start();
+  setTimeout(() => duckHook && duckHook.end(), (Math.max(0, durationSec) + 0.15) * 1000);
+}
+
 // Play one clip by URL. Returns a promise that resolves when it (roughly) ends,
 // so callers can chain. Resolves immediately-ish for missing clips.
 export function play(url) {
@@ -105,6 +117,7 @@ export function play(url) {
         if (buf === undefined) buf = await preload(url);
         if (!buf) { playFallback(url); return 0; }
         startBuffer(c, buf);
+        duckFor(url, buf.duration);
         return buf.duration;
       };
       if (c.state !== 'running') {
@@ -136,6 +149,7 @@ export function playExclusive(url) {
         src.onended = () => { if (exclusiveSrc === src) exclusiveSrc = null; };
         src.start(0);
         exclusiveSrc = src;
+        duckFor(url, buf.duration);
         return buf.duration;
       };
       if (c.state !== 'running') return c.resume().then(go, () => { playFallback(url); return 0; });
@@ -163,6 +177,14 @@ function playFallback(url) {
     el.currentTime = 0;
     const p = el.play();
     if (p && p.catch) p.catch(() => {});
+    if (duckHook && isVoiceUrl(url)) {
+      let ended = false;
+      const done = () => { if (ended) return; ended = true; if (duckHook) duckHook.end(); };
+      duckHook.start();
+      el.addEventListener('ended', done, { once: true });
+      el.addEventListener('pause', done, { once: true });
+      setTimeout(done, 4000); // safety — never leave the bed ducked
+    }
   } catch (_) {}
 }
 

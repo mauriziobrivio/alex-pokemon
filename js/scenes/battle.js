@@ -15,6 +15,7 @@ import { canEvolve, triggerEvolution } from '../evolve.js';
 import { sparkleBurst, confetti, centerOf } from '../fx.js';
 import * as mastery from '../mastery.js';
 import * as battle from '../battle.js';
+import * as music from '../music.js';
 
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
@@ -25,6 +26,7 @@ export function renderBattle(_params, ctx) {
   const stage = el('div', { class: 'battle__stage' });
   const tray = el('div', { class: 'battle__tray' });
   root.append(back, stage, tray);
+  music.play('battle'); // upbeat-but-calm battle bed (ducks under Dada)
 
   let buddyId = null;
   let wild = null;
@@ -88,13 +90,14 @@ export function renderBattle(_params, ctx) {
 
   function renderStage() {
     clear(stage);
+    stage.append(el('div', { class: 'battle__field', 'aria-hidden': 'true' })); // the CSS arena mat, behind the fighters
     const wildWrap = el('div', { class: 'combatant combatant--wild' });
     const hp = el('div', { class: 'hpbar' }, (hpFill = el('div', { class: 'hpbar__fill' })));
     wildEl = spriteImg(wild); wildEl.classList.add('combatant__sprite');
-    wildWrap.append(hp, el('div', { class: 'combatant__name' }, wild.name), wildEl);
+    wildWrap.append(hp, el('div', { class: 'combatant__name' }, wild.name), wildEl, el('div', { class: 'combatant__platform', 'aria-hidden': 'true' }));
     const buddyWrap = el('div', { class: 'combatant combatant--buddy' });
     buddyEl = spriteImg(pokemonById(buddyId)); buddyEl.classList.add('combatant__sprite');
-    buddyWrap.append(buddyEl);
+    buddyWrap.append(buddyEl, el('div', { class: 'combatant__platform', 'aria-hidden': 'true' }));
     stage.append(wildWrap, buddyWrap);
     updateHp();
   }

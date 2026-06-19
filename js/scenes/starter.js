@@ -9,9 +9,11 @@ import { sfx } from '../sfx.js';
 import { STARTER_IDS, pokemonById } from '../data.js';
 import { setStarterId, recordCatch } from '../game.js';
 import { confetti, sparkleBurst, centerOf } from '../fx.js';
+import * as music from '../music.js';
 
 export function renderStarter(_params, ctx) {
   const root = el('div', { class: 'scene starter', style: { backgroundImage: "url('assets/screens/scene-starter-select.png')" } });
+  music.play('home');
   const stage = el('div', { class: 'starter__stage' });
 
   const title = el('div', { class: 'starter__title' }, 'Choose your first Pokémon!');

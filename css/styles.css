@@ -41,6 +41,7 @@ html, body {
 /* Scene transition */
 .scene-enter { opacity: 0; transform: scale(0.98); }
 .scene-enter-active { opacity: 1; transform: none; transition: opacity 0.3s ease, transform 0.3s ease; }
+.scene-leave { opacity: 0; transform: scale(1.01); transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; } /* cross-fade out */
 
 /* ---------- Splash (Phase 0) ---------- */
 .splash {
@@ -203,7 +204,7 @@ html, body {
   background: radial-gradient(ellipse at center, var(--meadow) 60%, transparent 70%);
   box-shadow: 0 -6px 0 rgba(0,0,0,0.06) inset; transition: transform 0.4s ease, opacity 0.4s; }
 .catch__grass.is-parted { transform: translateX(-50%) scaleX(1.25); opacity: 0.6; }
-.catch__alex { position: absolute; left: 4%; bottom: 4%; height: clamp(120px, 28vh, 240px); filter: drop-shadow(0 8px 8px rgba(0,0,0,0.2)); }
+.catch__alex { position: absolute; left: 4%; bottom: 4%; height: clamp(120px, 28vh, 240px); filter: drop-shadow(0 8px 8px rgba(0,0,0,0.2)); animation: idle-bob 3.6s ease-in-out infinite; }
 .catch__ball { position: absolute; left: 16%; top: 74%; width: 46px; height: 46px; border-radius: 50%; opacity: 0;
   background: linear-gradient(#ff5a5f 0 49%, #fff 49% 51%, #f3f3f3 51% 100%); border: 4px solid var(--ink); box-shadow: var(--shadow); }
 .catch__ball.is-thrown { animation: throwBall 0.5s ease-out forwards; }
@@ -418,13 +419,15 @@ html, body {
 /* Count-&-feed */
 .feed-target { font-size: clamp(40px, 10vw, 72px); font-weight: 900; color: var(--coral); line-height: 1; }
 .feed-counter { font-size: clamp(28px, 6vw, 44px); font-weight: 900; color: var(--meadow); }
-.berry-field { display: flex; flex-wrap: wrap; gap: 13px; justify-content: center; max-width: 100%; }
-.berry { width: clamp(56px, 12vw, 72px); height: clamp(56px, 12vw, 72px); border: none; background: none; padding: 0; cursor: pointer; position: relative; }
+.berry-field { display: flex; flex-wrap: wrap; gap: clamp(7px, 2vw, 12px); justify-content: center; max-width: min(620px, 98%); }
+.berry { width: clamp(54px, 11vw, 70px); height: clamp(54px, 11vw, 70px); border: none; background: none; padding: 0; cursor: pointer; position: relative; transform: rotate(var(--tilt, 0deg)); }
 .berry::before { content: ""; position: absolute; inset: 12% 0 0 0; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; background: radial-gradient(circle at 35% 30%, #ff8fa3, #e23b5a); box-shadow: var(--shadow); }
 .berry::after { content: ""; position: absolute; top: 0; left: 50%; width: 30%; height: 22%; background: var(--meadow); border-radius: 0 60% 0 60%; transform: translateX(-50%) rotate(8deg); }
-.berry:active { transform: scale(0.9); }
-.berry.is-fed { animation: berry-eat 0.4s ease forwards; pointer-events: none; }
-@keyframes berry-eat { to { transform: scale(0); opacity: 0; } }
+.berry:active { transform: rotate(var(--tilt, 0deg)) scale(0.9); }
+.berry.is-fed { animation: berry-fly 0.45s ease forwards; pointer-events: none; } /* flies up toward the buddy */
+.berry--wobble { animation: berry-wobble 0.36s ease; } /* gentle "leave that one" — overshoot */
+@keyframes berry-fly { to { transform: rotate(var(--tilt,0deg)) translateY(-130px) scale(0.2); opacity: 0; } }
+@keyframes berry-wobble { 0%,100% { transform: rotate(var(--tilt,0deg)); } 25% { transform: rotate(calc(var(--tilt,0deg) - 9deg)); } 75% { transform: rotate(calc(var(--tilt,0deg) + 9deg)); } }
 
 /* ---------- Evolution morph (the showpiece) ---------- */
 .evolve { position: absolute; inset: 0; z-index: 30; display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -439,7 +442,7 @@ html, body {
 .evolve.is-evolved .evolve__before { opacity: 0; }
 .evolve.is-evolved .evolve__after { opacity: 1; transform: scale(1); transition: opacity 0.3s ease, transform 0.5s cubic-bezier(0.2,1.5,0.4,1); }
 .evolve.is-flash::after { content: ""; position: absolute; inset: 0; background: #fff; animation: evo-flash 0.7s ease forwards; pointer-events: none; }
-.evolve__dada { position: absolute; bottom: 6%; right: 4%; height: clamp(120px, 30vh, 240px); filter: drop-shadow(0 8px 8px rgba(0,0,0,0.25)); }
+.evolve__dada { position: absolute; bottom: 6%; right: 4%; height: clamp(120px, 30vh, 240px); filter: drop-shadow(0 8px 8px rgba(0,0,0,0.25)); animation: idle-bob 2.4s ease-in-out infinite; }
 .evolve__done { margin-top: 22px; display: flex; flex-direction: column; align-items: center; gap: 12px; z-index: 2; }
 .evolve__name { font-size: clamp(28px, 6vw, 44px); font-weight: 900; color: #fff; text-shadow: 0 2px 0 var(--ink), 0 6px 14px rgba(0,0,0,0.3); }
 @keyframes evo-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
@@ -450,16 +453,24 @@ html, body {
 .btn--battle { background: #ff9f43; color: #fff; }
 .battle { justify-content: flex-end; }
 .battle__stage { position: relative; width: 100%; flex: 1; min-height: 0; }
+/* The arena mat — a warm grounded field + gentle top-down light. Never dark/scary. */
+.battle__field { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.battle__field::before { content: ''; position: absolute; left: 50%; bottom: 4%; width: min(118%, 880px); height: 56%; transform: translateX(-50%);
+  background: radial-gradient(ellipse at 50% 60%, rgba(255,248,231,0.42) 0%, rgba(255,248,231,0.20) 42%, rgba(255,248,231,0) 70%); border-radius: 50%; }
+.battle__field::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 32%, rgba(255,255,255,0.10), rgba(43,36,64,0.12) 90%); }
 .combatant { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.combatant--wild { top: 6%; right: 7%; }
-.combatant--buddy { bottom: 2%; left: 5%; }
-.combatant__sprite { width: clamp(120px, 28vw, 200px); height: clamp(120px, 28vw, 200px); }
-.combatant--buddy .combatant__sprite { width: clamp(150px, 34vw, 250px); height: clamp(150px, 34vw, 250px); transform: scaleX(-1); }
+.combatant--wild { top: 8%; right: 9%; z-index: 1; }
+.combatant--buddy { bottom: 3%; left: 8%; z-index: 2; } /* the nearer fighter, in front */
+.combatant__sprite { width: clamp(150px, 34vw, 240px); height: clamp(150px, 34vw, 240px); filter: drop-shadow(0 10px 10px rgba(0,0,0,0.22)); }
+.combatant--buddy .combatant__sprite { width: clamp(210px, 46vw, 340px); height: clamp(210px, 46vw, 340px); transform: scaleX(-1); } /* foreground-large */
+.combatant__platform { position: absolute; bottom: -6%; left: 50%; transform: translateX(-50%); width: 86%; height: 26px; border-radius: 50%; z-index: -1;
+  background: radial-gradient(ellipse at 50% 50%, rgba(43,36,64,0.28), rgba(43,36,64,0) 72%); }
+.combatant--buddy .combatant__platform { width: 96%; height: 34px; bottom: 2%; }
 .combatant__name { font-size: clamp(15px, 3vw, 20px); font-weight: 800; color: #fff; text-shadow: 0 2px 0 var(--ink); }
 .hpbar { width: clamp(110px, 26vw, 190px); height: 16px; border: 3px solid #fff; border-radius: 999px; background: rgba(43,36,64,0.25); overflow: hidden; box-shadow: var(--shadow); }
 .hpbar__fill { height: 100%; width: 100%; border-radius: 999px; background: linear-gradient(90deg, #8fcf5a, #ffd54a); transition: width 0.5s ease; }
 .combatant--buddy .combatant__sprite.is-attacking { animation: attack 0.4s ease; }
-@keyframes attack { 0% { transform: scaleX(-1) translate(0,0); } 45% { transform: scaleX(-1) translate(40px, -34px) scale(1.06); } 100% { transform: scaleX(-1) translate(0,0); } }
+@keyframes attack { 0% { transform: scaleX(-1) translate(0,0); } 45% { transform: scaleX(-1) translate(54px, -44px) scale(1.05); } 100% { transform: scaleX(-1) translate(0,0); } }
 .combatant--wild .combatant__sprite.is-hit { animation: hit-flinch 0.38s ease; }
 @keyframes hit-flinch { 0%,100% { transform: translate(0,0); filter: none; } 25% { transform: translate(-8px,2px); filter: brightness(1.8); } 75% { transform: translate(8px,-2px); } }
 .combatant--wild .combatant__sprite.is-wiggle { animation: wiggle 0.4s ease; }
@@ -543,6 +554,9 @@ html, body {
   .home__menu .btn__icon { width: 1.2em; height: 1.2em; margin: 0; }
   .home .char { height: clamp(100px, 26vh, 180px); bottom: 2vh; }
   .quest-banner { margin-bottom: 8px; }
+  .battle .combatant__sprite { width: clamp(120px, 22vh, 190px); height: clamp(120px, 22vh, 190px); }
+  .battle .combatant--buddy .combatant__sprite { width: clamp(150px, 30vh, 240px); height: clamp(150px, 30vh, 240px); }
+  .battle__field::before { height: 64%; }
 }
 
 /* ---------- Reduced motion ---------- */
@@ -551,7 +565,50 @@ html, body {
   .catch__ball.is-thrown, .catch__ball.is-wobbling, .catch__wild.is-escaping, .pokeball-btn.is-selected .pokeball {
     animation: none !important;
   }
-  .scene-enter, .scene-enter-active { transition: none; opacity: 1; transform: none; }
+  .scene-enter, .scene-enter-active, .scene-leave { transition: none; opacity: 1; transform: none; }
   /* the faint's meaning lives in its end-state — keep a static sleepy pose */
   .combatant--wild .combatant__sprite.is-fainted { transform: translateY(18px) rotate(18deg) scale(0.8); opacity: 0.35; }
 }
+
+/* ====================================================================
+   Phase 8 — Play & Learn corner + mini-games ======================== */
+.home__playlearn { display: flex; justify-content: center; width: min(760px, 94%); margin-top: 2px; }
+.btn--games { background: linear-gradient(135deg, #ff8fa3, #c79bff); color: #fff; width: min(420px, 92%); }
+.scene.games { justify-content: flex-start; background: linear-gradient(160deg, var(--sky-soft), var(--cream)); padding-top: calc(env(safe-area-inset-top) + 10px); overflow-y: auto; }
+.games__title { color: var(--ink); font-size: clamp(24px, 5.4vw, 38px); font-weight: 900; margin: 6px 0 14px; }
+.games__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; width: min(680px, 92%); padding-bottom: 3vh; }
+.game-card { display: flex; flex-direction: column; align-items: center; gap: 8px; min-height: 132px; padding: 16px; border: none; border-radius: 24px; cursor: pointer; background: #fff; box-shadow: var(--shadow); }
+.game-card:active { transform: scale(0.97); }
+.game-card__icon { width: 56px; height: 56px; }
+.game-card__name { font-size: clamp(16px, 3.4vw, 20px); font-weight: 800; color: var(--ink); text-align: center; line-height: 1.1; }
+
+.scene.game { justify-content: center; background: linear-gradient(160deg, var(--sky-soft), var(--cream)); }
+.game__panel { display: flex; flex-direction: column; align-items: center; gap: clamp(14px, 3vh, 28px); width: min(680px, 94%); }
+.game__title { font-size: clamp(22px, 5vw, 34px); font-weight: 900; color: var(--ink); margin: 0; }
+.game__choices { display: flex; gap: clamp(12px, 3.5vw, 28px); flex-wrap: wrap; justify-content: center; }
+
+.subitize__flash { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; align-items: center; min-height: clamp(110px, 22vh, 200px); width: min(420px, 86%);
+  padding: 18px; border-radius: 28px; background: rgba(255,255,255,0.7); box-shadow: inset 0 0 0 3px rgba(255,255,255,0.9); transition: opacity 0.25s ease; }
+.subitize__flash.is-hidden { opacity: 0; }
+.subitize__dot { width: clamp(34px, 8vw, 52px); height: clamp(34px, 8vw, 52px); border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffd98a, #ff8fa3); box-shadow: var(--shadow); }
+
+.whatnext__anchor { font-size: clamp(64px, 18vw, 140px); font-weight: 900; color: var(--grape); line-height: 1;
+  width: clamp(120px, 30vw, 200px); height: clamp(120px, 30vw, 200px); display: grid; place-items: center; border-radius: 32px; background: #fff; box-shadow: var(--shadow); }
+
+.soundmatch__cards { display: flex; gap: clamp(10px, 3vw, 22px); flex-wrap: wrap; justify-content: center; }
+.soundmatch__card { display: flex; flex-direction: column; align-items: center; gap: 4px; width: clamp(96px, 26vw, 150px); padding: 10px; border: 4px solid #fff; border-radius: 22px; cursor: pointer;
+  background: radial-gradient(circle at 50% 35%, #ffffff, #eaf4ff 80%); box-shadow: var(--shadow); }
+.soundmatch__card .sprite { width: 100%; aspect-ratio: 1; }
+.soundmatch__card:active { transform: scale(0.96); }
+.soundmatch__card.is-locked { border-color: var(--meadow); box-shadow: 0 0 0 3px var(--meadow), var(--shadow); }
+.soundmatch__card.is-dimmed { opacity: 0.3; pointer-events: none; }
+.soundmatch__card.is-wrong { animation: wiggle 0.4s ease; }
+.soundmatch__name { font-size: clamp(13px, 3vw, 16px); font-weight: 800; color: var(--ink); }
+
+/* ---------- Phase 9 — sparkle primitives (calm bloom + drifting twinkles) ---------- */
+.fx-halo { position: absolute; transform: translate(-50%, -50%) scale(0.2); width: var(--halo-size, 120px); aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle, var(--halo-color, rgba(255,243,176,0.9)) 0%, transparent 62%); animation: halo var(--halo-dur, 900ms) ease-out forwards; }
+@keyframes halo { 0% { transform: translate(-50%,-50%) scale(0.2); opacity: 0; } 30% { opacity: 0.85; } 100% { transform: translate(-50%,-50%) scale(1); opacity: 0; } }
+.fx-twinkle { position: absolute; width: 9px; height: 9px; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 6px rgba(255,255,255,0.7);
+  animation: twinkle var(--dur, 1400ms) ease-out forwards; }
+@keyframes twinkle { 0% { transform: translate(-50%,-50%) translateY(0) scale(0.4); opacity: 0; } 25% { opacity: 1; } 100% { transform: translate(-50%,-50%) translateY(var(--rise, -90px)) scale(0.9); opacity: 0; } }

@@ -17,7 +17,8 @@ import { tenFrame } from '../tenframe.js';
 import { isCaught, recordCatch, markFoil } from '../game.js';
 import { openPack } from '../cards.js';
 import * as quests from '../quests.js';
-import { confetti, sparkleBurst, centerOf } from '../fx.js';
+import * as music from '../music.js';
+import { confetti, sparkleBurst, centerOf, haloRing } from '../fx.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
@@ -25,6 +26,7 @@ const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math
 export function renderCatch({ zoneId }, ctx) {
   const zone = zoneById(zoneId);
   const pool = zonePool(zone.id);
+  music.playForZone(zone.id); // the zone's gentle bed (ducks under Dada)
 
   const root = el('div', { class: 'scene catch', style: { backgroundImage: `url('${zone.background}')` } });
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': 'Back to the map',
@@ -231,7 +233,8 @@ export function renderCatch({ zoneId }, ctx) {
     ball.classList.add('is-gone');
     wildSlot.classList.add('is-revealed');
     const c = centerOf(wildSlot, root);
-    sparkleBurst(root, c.x, c.y, 22);
+    haloRing(root, c.x, c.y, { size: 220, dur: 850 }); // soft bloom behind the reveal
+    sparkleBurst(root, c.x, c.y, 18);
     confetti(root);
     recordCatch(pokemon.id);
     if (firstTry) markFoil(pokemon.id); // earn the card's foil by a first-try catch — skill, never luck

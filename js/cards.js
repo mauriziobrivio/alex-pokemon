@@ -10,7 +10,7 @@ import { clip, PRAISE_COUNT, rnd } from './voices.js';
 import { sfx } from './sfx.js';
 import { pokemonById } from './data.js';
 import { isCaught, isFoil, takeMilestone } from './game.js';
-import { sparkleBurst, centerOf } from './fx.js';
+import { sparkleBurst, centerOf, driftSparkles, haloRing } from './fx.js';
 
 // A single collectible card. opts: { caught, foil, onTap }.
 // With onTap it's a focusable button; without, an inert div (pack reveal).
@@ -77,7 +77,13 @@ export function openPack(root, ctx, ids, { onGoAgain } = {}) {
     // Chain the spoken lines so they never overlap (audio-first): foil cue, then name.
     if (foil) audio.playSequence([clip.revealFoil(), clip.name(mon.id)]);
     else audio.play(clip.name(mon.id));
-    ctx.after(80, () => { if (!ctx.alive()) return; const c = centerOf(card, root); sparkleBurst(root, c.x, c.y, foil ? 22 : 10); });
+    ctx.after(80, () => {
+      if (!ctx.alive()) return;
+      const c = centerOf(card, root);
+      sparkleBurst(root, c.x, c.y, foil ? 20 : 10);
+      driftSparkles(root, c.x, c.y, foil ? 8 : 5);           // calm rising twinkles
+      if (foil) haloRing(root, c.x, c.y, { size: 150, color: 'rgba(255,205,90,0.85)', dur: 950 }); // earned-foil bloom
+    });
     ctx.after(gap, () => revealOne(i + 1));
   }
 

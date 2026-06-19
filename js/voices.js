@@ -59,6 +59,18 @@ export const clip = {
   revealFoil: () => url('reveal-foil.mp3'),            // "Ooh, a sparkly one!" (earned foil)
   peek: () => url('peek.mp3'),                         // "Who could this be? Keep exploring!"
   milestone: (m) => url(`milestone-${m === 251 ? 'all' : m}.mp3`), // "Fifty Pokémon! Amazing, Alex!"
+
+  // --- Phase 8: Train counting + the Play & Learn mini-games ---
+  thatsEnough: () => url('thats-enough.mp3'),          // count-the-berries gentle stop (number plays after)
+  playLearnIntro: () => url('playlearn-intro.mp3'),    // "Pick a game to play!"
+  gQuickCount: () => url('game-quick-count.mp3'),      // "Quick Count!"
+  gWhatNext: () => url('game-what-next.mp3'),          // "What Comes Next!"
+  gSoundMatch: () => url('game-sound-match.mp3'),      // "Sound Match!"
+  howMany: () => url('how-many.mp3'),                  // subitize "How many?"
+  whatComesAfter: () => url('what-comes-after.mp3'),   // "What comes after" (the number plays after)
+  putInOrder: () => url('put-in-order.mp3'),           // "Put them in order!"
+  whichStartSame: () => url('which-start-same.mp3'),   // "Which two start the same?" (the phoneme plays after)
+  whichRhyme: () => url('which-rhyme.mp3'),            // "Which ones rhyme?" (rhyme variant — backlog)
 };
 
 export const PRAISE_COUNT = 4;

@@ -5,8 +5,8 @@
 // ctx.after(ms, fn) (a setTimeout that no-ops if the scene is no longer current)
 // and ctx.alive() — so deferred audio/timers never bleed into the next scene.
 
-import { clear } from './ui.js';
 import * as audio from './audio.js';
+import * as music from './music.js';
 import { clip } from './voices.js';
 import { SFX_URLS } from './sfx.js';
 import { ROSTER, CVC_WORDS } from './data.js';
@@ -18,9 +18,17 @@ import { renderCatch } from './scenes/catch.js';
 import { renderPokedex } from './scenes/pokedex.js';
 import { renderTrain } from './scenes/train.js';
 import { renderBattle } from './scenes/battle.js';
+import { renderGames } from './scenes/games/index.js';
+import { renderSubitize } from './scenes/games/subitize.js';
+import { renderWhatNext } from './scenes/games/whatnext.js';
+import { renderSoundMatch } from './scenes/games/soundmatch.js';
 
 const app = document.getElementById('app');
-const scenes = { starter: renderStarter, home: renderHome, worldmap: renderWorldmap, catch: renderCatch, pokedex: renderPokedex, train: renderTrain, battle: renderBattle };
+const scenes = {
+  starter: renderStarter, home: renderHome, worldmap: renderWorldmap, catch: renderCatch,
+  pokedex: renderPokedex, train: renderTrain, battle: renderBattle,
+  games: renderGames, 'game-subitize': renderSubitize, 'game-whatnext': renderWhatNext, 'game-soundmatch': renderSoundMatch,
+};
 
 let epoch = 0;
 
@@ -35,7 +43,12 @@ function go(name, params = {}) {
   };
   const node = render(params, ctx);
   node.classList.add('scene');
-  clear(app);
+  // Cross-fade out the current scene; drop any already-leaving scene from a
+  // faster-than-fade navigation immediately, so scenes never stack or leak.
+  [...app.children].forEach((child) => {
+    if (child.classList.contains('scene-leave')) child.remove();
+    else { child.classList.add('scene-leave'); setTimeout(() => child.remove(), 320); }
+  });
   app.append(node);
   node.classList.add('scene-enter');
   requestAnimationFrame(() => node.classList.add('scene-enter-active'));
@@ -45,6 +58,8 @@ function boot() {
   const s = getSettings();
   audio.setVolume(typeof s.volume === 'number' ? s.volume : 1);
   audio.setMuted(!!s.muted);
+  music.setVolume(typeof s.music === 'number' ? s.music : 0.5);
+  music.setMuted(!!s.musicMuted);
 
   audio.preloadAll([clip.greeting(), ...SFX_URLS]).catch(() => {});
 
@@ -54,6 +69,7 @@ function boot() {
     if (entered) return;
     entered = true;
     audio.unlock();
+    music.unlock(); // in-gesture: build the music graph + register the duck hook (iOS unlock)
     audio.play(clip.greeting());
     go(getStarterId() ? 'home' : 'starter');
     warmCache(); // populate the SW cache so names/words/sprites work offline later

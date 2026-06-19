@@ -9,10 +9,12 @@ import { sfx } from '../sfx.js';
 import { PLAYER_NAME, pokemonById, ZONES } from '../data.js';
 import { getStarterId, getSettings, setSettings, resetAll, caughtCount } from '../game.js';
 import * as quests from '../quests.js';
-import { confetti, sparkleBurst } from '../fx.js';
+import * as music from '../music.js';
+import { confetti, sparkleBurst, centerOf, haloRing, driftSparkles } from '../fx.js';
 
 export function renderHome(_params, ctx) {
   const root = el('div', { class: 'scene home', style: { backgroundImage: "url('assets/screens/bg-lab.png')" } });
+  music.play('home');
 
   // Cast: Dada (guide) + Mama (visual companion) + Alex's starter companion.
   const cast = el('div', { class: 'home__cast' },
@@ -39,6 +41,11 @@ export function renderHome(_params, ctx) {
       icon('pokedex', 'btn__icon'), 'Pokédex'),
   );
 
+  // Play & Learn corner — the standalone mini-games destination (grows over time).
+  const playLearn = el('div', { class: 'home__playlearn' },
+    el('button', { class: 'btn btn--big btn--games', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('games'); } },
+      icon('games', 'btn__icon'), 'Play & Learn'));
+
   // If a quest finished during play, take it now (rolls a fresh one) so the
   // banner below advertises the NEW invitation, not the just-completed one.
   const completed = quests.takeCompleted();
@@ -57,7 +64,7 @@ export function renderHome(_params, ctx) {
   const stickerStrip = buildStickerStrip(root);
   const gear = buildGearAndPanel(root);
 
-  root.append(cast, hello, questBanner, menu, stickerStrip, gear);
+  root.append(cast, hello, questBanner, menu, playLearn, stickerStrip, gear);
 
   // Celebrate a completed quest (taken above) gently, on return.
   ctx.after(500, () => audio.play(clip.homeWelcome()));
@@ -83,6 +90,14 @@ function celebrateQuest(root, reward) {
     ));
   overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
   root.append(overlay);
+  // a soft bloom + drift behind the sticker as it arrives (calm, reduced-motion-safe)
+  requestAnimationFrame(() => {
+    const card = overlay.querySelector('.sticker-pop__sticker');
+    if (!card) return;
+    const c = centerOf(card, root);
+    haloRing(root, c.x, c.y, { size: 200, dur: 950 });
+    driftSparkles(root, c.x, c.y, 7);
+  });
 }
 
 function buildStickerStrip(root) {
@@ -127,6 +142,12 @@ function buildGearAndPanel(root) {
     const setVol = (v) => { const n = Math.max(0, Math.min(1, +v.toFixed(2))); s.volume = n; setSettings(s); audio.setVolume(n); volLabel.textContent = `${Math.round(n * 100)}%`; };
     const volLabel = el('span', { class: 'panel__vol' }, `${Math.round((s.volume ?? 1) * 100)}%`);
 
+    // Music — its own gentle level + mute (independent of Dada's voice, which it ducks under).
+    const musicText = () => (s.musicMuted ? 'off' : `${Math.round((s.music ?? 0.5) * 100)}%`);
+    const musicLabel = el('span', { class: 'panel__vol' }, musicText());
+    const setMusic = (v) => { const n = Math.max(0, Math.min(1, +v.toFixed(2))); s.music = n; s.musicMuted = false; setSettings(s); music.setMuted(false); music.setVolume(n); musicLabel.textContent = musicText(); };
+    const toggleMusicMute = () => { s.musicMuted = !s.musicMuted; setSettings(s); music.setMuted(s.musicMuted); musicLabel.textContent = musicText(); };
+
     let confirmReset = false;
     const resetBtn = el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => {
       if (!confirmReset) { confirmReset = true; resetBtn.textContent = 'Tap again to erase everything'; resetBtn.classList.add('is-danger'); return; }
@@ -140,6 +161,12 @@ function buildGearAndPanel(root) {
         el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => { setVol((s.volume ?? 1) - 0.2); } }, '–'),
         volLabel,
         el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => { setVol((s.volume ?? 1) + 0.2); } }, '+'),
+      ),
+      el('div', { class: 'panel__row' }, el('span', {}, 'Music'),
+        el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => setMusic((s.music ?? 0.5) - 0.2) }, '–'),
+        musicLabel,
+        el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => setMusic((s.music ?? 0.5) + 0.2) }, '+'),
+        el('button', { class: 'btn btn--ghost', type: 'button', onClick: toggleMusicMute }, 'Mute'),
       ),
       el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => audio.play(clip.homeWelcome()) }, icon('replay'), ' Replay voice'),
       el('div', { class: 'panel__row' }, el('span', {}, `Pokémon caught: ${caughtCount()}`)),

@@ -9,7 +9,8 @@ import { sfx } from './sfx.js';
 import { pokemonById, nextStageId } from './data.js';
 import { recordCatch, resetBond, getBond, bondCost, markAnyEvolved, getStarterId, setStarterId } from './game.js';
 import { onEvolve } from './quests.js';
-import { confetti, sparkleBurst, centerOf } from './fx.js';
+import * as music from './music.js';
+import { confetti, sparkleBurst, centerOf, haloRing } from './fx.js';
 
 export const canEvolve = (id) => nextStageId(id) != null && getBond(id) >= bondCost();
 
@@ -37,16 +38,19 @@ export function evolutionTargets(id) {
 // Vaporeon/Jolteon/Flareon) when there's more than one target, then the morph.
 // Errorless: every choice is wonderful; preview-then-confirm so no mis-tap locks in.
 export function triggerEvolution(root, ctx, id, onDone) {
+  const back = music.current();          // the bed to return to after the swell
+  music.play('evolve');                  // a short magical swell for the showpiece
+  const done = (newId) => { music.play(back || 'home'); onDone(newId); };
   const targets = evolutionTargets(id);
-  if (!targets.length) { onDone(id); return; }
+  if (!targets.length) { done(id); return; }
   if (targets.length === 1) {
     const newId = commitEvolution(id, targets[0]);
-    playEvolution(root, ctx, id, newId, onDone);
+    playEvolution(root, ctx, id, newId, done);
     return;
   }
   showEvolutionChoice(root, ctx, targets, (chosen) => {
     const newId = commitEvolution(id, chosen);
-    playEvolution(root, ctx, id, newId, onDone);
+    playEvolution(root, ctx, id, newId, done);
   });
 }
 
@@ -101,7 +105,8 @@ export function playEvolution(root, ctx, oldId, newId, onDone) {
   ctx.after(2300, () => {
     overlay.classList.add('is-evolved');                      // reveal the new stage
     const c = centerOf(stageWrap, root);
-    sparkleBurst(root, c.x, c.y, 28);
+    haloRing(root, c.x, c.y, { size: 320, dur: 1100 });       // a big gentle bloom of light on reveal
+    sparkleBurst(root, c.x, c.y, 24);
     confetti(root);
     audio.play(sfx.catch());
     audio.playSequence([clip.name(newId), clip.evolveCheer()]);

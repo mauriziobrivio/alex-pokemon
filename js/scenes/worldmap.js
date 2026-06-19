@@ -11,6 +11,7 @@ import { clip } from '../voices.js';
 import { sfx } from '../sfx.js';
 import { ZONES } from '../data.js';
 import { getActiveQuest, questZoneSuggest } from '../quests.js';
+import * as music from '../music.js';
 
 // Hotspot centres as % of the map art (screen-worldmap.png, 1536×1024).
 const SPOTS = {
@@ -23,6 +24,7 @@ const FX = { ocean: 'bubble', snowfield: 'snow', grove: 'firefly', cave: 'sparkl
 
 export function renderWorldmap(_params, ctx) {
   const root = el('div', { class: 'scene worldmap' });
+  music.play('home');
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': 'Back home',
     onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, icon('back'));
 
