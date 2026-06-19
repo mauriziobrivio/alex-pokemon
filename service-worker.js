@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v13';
+const CACHE = 'dada-academy-v14';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -23,6 +23,8 @@ const CORE = [
   './assets/backgrounds/bg-beach.png', './assets/backgrounds/bg-mountain.png',
   './assets/backgrounds/bg-desert.png', './assets/backgrounds/bg-volcano.png',
   './assets/backgrounds/bg-snowfield.png', './assets/backgrounds/bg-grove.png', './assets/backgrounds/bg-cave.png',
+  './assets/backgrounds/bg-ocean.png',
+  './assets/ui/card-frame.png', './assets/ui/card-back.png', './assets/ui/pack.png', './assets/ui/foil.png',
   './assets/characters/dada/dada-greeting.png', './assets/characters/dada/dada-cheering.png',
   './assets/characters/mama/mama-greeting.png', './assets/characters/mama/mama-cheering.png',
   './assets/characters/alex/alex-ready.png', './assets/characters/alex/alex-throwing.png',
@@ -35,7 +37,7 @@ const CORE = [
 for (let n = 1; n <= 20; n++) CORE.push(`./audio/dada/number-${n}.mp3`, `./audio/dada/prompt-${n}.mp3`, `./audio/dada/reprompt-${n}.mp3`);
 for (let i = 1; i <= 4; i++) CORE.push(`./audio/dada/praise-${i}.mp3`);
 for (let i = 1; i <= 3; i++) CORE.push(`./audio/dada/catch-cheer-${i}.mp3`);
-for (const z of ['meadow', 'forest', 'beach', 'mountain', 'desert', 'volcano', 'snowfield', 'grove', 'cave']) CORE.push(`./audio/dada/zone-${z}.mp3`, `./audio/dada/suggest-${z}.mp3`);
+for (const z of ['meadow', 'forest', 'beach', 'mountain', 'desert', 'volcano', 'snowfield', 'grove', 'cave', 'ocean']) CORE.push(`./audio/dada/zone-${z}.mp3`, `./audio/dada/suggest-${z}.mp3`);
 // Starter-trio names (Pikachu 25, Charmander 4, Bulbasaur 1) — heard first, so
 // precache them; the other 148 name clips warm into cache at runtime (SWR).
 for (const id of [25, 4, 1]) CORE.push(`./audio/dada/name-${id}.mp3`);

@@ -25,8 +25,19 @@ export const ZONES = [
   { id: 'snowfield', name: 'Snowfield', background: 'assets/backgrounds/bg-snowfield.png' },
   { id: 'grove', name: 'Mystic Grove', background: 'assets/backgrounds/bg-grove.png' },
   { id: 'cave', name: 'Cave', background: 'assets/backgrounds/bg-cave.png' },
+  { id: 'ocean', name: 'Ocean Depths', background: 'assets/backgrounds/bg-ocean.png' }, // Phase 7
 ];
 export const zoneById = (id) => ZONES.find((z) => z.id === id) || ZONES[0];
+
+// Ocean Depths (Phase 7) — the deep-water / fully-aquatic species live here; the
+// Beach stays shore/surface. An expert-curated, explicit list (not a pure type
+// rule, since "deep water" isn't a type) — extend it as later generations add
+// deep-water Pokémon. Re-homed OUT of the Beach below.
+export const OCEAN_IDS = new Set([
+  72, 73, 90, 91, 98, 99, 116, 117, 118, 119, 120, 121, 129, 130, 131,
+  138, 139, 140, 141, 230,            // Gen 1 deep-water + fossils (+ Kingdra)
+  170, 171, 211, 222, 223, 224, 226,  // Gen 2 deep-water
+]);
 
 // Alex's favourites — gifted in the starter moment (not caught).
 export const STARTER_IDS = [25, 4, 1]; // Pikachu, Charmander, Bulbasaur
@@ -34,8 +45,13 @@ export const STARTER_IDS = [25, 4, 1]; // Pikachu, Charmander, Bulbasaur
 const BY_ID = new Map(ROSTER.map((p) => [p.id, p]));
 export const pokemonById = (id) => BY_ID.get(id) || null;
 
-// Pokémon that live in a given zone (any type in that zone's pool).
+// Pokémon that live in a given zone. The Ocean Depths is the curated deep-water
+// set; the Beach is shore/surface (its deep-water residents re-homed to Ocean).
+// zonePool is the single source of truth for spawning + the binder, so every
+// Pokémon still has ≥1 home (the ocean residents gain Ocean as they leave Beach).
 export function zonePool(zoneId) {
+  if (zoneId === 'ocean') return ROSTER.filter((p) => OCEAN_IDS.has(p.id));
+  if (zoneId === 'beach') return ROSTER.filter((p) => p.zones.includes('beach') && !OCEAN_IDS.has(p.id));
   return ROSTER.filter((p) => p.zones.includes(zoneId));
 }
 

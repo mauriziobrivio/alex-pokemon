@@ -12,7 +12,7 @@ import { pokemonById } from './data.js';
 import { isCaught, isFoil, takeMilestone } from './game.js';
 import { sparkleBurst, centerOf } from './fx.js';
 
-// A single collectible card. opts: { caught, foil, silhouette, onTap, mini }.
+// A single collectible card. opts: { caught, foil, onTap }.
 // With onTap it's a focusable button; without, an inert div (pack reveal).
 export function cardEl(mon, opts = {}) {
   const caught = opts.caught != null ? opts.caught : isCaught(mon.id);
@@ -20,13 +20,13 @@ export function cardEl(mon, opts = {}) {
   const cls = ['card'];
   if (!caught) cls.push('card--back');
   if (foil) cls.push('card--foil');
-  if (opts.mini) cls.push('card--mini');
   const props = { class: cls.join(' '), 'aria-label': caught ? mon.name : 'A card to discover' };
   if (opts.onTap) { props.type = 'button'; props.onClick = opts.onTap; }
   const card = el(opts.onTap ? 'button' : 'div', props);
-  const frame = el('div', { class: 'card__frame' }, spriteImg(mon, { silhouette: !caught }));
-  if (foil) frame.append(el('div', { class: 'card__shine', 'aria-hidden': 'true' }));
-  card.append(frame, el('div', { class: 'card__name' }, caught ? mon.name : '???'));
+  if (!caught) return card; // the card-back art is the whole card — a mystery to discover
+  const frame = el('div', { class: 'card__frame' }, spriteImg(mon)); // sprite sits in the frame's window
+  if (foil) frame.append(el('div', { class: 'card__shine', 'aria-hidden': 'true' })); // holographic foil overlay
+  card.append(frame, el('div', { class: 'card__name' }, mon.name));
   return card;
 }
 

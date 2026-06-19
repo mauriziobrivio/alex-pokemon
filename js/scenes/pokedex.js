@@ -82,7 +82,7 @@ export function renderPokedex(_params, ctx) {
   // Living card — the Pokémon comes alive in its home habitat. Wonder, not stats.
   function openLivingCard(mon) {
     audio.play(clip.name(mon.id));
-    const zoneId = mon.zones.includes(activeZone) ? activeZone : (mon.zones[0] || 'meadow');
+    const zoneId = activeZone; // the habitat page you're viewing it in (always a valid backdrop)
     const foil = isFoil(mon.id);
 
     const overlay = el('div', { class: 'living-overlay' });
