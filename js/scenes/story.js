@@ -71,11 +71,25 @@ export function renderStory(params, ctx) {
   function tapZone(z) {
     audio.play(sfx.pop());
     audio.speak(clip.zone(z.id));
-    const questHere = story.isChapter(z.id) && !story.hasFeather(z.id);
-    // A quest zone starts its chapter (catch → feather); any other zone (earned
-    // or non-chapter) is free exploration — never a dead end. `from:'story'` only
-    // steers the Back button home to the journey; it never changes catch behavior.
-    ctx.after(380, () => { if (ctx.alive()) ctx.go('catch', questHere ? { zoneId: z.id, story: true } : { zoneId: z.id, from: 'story' }); });
+    const chap = story.chapterFor(z.id);
+    const questHere = chap && !story.hasFeather(z.id);
+    ctx.after(380, () => {
+      if (!ctx.alive()) return;
+      // A quest zone starts its chapter's activity (→ feather). An already-earned
+      // zone is free exploration — never a dead end. `from:'story'` only steers the
+      // Back button home to the journey; it never changes the activity's behavior.
+      if (questHere) startChapter(z.id, chap.kind);
+      else ctx.go('catch', { zoneId: z.id, from: 'story' });
+    });
+  }
+
+  // Each chapter routes to the activity Alex already knows, in Story mode (it
+  // earns this zone's feather on success and returns to the journey).
+  function startChapter(zone, kind) {
+    if (kind === 'build-word') ctx.go('train', { story: true, zone, kind: 'build-word' });
+    else if (kind === 'count') ctx.go('train', { story: true, zone, kind: 'count' });
+    else if (kind === 'battle') ctx.go('battle', { story: true, zone });
+    else ctx.go('catch', { zoneId: zone, story: true });
   }
 
   // Entry narration. Returning from a just-earned feather → celebrate + grow the

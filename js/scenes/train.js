@@ -14,17 +14,18 @@ import { sfx } from '../sfx.js';
 import { CVC_WORDS, wordBuildable, isTeen, pokemonById, nextStageId, sameSound } from '../data.js';
 import * as mastery from '../mastery.js';
 import { tenFrame } from '../tenframe.js';
-import { getPokedex, getBond, addBond, bondCost, recordWord } from '../game.js';
+import { getPokedex, getBond, addBond, bondCost, recordWord, getStarterId } from '../game.js';
+import { earnFeather } from '../story.js';
 import { canEvolve, triggerEvolution } from '../evolve.js';
 import { sparkleBurst, centerOf } from '../fx.js';
 import * as music from '../music.js';
 
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
-export function renderTrain(_params, ctx) {
+export function renderTrain({ story, zone, kind }, ctx) {
   const root = el('div', { class: 'scene train', style: { backgroundImage: "url('assets/backgrounds/bg-meadow.png')" } });
-  const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': 'Back home',
-    onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, icon('back'));
+  const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': story ? 'Back to the adventure' : 'Back home',
+    onClick: () => { audio.play(sfx.pop()); ctx.go(story ? 'story' : 'home'); } }, icon('back'));
   const panel = el('div', { class: 'train__panel' });
   root.append(back, panel);
   music.play('home');
@@ -82,6 +83,9 @@ export function renderTrain(_params, ctx) {
   }
 
   function afterTrainSuccess() {
+    // Story chapter: the activity IS the goal — earn this zone's feather and return
+    // to the journey (no bond/evolve detour mid-story).
+    if (story) { earnFeather(zone); ctx.go('story', { feathered: zone }); return; }
     if (nextStageId(buddyId)) {
       addBond(buddyId, 1);
       if (canEvolve(buddyId)) {
@@ -159,7 +163,7 @@ export function renderTrain(_params, ctx) {
     }
 
     renderTiles();
-    panel.append(slotRow, tileRow, el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => showActivityPicker() }, 'Done'));
+    panel.append(slotRow, tileRow, el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => (story ? ctx.go('story') : showActivityPicker()) }, 'Done'));
     ctx.after(400, () => { if (myToken === token) { audio.speak(clip.letsBuild()); ctx.after(900, activateSlot); } });
   }
 
@@ -242,7 +246,7 @@ export function renderTrain(_params, ctx) {
       }
     }
 
-    panel.append(counter, field, el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => showActivityPicker() }, 'Done'));
+    panel.append(counter, field, el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => (story ? ctx.go('story') : showActivityPicker()) }, 'Done'));
     ctx.after(400, () => { if (myToken === token) audio.playSequence([clip.feedBerries(), clip.number(target)]); });
     scheduleIdle();
   }
@@ -251,6 +255,9 @@ export function renderTrain(_params, ctx) {
     return Math.random() < 0.55 ? 11 + Math.floor(Math.random() * 10) : 3 + Math.floor(Math.random() * 8);
   }
 
-  showBuddyPicker();
+  // Story chapter: skip the pickers — Alex's starter is the buddy and the chapter's
+  // activity starts straight away. Free-play opens the buddy picker as always.
+  if (story) { buddyId = getStarterId(); if (kind === 'count') startFeed(); else startBuildWord(); }
+  else showBuddyPicker();
   return root;
 }

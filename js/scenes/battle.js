@@ -10,7 +10,8 @@ import { clip, PRAISE_COUNT, rnd } from '../voices.js';
 import { sfx } from '../sfx.js';
 import { isTeen, pokemonById, ZONES, sameSound } from '../data.js';
 import { tenFrame } from '../tenframe.js';
-import { getPokedex, addBond } from '../game.js';
+import { getPokedex, addBond, getStarterId } from '../game.js';
+import { earnFeather } from '../story.js';
 import { canEvolve, triggerEvolution } from '../evolve.js';
 import { sparkleBurst, confetti, centerOf } from '../fx.js';
 import * as mastery from '../mastery.js';
@@ -19,10 +20,10 @@ import * as music from '../music.js';
 
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
-export function renderBattle(_params, ctx) {
+export function renderBattle({ story, zone }, ctx) {
   const root = el('div', { class: 'scene battle', style: { backgroundImage: "url('assets/screens/bg-lab.png')" } });
-  const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': 'Back home',
-    onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, icon('back')); // always a safe exit; deferred work is epoch-guarded
+  const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': story ? 'Back to the adventure' : 'Back home',
+    onClick: () => { audio.play(sfx.pop()); ctx.go(story ? 'story' : 'home'); } }, icon('back')); // always a safe exit; deferred work is epoch-guarded
   const stage = el('div', { class: 'battle__stage' });
   const tray = el('div', { class: 'battle__tray' });
   root.append(back, stage, tray);
@@ -38,7 +39,12 @@ export function renderBattle(_params, ctx) {
   let lastTarget = null;
   let idleTimer = null;
   let wildEl = null, buddyEl = null, hpFill = null;
+  let dbgQ = null; // inert test hook (mirrors catch's window.__catch) — the live question's answer
   const bump = () => { token += 1; clearTimeout(idleTimer); return token; };
+  if (typeof window !== 'undefined') window.__battle = {
+    get kind() { return dbgQ && dbgQ.kind; }, get answer() { return dbgQ && dbgQ.answer; },
+    get word() { return dbgQ && dbgQ.word; }, get won() { return !!root.querySelector('.win'); },
+  };
 
   function scheduleIdle(speak, myToken) {
     clearTimeout(idleTimer);
@@ -76,8 +82,8 @@ export function renderBattle(_params, ctx) {
     bump();
     clear(tray);            // remove the buddy picker immediately so it can't be re-tapped
     wild = battle.pickWild();
-    const zone = ZONES.find((z) => wild.zones.includes(z.id)) || ZONES[0];
-    root.style.backgroundImage = `url('${zone.background}')`;
+    const wildZone = ZONES.find((z) => wild.zones.includes(z.id)) || ZONES[0]; // not the Story chapter `zone` param
+    root.style.backgroundImage = `url('${wildZone.background}')`;
     wildHp = battle.WILD_MAX_HP;
     plan = battle.battlePlan();
     turn = 0;
@@ -139,6 +145,7 @@ export function renderBattle(_params, ctx) {
 
   // ---------- Question: comparison ----------
   function renderCompare(q, myToken) {
+    dbgQ = { kind: 'compare', answer: q.answer };
     clear(tray);
     tray.append(el('div', { class: 'q-prompt' }, q.bigger ? 'Tap the BIGGER one!' : 'Tap the smaller one!'));
     const row = el('div', { class: 'compare-row' });
@@ -164,6 +171,7 @@ export function renderBattle(_params, ctx) {
 
   // ---------- Question: find-the-match ----------
   function renderMatch(q, myToken) {
+    dbgQ = { kind: 'match', answer: q.target };
     clear(tray);
     tray.append(el('div', { class: 'q-prompt' }, q.kind === 'letter' ? 'Your move — tap the sound!' : 'Tap your move!'));
     if (q.kind === 'number' && isTeen(q.target)) tray.append(tenFrame(q.target));
@@ -195,6 +203,7 @@ export function renderBattle(_params, ctx) {
 
   // ---------- Question: blend-to-charge ----------
   function renderBlend(q, myToken) {
+    dbgQ = { kind: 'blend', word: q.word };
     clear(tray);
     const letters = [...q.word];
     tray.append(el('div', { class: 'q-prompt' }, 'Charge it up — tap the sounds!'));
@@ -283,18 +292,25 @@ export function renderBattle(_params, ctx) {
     const p = pokemonById(buddyId);
     const overlay = el('div', { class: 'win' });
     const sprite = spriteImg(p); sprite.classList.add('win__sprite');
+    // Story chapter: the win earns this zone's feather and returns to the journey.
+    const actions = story
+      ? el('div', { class: 'win__actions' },
+          el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); earnFeather(zone); ctx.go('story', { feathered: zone }); } }, 'Find the rainbow feather!'))
+      : el('div', { class: 'win__actions' },
+          el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); startBattle(); } }, 'Play again!'),
+          el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, 'Home'));
     overlay.append(el('div', { class: 'win__card' },
       el('div', { class: 'win__badge' }, 'You win!'),
       sprite,
       didEvolve ? null : el('div', { class: 'win__bond' }, icon('bond'), ` +${battle.BATTLE_BOND} bond`),
-      el('div', { class: 'win__actions' },
-        el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); startBattle(); } }, 'Play again!'),
-        el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, 'Home'),
-      ),
+      actions,
     ));
     root.append(overlay);
   }
 
-  showBuddyPicker();
+  // Story chapter: Alex's starter steps up and the battle begins straight away;
+  // free-play opens the buddy picker as always.
+  if (story) { buddyId = getStarterId(); startBattle(); }
+  else showBuddyPicker();
   return root;
 }

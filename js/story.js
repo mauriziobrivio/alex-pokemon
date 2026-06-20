@@ -10,13 +10,21 @@
 
 import { read, write } from './storage.js';
 
-// Stage 1 lights three chapters (all 'catch' — the core loop). Stage 2 lights the
-// remaining zones and varies the kind (build-word / count / battle); Stage 3 adds
-// the Ho-Oh finale when every feather is home. Order = the gentle suggested path.
+// All ten zones are chapters; the kind is the learning activity Alex already
+// loves, spread across his skills (numbers, blending, counting, comparison).
+// Order = the gentle suggested path Mama points along. Stage 3 adds the Ho-Oh
+// finale when every feather is home.
 export const CHAPTERS = [
-  { zone: 'meadow', kind: 'catch' },
-  { zone: 'forest', kind: 'catch' },
-  { zone: 'beach', kind: 'catch' },
+  { zone: 'meadow', kind: 'catch' },       // number recognition
+  { zone: 'forest', kind: 'build-word' },  // blending (Train build-a-word)
+  { zone: 'beach', kind: 'count' },        // one-to-one counting (Train berries)
+  { zone: 'mountain', kind: 'catch' },
+  { zone: 'desert', kind: 'catch' },
+  { zone: 'volcano', kind: 'battle' },     // comparison / blend-to-charge (gentle battle)
+  { zone: 'snowfield', kind: 'count' },
+  { zone: 'grove', kind: 'build-word' },
+  { zone: 'cave', kind: 'catch' },
+  { zone: 'ocean', kind: 'catch' },
 ];
 
 export const chapterFor = (zone) => CHAPTERS.find((c) => c.zone === zone) || null;
