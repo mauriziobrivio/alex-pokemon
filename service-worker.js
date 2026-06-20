@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v16';
+const CACHE = 'dada-academy-v17';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',

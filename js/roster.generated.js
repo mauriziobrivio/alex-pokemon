@@ -7139,5 +7139,3704 @@ export const ROSTER = [
     ],
     "evolvesTo": [],
     "sprite": "sprites/251.png"
+  },
+  {
+    "id": 252,
+    "name": "Treecko",
+    "types": [
+      "grass"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest"
+    ],
+    "evolutionChain": [
+      {
+        "id": 252,
+        "name": "Treecko"
+      },
+      {
+        "id": 253,
+        "name": "Grovyle"
+      },
+      {
+        "id": 254,
+        "name": "Sceptile"
+      }
+    ],
+    "evolvesTo": [
+      253
+    ],
+    "sprite": "sprites/252.png"
+  },
+  {
+    "id": 253,
+    "name": "Grovyle",
+    "types": [
+      "grass"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest"
+    ],
+    "evolutionChain": [
+      {
+        "id": 252,
+        "name": "Treecko"
+      },
+      {
+        "id": 253,
+        "name": "Grovyle"
+      },
+      {
+        "id": 254,
+        "name": "Sceptile"
+      }
+    ],
+    "evolvesTo": [
+      254
+    ],
+    "sprite": "sprites/253.png"
+  },
+  {
+    "id": 254,
+    "name": "Sceptile",
+    "types": [
+      "grass"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest"
+    ],
+    "evolutionChain": [
+      {
+        "id": 252,
+        "name": "Treecko"
+      },
+      {
+        "id": 253,
+        "name": "Grovyle"
+      },
+      {
+        "id": 254,
+        "name": "Sceptile"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/254.png"
+  },
+  {
+    "id": 255,
+    "name": "Torchic",
+    "types": [
+      "fire"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "desert",
+      "volcano"
+    ],
+    "evolutionChain": [
+      {
+        "id": 255,
+        "name": "Torchic"
+      },
+      {
+        "id": 256,
+        "name": "Combusken"
+      },
+      {
+        "id": 257,
+        "name": "Blaziken"
+      }
+    ],
+    "evolvesTo": [
+      256
+    ],
+    "sprite": "sprites/255.png"
+  },
+  {
+    "id": 256,
+    "name": "Combusken",
+    "types": [
+      "fire",
+      "fighting"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "volcano"
+    ],
+    "evolutionChain": [
+      {
+        "id": 255,
+        "name": "Torchic"
+      },
+      {
+        "id": 256,
+        "name": "Combusken"
+      },
+      {
+        "id": 257,
+        "name": "Blaziken"
+      }
+    ],
+    "evolvesTo": [
+      257
+    ],
+    "sprite": "sprites/256.png"
+  },
+  {
+    "id": 257,
+    "name": "Blaziken",
+    "types": [
+      "fire",
+      "fighting"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "volcano"
+    ],
+    "evolutionChain": [
+      {
+        "id": 255,
+        "name": "Torchic"
+      },
+      {
+        "id": 256,
+        "name": "Combusken"
+      },
+      {
+        "id": 257,
+        "name": "Blaziken"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/257.png"
+  },
+  {
+    "id": 258,
+    "name": "Mudkip",
+    "types": [
+      "water"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 258,
+        "name": "Mudkip"
+      },
+      {
+        "id": 259,
+        "name": "Marshtomp"
+      },
+      {
+        "id": 260,
+        "name": "Swampert"
+      }
+    ],
+    "evolvesTo": [
+      259
+    ],
+    "sprite": "sprites/258.png"
+  },
+  {
+    "id": 259,
+    "name": "Marshtomp",
+    "types": [
+      "water",
+      "ground"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "mountain",
+      "desert",
+      "snowfield",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 258,
+        "name": "Mudkip"
+      },
+      {
+        "id": 259,
+        "name": "Marshtomp"
+      },
+      {
+        "id": 260,
+        "name": "Swampert"
+      }
+    ],
+    "evolvesTo": [
+      260
+    ],
+    "sprite": "sprites/259.png"
+  },
+  {
+    "id": 260,
+    "name": "Swampert",
+    "types": [
+      "water",
+      "ground"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "mountain",
+      "desert",
+      "snowfield",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 258,
+        "name": "Mudkip"
+      },
+      {
+        "id": 259,
+        "name": "Marshtomp"
+      },
+      {
+        "id": 260,
+        "name": "Swampert"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/260.png"
+  },
+  {
+    "id": 261,
+    "name": "Poochyena",
+    "types": [
+      "dark"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 261,
+        "name": "Poochyena"
+      },
+      {
+        "id": 262,
+        "name": "Mightyena"
+      }
+    ],
+    "evolvesTo": [
+      262
+    ],
+    "sprite": "sprites/261.png"
+  },
+  {
+    "id": 262,
+    "name": "Mightyena",
+    "types": [
+      "dark"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 261,
+        "name": "Poochyena"
+      },
+      {
+        "id": 262,
+        "name": "Mightyena"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/262.png"
+  },
+  {
+    "id": 263,
+    "name": "Zigzagoon",
+    "types": [
+      "normal"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 263,
+        "name": "Zigzagoon"
+      },
+      {
+        "id": 264,
+        "name": "Linoone"
+      },
+      {
+        "id": 862,
+        "name": "Obstagoon"
+      }
+    ],
+    "evolvesTo": [
+      264
+    ],
+    "sprite": "sprites/263.png"
+  },
+  {
+    "id": 264,
+    "name": "Linoone",
+    "types": [
+      "normal"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 263,
+        "name": "Zigzagoon"
+      },
+      {
+        "id": 264,
+        "name": "Linoone"
+      },
+      {
+        "id": 862,
+        "name": "Obstagoon"
+      }
+    ],
+    "evolvesTo": [
+      862
+    ],
+    "sprite": "sprites/264.png"
+  },
+  {
+    "id": 265,
+    "name": "Wurmple",
+    "types": [
+      "bug"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest"
+    ],
+    "evolutionChain": [
+      {
+        "id": 265,
+        "name": "Wurmple"
+      },
+      {
+        "id": 266,
+        "name": "Silcoon"
+      },
+      {
+        "id": 267,
+        "name": "Beautifly"
+      },
+      {
+        "id": 268,
+        "name": "Cascoon"
+      },
+      {
+        "id": 269,
+        "name": "Dustox"
+      }
+    ],
+    "evolvesTo": [
+      266,
+      268
+    ],
+    "sprite": "sprites/265.png"
+  },
+  {
+    "id": 266,
+    "name": "Silcoon",
+    "types": [
+      "bug"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest"
+    ],
+    "evolutionChain": [
+      {
+        "id": 265,
+        "name": "Wurmple"
+      },
+      {
+        "id": 266,
+        "name": "Silcoon"
+      },
+      {
+        "id": 267,
+        "name": "Beautifly"
+      },
+      {
+        "id": 268,
+        "name": "Cascoon"
+      },
+      {
+        "id": 269,
+        "name": "Dustox"
+      }
+    ],
+    "evolvesTo": [
+      267
+    ],
+    "sprite": "sprites/266.png"
+  },
+  {
+    "id": 267,
+    "name": "Beautifly",
+    "types": [
+      "bug",
+      "flying"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "beach",
+      "mountain"
+    ],
+    "evolutionChain": [
+      {
+        "id": 265,
+        "name": "Wurmple"
+      },
+      {
+        "id": 266,
+        "name": "Silcoon"
+      },
+      {
+        "id": 267,
+        "name": "Beautifly"
+      },
+      {
+        "id": 268,
+        "name": "Cascoon"
+      },
+      {
+        "id": 269,
+        "name": "Dustox"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/267.png"
+  },
+  {
+    "id": 268,
+    "name": "Cascoon",
+    "types": [
+      "bug"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest"
+    ],
+    "evolutionChain": [
+      {
+        "id": 265,
+        "name": "Wurmple"
+      },
+      {
+        "id": 266,
+        "name": "Silcoon"
+      },
+      {
+        "id": 267,
+        "name": "Beautifly"
+      },
+      {
+        "id": 268,
+        "name": "Cascoon"
+      },
+      {
+        "id": 269,
+        "name": "Dustox"
+      }
+    ],
+    "evolvesTo": [
+      269
+    ],
+    "sprite": "sprites/268.png"
+  },
+  {
+    "id": 269,
+    "name": "Dustox",
+    "types": [
+      "bug",
+      "poison"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest"
+    ],
+    "evolutionChain": [
+      {
+        "id": 265,
+        "name": "Wurmple"
+      },
+      {
+        "id": 266,
+        "name": "Silcoon"
+      },
+      {
+        "id": 267,
+        "name": "Beautifly"
+      },
+      {
+        "id": 268,
+        "name": "Cascoon"
+      },
+      {
+        "id": 269,
+        "name": "Dustox"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/269.png"
+  },
+  {
+    "id": 270,
+    "name": "Lotad",
+    "types": [
+      "water",
+      "grass"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 270,
+        "name": "Lotad"
+      },
+      {
+        "id": 271,
+        "name": "Lombre"
+      },
+      {
+        "id": 272,
+        "name": "Ludicolo"
+      }
+    ],
+    "evolvesTo": [
+      271
+    ],
+    "sprite": "sprites/270.png"
+  },
+  {
+    "id": 271,
+    "name": "Lombre",
+    "types": [
+      "water",
+      "grass"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 270,
+        "name": "Lotad"
+      },
+      {
+        "id": 271,
+        "name": "Lombre"
+      },
+      {
+        "id": 272,
+        "name": "Ludicolo"
+      }
+    ],
+    "evolvesTo": [
+      272
+    ],
+    "sprite": "sprites/271.png"
+  },
+  {
+    "id": 272,
+    "name": "Ludicolo",
+    "types": [
+      "water",
+      "grass"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 270,
+        "name": "Lotad"
+      },
+      {
+        "id": 271,
+        "name": "Lombre"
+      },
+      {
+        "id": 272,
+        "name": "Ludicolo"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/272.png"
+  },
+  {
+    "id": 273,
+    "name": "Seedot",
+    "types": [
+      "grass"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest"
+    ],
+    "evolutionChain": [
+      {
+        "id": 273,
+        "name": "Seedot"
+      },
+      {
+        "id": 274,
+        "name": "Nuzleaf"
+      },
+      {
+        "id": 275,
+        "name": "Shiftry"
+      }
+    ],
+    "evolvesTo": [
+      274
+    ],
+    "sprite": "sprites/273.png"
+  },
+  {
+    "id": 274,
+    "name": "Nuzleaf",
+    "types": [
+      "grass",
+      "dark"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 273,
+        "name": "Seedot"
+      },
+      {
+        "id": 274,
+        "name": "Nuzleaf"
+      },
+      {
+        "id": 275,
+        "name": "Shiftry"
+      }
+    ],
+    "evolvesTo": [
+      275
+    ],
+    "sprite": "sprites/274.png"
+  },
+  {
+    "id": 275,
+    "name": "Shiftry",
+    "types": [
+      "grass",
+      "dark"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 273,
+        "name": "Seedot"
+      },
+      {
+        "id": 274,
+        "name": "Nuzleaf"
+      },
+      {
+        "id": 275,
+        "name": "Shiftry"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/275.png"
+  },
+  {
+    "id": 276,
+    "name": "Taillow",
+    "types": [
+      "normal",
+      "flying"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "beach",
+      "mountain"
+    ],
+    "evolutionChain": [
+      {
+        "id": 276,
+        "name": "Taillow"
+      },
+      {
+        "id": 277,
+        "name": "Swellow"
+      }
+    ],
+    "evolvesTo": [
+      277
+    ],
+    "sprite": "sprites/276.png"
+  },
+  {
+    "id": 277,
+    "name": "Swellow",
+    "types": [
+      "normal",
+      "flying"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "beach",
+      "mountain"
+    ],
+    "evolutionChain": [
+      {
+        "id": 276,
+        "name": "Taillow"
+      },
+      {
+        "id": 277,
+        "name": "Swellow"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/277.png"
+  },
+  {
+    "id": 278,
+    "name": "Wingull",
+    "types": [
+      "water",
+      "flying"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "mountain",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 278,
+        "name": "Wingull"
+      },
+      {
+        "id": 279,
+        "name": "Pelipper"
+      }
+    ],
+    "evolvesTo": [
+      279
+    ],
+    "sprite": "sprites/278.png"
+  },
+  {
+    "id": 279,
+    "name": "Pelipper",
+    "types": [
+      "water",
+      "flying"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "mountain",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 278,
+        "name": "Wingull"
+      },
+      {
+        "id": 279,
+        "name": "Pelipper"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/279.png"
+  },
+  {
+    "id": 280,
+    "name": "Ralts",
+    "types": [
+      "psychic",
+      "fairy"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "grove"
+    ],
+    "evolutionChain": [
+      {
+        "id": 280,
+        "name": "Ralts"
+      },
+      {
+        "id": 281,
+        "name": "Kirlia"
+      },
+      {
+        "id": 282,
+        "name": "Gardevoir"
+      },
+      {
+        "id": 475,
+        "name": "Gallade"
+      }
+    ],
+    "evolvesTo": [
+      281
+    ],
+    "sprite": "sprites/280.png"
+  },
+  {
+    "id": 281,
+    "name": "Kirlia",
+    "types": [
+      "psychic",
+      "fairy"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "grove"
+    ],
+    "evolutionChain": [
+      {
+        "id": 280,
+        "name": "Ralts"
+      },
+      {
+        "id": 281,
+        "name": "Kirlia"
+      },
+      {
+        "id": 282,
+        "name": "Gardevoir"
+      },
+      {
+        "id": 475,
+        "name": "Gallade"
+      }
+    ],
+    "evolvesTo": [
+      282,
+      475
+    ],
+    "sprite": "sprites/281.png"
+  },
+  {
+    "id": 282,
+    "name": "Gardevoir",
+    "types": [
+      "psychic",
+      "fairy"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "grove"
+    ],
+    "evolutionChain": [
+      {
+        "id": 280,
+        "name": "Ralts"
+      },
+      {
+        "id": 281,
+        "name": "Kirlia"
+      },
+      {
+        "id": 282,
+        "name": "Gardevoir"
+      },
+      {
+        "id": 475,
+        "name": "Gallade"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/282.png"
+  },
+  {
+    "id": 283,
+    "name": "Surskit",
+    "types": [
+      "bug",
+      "water"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 283,
+        "name": "Surskit"
+      },
+      {
+        "id": 284,
+        "name": "Masquerain"
+      }
+    ],
+    "evolvesTo": [
+      284
+    ],
+    "sprite": "sprites/283.png"
+  },
+  {
+    "id": 284,
+    "name": "Masquerain",
+    "types": [
+      "bug",
+      "flying"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "beach",
+      "mountain"
+    ],
+    "evolutionChain": [
+      {
+        "id": 283,
+        "name": "Surskit"
+      },
+      {
+        "id": 284,
+        "name": "Masquerain"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/284.png"
+  },
+  {
+    "id": 285,
+    "name": "Shroomish",
+    "types": [
+      "grass"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest"
+    ],
+    "evolutionChain": [
+      {
+        "id": 285,
+        "name": "Shroomish"
+      },
+      {
+        "id": 286,
+        "name": "Breloom"
+      }
+    ],
+    "evolvesTo": [
+      286
+    ],
+    "sprite": "sprites/285.png"
+  },
+  {
+    "id": 286,
+    "name": "Breloom",
+    "types": [
+      "grass",
+      "fighting"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "mountain"
+    ],
+    "evolutionChain": [
+      {
+        "id": 285,
+        "name": "Shroomish"
+      },
+      {
+        "id": 286,
+        "name": "Breloom"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/286.png"
+  },
+  {
+    "id": 287,
+    "name": "Slakoth",
+    "types": [
+      "normal"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 287,
+        "name": "Slakoth"
+      },
+      {
+        "id": 288,
+        "name": "Vigoroth"
+      },
+      {
+        "id": 289,
+        "name": "Slaking"
+      }
+    ],
+    "evolvesTo": [
+      288
+    ],
+    "sprite": "sprites/287.png"
+  },
+  {
+    "id": 288,
+    "name": "Vigoroth",
+    "types": [
+      "normal"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 287,
+        "name": "Slakoth"
+      },
+      {
+        "id": 288,
+        "name": "Vigoroth"
+      },
+      {
+        "id": 289,
+        "name": "Slaking"
+      }
+    ],
+    "evolvesTo": [
+      289
+    ],
+    "sprite": "sprites/288.png"
+  },
+  {
+    "id": 289,
+    "name": "Slaking",
+    "types": [
+      "normal"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 287,
+        "name": "Slakoth"
+      },
+      {
+        "id": 288,
+        "name": "Vigoroth"
+      },
+      {
+        "id": 289,
+        "name": "Slaking"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/289.png"
+  },
+  {
+    "id": 290,
+    "name": "Nincada",
+    "types": [
+      "bug",
+      "ground"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "mountain",
+      "desert",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 290,
+        "name": "Nincada"
+      },
+      {
+        "id": 291,
+        "name": "Ninjask"
+      },
+      {
+        "id": 292,
+        "name": "Shedinja"
+      }
+    ],
+    "evolvesTo": [
+      291,
+      292
+    ],
+    "sprite": "sprites/290.png"
+  },
+  {
+    "id": 291,
+    "name": "Ninjask",
+    "types": [
+      "bug",
+      "flying"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "beach",
+      "mountain"
+    ],
+    "evolutionChain": [
+      {
+        "id": 290,
+        "name": "Nincada"
+      },
+      {
+        "id": 291,
+        "name": "Ninjask"
+      },
+      {
+        "id": 292,
+        "name": "Shedinja"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/291.png"
+  },
+  {
+    "id": 292,
+    "name": "Shedinja",
+    "types": [
+      "bug",
+      "ghost"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "grove"
+    ],
+    "evolutionChain": [
+      {
+        "id": 290,
+        "name": "Nincada"
+      },
+      {
+        "id": 291,
+        "name": "Ninjask"
+      },
+      {
+        "id": 292,
+        "name": "Shedinja"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/292.png"
+  },
+  {
+    "id": 293,
+    "name": "Whismur",
+    "types": [
+      "normal"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 293,
+        "name": "Whismur"
+      },
+      {
+        "id": 294,
+        "name": "Loudred"
+      },
+      {
+        "id": 295,
+        "name": "Exploud"
+      }
+    ],
+    "evolvesTo": [
+      294
+    ],
+    "sprite": "sprites/293.png"
+  },
+  {
+    "id": 294,
+    "name": "Loudred",
+    "types": [
+      "normal"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 293,
+        "name": "Whismur"
+      },
+      {
+        "id": 294,
+        "name": "Loudred"
+      },
+      {
+        "id": 295,
+        "name": "Exploud"
+      }
+    ],
+    "evolvesTo": [
+      295
+    ],
+    "sprite": "sprites/294.png"
+  },
+  {
+    "id": 295,
+    "name": "Exploud",
+    "types": [
+      "normal"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 293,
+        "name": "Whismur"
+      },
+      {
+        "id": 294,
+        "name": "Loudred"
+      },
+      {
+        "id": 295,
+        "name": "Exploud"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/295.png"
+  },
+  {
+    "id": 296,
+    "name": "Makuhita",
+    "types": [
+      "fighting"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain"
+    ],
+    "evolutionChain": [
+      {
+        "id": 296,
+        "name": "Makuhita"
+      },
+      {
+        "id": 297,
+        "name": "Hariyama"
+      }
+    ],
+    "evolvesTo": [
+      297
+    ],
+    "sprite": "sprites/296.png"
+  },
+  {
+    "id": 297,
+    "name": "Hariyama",
+    "types": [
+      "fighting"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain"
+    ],
+    "evolutionChain": [
+      {
+        "id": 296,
+        "name": "Makuhita"
+      },
+      {
+        "id": 297,
+        "name": "Hariyama"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/297.png"
+  },
+  {
+    "id": 298,
+    "name": "Azurill",
+    "types": [
+      "normal",
+      "fairy"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "grove"
+    ],
+    "evolutionChain": [
+      {
+        "id": 298,
+        "name": "Azurill"
+      },
+      {
+        "id": 183,
+        "name": "Marill"
+      },
+      {
+        "id": 184,
+        "name": "Azumarill"
+      }
+    ],
+    "evolvesTo": [
+      183
+    ],
+    "sprite": "sprites/298.png"
+  },
+  {
+    "id": 299,
+    "name": "Nosepass",
+    "types": [
+      "rock"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 299,
+        "name": "Nosepass"
+      },
+      {
+        "id": 476,
+        "name": "Probopass"
+      }
+    ],
+    "evolvesTo": [
+      476
+    ],
+    "sprite": "sprites/299.png"
+  },
+  {
+    "id": 300,
+    "name": "Skitty",
+    "types": [
+      "normal"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 300,
+        "name": "Skitty"
+      },
+      {
+        "id": 301,
+        "name": "Delcatty"
+      }
+    ],
+    "evolvesTo": [
+      301
+    ],
+    "sprite": "sprites/300.png"
+  },
+  {
+    "id": 301,
+    "name": "Delcatty",
+    "types": [
+      "normal"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 300,
+        "name": "Skitty"
+      },
+      {
+        "id": 301,
+        "name": "Delcatty"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/301.png"
+  },
+  {
+    "id": 302,
+    "name": "Sableye",
+    "types": [
+      "dark",
+      "ghost"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 302,
+        "name": "Sableye"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/302.png"
+  },
+  {
+    "id": 303,
+    "name": "Mawile",
+    "types": [
+      "steel",
+      "fairy"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "desert",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 303,
+        "name": "Mawile"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/303.png"
+  },
+  {
+    "id": 304,
+    "name": "Aron",
+    "types": [
+      "steel",
+      "rock"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 304,
+        "name": "Aron"
+      },
+      {
+        "id": 305,
+        "name": "Lairon"
+      },
+      {
+        "id": 306,
+        "name": "Aggron"
+      }
+    ],
+    "evolvesTo": [
+      305
+    ],
+    "sprite": "sprites/304.png"
+  },
+  {
+    "id": 305,
+    "name": "Lairon",
+    "types": [
+      "steel",
+      "rock"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 304,
+        "name": "Aron"
+      },
+      {
+        "id": 305,
+        "name": "Lairon"
+      },
+      {
+        "id": 306,
+        "name": "Aggron"
+      }
+    ],
+    "evolvesTo": [
+      306
+    ],
+    "sprite": "sprites/305.png"
+  },
+  {
+    "id": 306,
+    "name": "Aggron",
+    "types": [
+      "steel",
+      "rock"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 304,
+        "name": "Aron"
+      },
+      {
+        "id": 305,
+        "name": "Lairon"
+      },
+      {
+        "id": 306,
+        "name": "Aggron"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/306.png"
+  },
+  {
+    "id": 307,
+    "name": "Meditite",
+    "types": [
+      "fighting",
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "grove"
+    ],
+    "evolutionChain": [
+      {
+        "id": 307,
+        "name": "Meditite"
+      },
+      {
+        "id": 308,
+        "name": "Medicham"
+      }
+    ],
+    "evolvesTo": [
+      308
+    ],
+    "sprite": "sprites/307.png"
+  },
+  {
+    "id": 308,
+    "name": "Medicham",
+    "types": [
+      "fighting",
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "grove"
+    ],
+    "evolutionChain": [
+      {
+        "id": 307,
+        "name": "Meditite"
+      },
+      {
+        "id": 308,
+        "name": "Medicham"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/308.png"
+  },
+  {
+    "id": 309,
+    "name": "Electrike",
+    "types": [
+      "electric"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 309,
+        "name": "Electrike"
+      },
+      {
+        "id": 310,
+        "name": "Manectric"
+      }
+    ],
+    "evolvesTo": [
+      310
+    ],
+    "sprite": "sprites/309.png"
+  },
+  {
+    "id": 310,
+    "name": "Manectric",
+    "types": [
+      "electric"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 309,
+        "name": "Electrike"
+      },
+      {
+        "id": 310,
+        "name": "Manectric"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/310.png"
+  },
+  {
+    "id": 311,
+    "name": "Plusle",
+    "types": [
+      "electric"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 311,
+        "name": "Plusle"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/311.png"
+  },
+  {
+    "id": 312,
+    "name": "Minun",
+    "types": [
+      "electric"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 312,
+        "name": "Minun"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/312.png"
+  },
+  {
+    "id": 313,
+    "name": "Volbeat",
+    "types": [
+      "bug"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest"
+    ],
+    "evolutionChain": [
+      {
+        "id": 313,
+        "name": "Volbeat"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/313.png"
+  },
+  {
+    "id": 314,
+    "name": "Illumise",
+    "types": [
+      "bug"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest"
+    ],
+    "evolutionChain": [
+      {
+        "id": 314,
+        "name": "Illumise"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/314.png"
+  },
+  {
+    "id": 315,
+    "name": "Roselia",
+    "types": [
+      "grass",
+      "poison"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest"
+    ],
+    "evolutionChain": [
+      {
+        "id": 406,
+        "name": "Budew"
+      },
+      {
+        "id": 315,
+        "name": "Roselia"
+      },
+      {
+        "id": 407,
+        "name": "Roserade"
+      }
+    ],
+    "evolvesTo": [
+      407
+    ],
+    "sprite": "sprites/315.png"
+  },
+  {
+    "id": 316,
+    "name": "Gulpin",
+    "types": [
+      "poison"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "forest"
+    ],
+    "evolutionChain": [
+      {
+        "id": 316,
+        "name": "Gulpin"
+      },
+      {
+        "id": 317,
+        "name": "Swalot"
+      }
+    ],
+    "evolvesTo": [
+      317
+    ],
+    "sprite": "sprites/316.png"
+  },
+  {
+    "id": 317,
+    "name": "Swalot",
+    "types": [
+      "poison"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "forest"
+    ],
+    "evolutionChain": [
+      {
+        "id": 316,
+        "name": "Gulpin"
+      },
+      {
+        "id": 317,
+        "name": "Swalot"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/317.png"
+  },
+  {
+    "id": 318,
+    "name": "Carvanha",
+    "types": [
+      "water",
+      "dark"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 318,
+        "name": "Carvanha"
+      },
+      {
+        "id": 319,
+        "name": "Sharpedo"
+      }
+    ],
+    "evolvesTo": [
+      319
+    ],
+    "sprite": "sprites/318.png"
+  },
+  {
+    "id": 319,
+    "name": "Sharpedo",
+    "types": [
+      "water",
+      "dark"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 318,
+        "name": "Carvanha"
+      },
+      {
+        "id": 319,
+        "name": "Sharpedo"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/319.png"
+  },
+  {
+    "id": 320,
+    "name": "Wailmer",
+    "types": [
+      "water"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 320,
+        "name": "Wailmer"
+      },
+      {
+        "id": 321,
+        "name": "Wailord"
+      }
+    ],
+    "evolvesTo": [
+      321
+    ],
+    "sprite": "sprites/320.png"
+  },
+  {
+    "id": 321,
+    "name": "Wailord",
+    "types": [
+      "water"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 320,
+        "name": "Wailmer"
+      },
+      {
+        "id": 321,
+        "name": "Wailord"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/321.png"
+  },
+  {
+    "id": 322,
+    "name": "Numel",
+    "types": [
+      "fire",
+      "ground"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 322,
+        "name": "Numel"
+      },
+      {
+        "id": 323,
+        "name": "Camerupt"
+      }
+    ],
+    "evolvesTo": [
+      323
+    ],
+    "sprite": "sprites/322.png"
+  },
+  {
+    "id": 323,
+    "name": "Camerupt",
+    "types": [
+      "fire",
+      "ground"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 322,
+        "name": "Numel"
+      },
+      {
+        "id": 323,
+        "name": "Camerupt"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/323.png"
+  },
+  {
+    "id": 324,
+    "name": "Torkoal",
+    "types": [
+      "fire"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "desert",
+      "volcano"
+    ],
+    "evolutionChain": [
+      {
+        "id": 324,
+        "name": "Torkoal"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/324.png"
+  },
+  {
+    "id": 325,
+    "name": "Spoink",
+    "types": [
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "grove"
+    ],
+    "evolutionChain": [
+      {
+        "id": 325,
+        "name": "Spoink"
+      },
+      {
+        "id": 326,
+        "name": "Grumpig"
+      }
+    ],
+    "evolvesTo": [
+      326
+    ],
+    "sprite": "sprites/325.png"
+  },
+  {
+    "id": 326,
+    "name": "Grumpig",
+    "types": [
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "grove"
+    ],
+    "evolutionChain": [
+      {
+        "id": 325,
+        "name": "Spoink"
+      },
+      {
+        "id": 326,
+        "name": "Grumpig"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/326.png"
+  },
+  {
+    "id": 327,
+    "name": "Spinda",
+    "types": [
+      "normal"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 327,
+        "name": "Spinda"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/327.png"
+  },
+  {
+    "id": 328,
+    "name": "Trapinch",
+    "types": [
+      "ground"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 328,
+        "name": "Trapinch"
+      },
+      {
+        "id": 329,
+        "name": "Vibrava"
+      },
+      {
+        "id": 330,
+        "name": "Flygon"
+      }
+    ],
+    "evolvesTo": [
+      329
+    ],
+    "sprite": "sprites/328.png"
+  },
+  {
+    "id": 329,
+    "name": "Vibrava",
+    "types": [
+      "ground",
+      "dragon"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 328,
+        "name": "Trapinch"
+      },
+      {
+        "id": 329,
+        "name": "Vibrava"
+      },
+      {
+        "id": 330,
+        "name": "Flygon"
+      }
+    ],
+    "evolvesTo": [
+      330
+    ],
+    "sprite": "sprites/329.png"
+  },
+  {
+    "id": 330,
+    "name": "Flygon",
+    "types": [
+      "ground",
+      "dragon"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 328,
+        "name": "Trapinch"
+      },
+      {
+        "id": 329,
+        "name": "Vibrava"
+      },
+      {
+        "id": 330,
+        "name": "Flygon"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/330.png"
+  },
+  {
+    "id": 331,
+    "name": "Cacnea",
+    "types": [
+      "grass"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest"
+    ],
+    "evolutionChain": [
+      {
+        "id": 331,
+        "name": "Cacnea"
+      },
+      {
+        "id": 332,
+        "name": "Cacturne"
+      }
+    ],
+    "evolvesTo": [
+      332
+    ],
+    "sprite": "sprites/331.png"
+  },
+  {
+    "id": 332,
+    "name": "Cacturne",
+    "types": [
+      "grass",
+      "dark"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 331,
+        "name": "Cacnea"
+      },
+      {
+        "id": 332,
+        "name": "Cacturne"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/332.png"
+  },
+  {
+    "id": 333,
+    "name": "Swablu",
+    "types": [
+      "normal",
+      "flying"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "beach",
+      "mountain"
+    ],
+    "evolutionChain": [
+      {
+        "id": 333,
+        "name": "Swablu"
+      },
+      {
+        "id": 334,
+        "name": "Altaria"
+      }
+    ],
+    "evolvesTo": [
+      334
+    ],
+    "sprite": "sprites/333.png"
+  },
+  {
+    "id": 334,
+    "name": "Altaria",
+    "types": [
+      "dragon",
+      "flying"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "mountain",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 333,
+        "name": "Swablu"
+      },
+      {
+        "id": 334,
+        "name": "Altaria"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/334.png"
+  },
+  {
+    "id": 335,
+    "name": "Zangoose",
+    "types": [
+      "normal"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 335,
+        "name": "Zangoose"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/335.png"
+  },
+  {
+    "id": 336,
+    "name": "Seviper",
+    "types": [
+      "poison"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "forest"
+    ],
+    "evolutionChain": [
+      {
+        "id": 336,
+        "name": "Seviper"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/336.png"
+  },
+  {
+    "id": 337,
+    "name": "Lunatone",
+    "types": [
+      "rock",
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "volcano",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 337,
+        "name": "Lunatone"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/337.png"
+  },
+  {
+    "id": 338,
+    "name": "Solrock",
+    "types": [
+      "rock",
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "volcano",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 338,
+        "name": "Solrock"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/338.png"
+  },
+  {
+    "id": 339,
+    "name": "Barboach",
+    "types": [
+      "water",
+      "ground"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "mountain",
+      "desert",
+      "snowfield",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 339,
+        "name": "Barboach"
+      },
+      {
+        "id": 340,
+        "name": "Whiscash"
+      }
+    ],
+    "evolvesTo": [
+      340
+    ],
+    "sprite": "sprites/339.png"
+  },
+  {
+    "id": 340,
+    "name": "Whiscash",
+    "types": [
+      "water",
+      "ground"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "mountain",
+      "desert",
+      "snowfield",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 339,
+        "name": "Barboach"
+      },
+      {
+        "id": 340,
+        "name": "Whiscash"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/340.png"
+  },
+  {
+    "id": 341,
+    "name": "Corphish",
+    "types": [
+      "water"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 341,
+        "name": "Corphish"
+      },
+      {
+        "id": 342,
+        "name": "Crawdaunt"
+      }
+    ],
+    "evolvesTo": [
+      342
+    ],
+    "sprite": "sprites/341.png"
+  },
+  {
+    "id": 342,
+    "name": "Crawdaunt",
+    "types": [
+      "water",
+      "dark"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 341,
+        "name": "Corphish"
+      },
+      {
+        "id": 342,
+        "name": "Crawdaunt"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/342.png"
+  },
+  {
+    "id": 343,
+    "name": "Baltoy",
+    "types": [
+      "ground",
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 343,
+        "name": "Baltoy"
+      },
+      {
+        "id": 344,
+        "name": "Claydol"
+      }
+    ],
+    "evolvesTo": [
+      344
+    ],
+    "sprite": "sprites/343.png"
+  },
+  {
+    "id": 344,
+    "name": "Claydol",
+    "types": [
+      "ground",
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 343,
+        "name": "Baltoy"
+      },
+      {
+        "id": 344,
+        "name": "Claydol"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/344.png"
+  },
+  {
+    "id": 345,
+    "name": "Lileep",
+    "types": [
+      "rock",
+      "grass"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 345,
+        "name": "Lileep"
+      },
+      {
+        "id": 346,
+        "name": "Cradily"
+      }
+    ],
+    "evolvesTo": [
+      346
+    ],
+    "sprite": "sprites/345.png"
+  },
+  {
+    "id": 346,
+    "name": "Cradily",
+    "types": [
+      "rock",
+      "grass"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 345,
+        "name": "Lileep"
+      },
+      {
+        "id": 346,
+        "name": "Cradily"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/346.png"
+  },
+  {
+    "id": 347,
+    "name": "Anorith",
+    "types": [
+      "rock",
+      "bug"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 347,
+        "name": "Anorith"
+      },
+      {
+        "id": 348,
+        "name": "Armaldo"
+      }
+    ],
+    "evolvesTo": [
+      348
+    ],
+    "sprite": "sprites/347.png"
+  },
+  {
+    "id": 348,
+    "name": "Armaldo",
+    "types": [
+      "rock",
+      "bug"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 347,
+        "name": "Anorith"
+      },
+      {
+        "id": 348,
+        "name": "Armaldo"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/348.png"
+  },
+  {
+    "id": 349,
+    "name": "Feebas",
+    "types": [
+      "water"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 349,
+        "name": "Feebas"
+      },
+      {
+        "id": 350,
+        "name": "Milotic"
+      }
+    ],
+    "evolvesTo": [
+      350
+    ],
+    "sprite": "sprites/349.png"
+  },
+  {
+    "id": 350,
+    "name": "Milotic",
+    "types": [
+      "water"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 349,
+        "name": "Feebas"
+      },
+      {
+        "id": 350,
+        "name": "Milotic"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/350.png"
+  },
+  {
+    "id": 351,
+    "name": "Castform",
+    "types": [
+      "normal"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 351,
+        "name": "Castform"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/351.png"
+  },
+  {
+    "id": 352,
+    "name": "Kecleon",
+    "types": [
+      "normal"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow"
+    ],
+    "evolutionChain": [
+      {
+        "id": 352,
+        "name": "Kecleon"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/352.png"
+  },
+  {
+    "id": 353,
+    "name": "Shuppet",
+    "types": [
+      "ghost"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "grove"
+    ],
+    "evolutionChain": [
+      {
+        "id": 353,
+        "name": "Shuppet"
+      },
+      {
+        "id": 354,
+        "name": "Banette"
+      }
+    ],
+    "evolvesTo": [
+      354
+    ],
+    "sprite": "sprites/353.png"
+  },
+  {
+    "id": 354,
+    "name": "Banette",
+    "types": [
+      "ghost"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "grove"
+    ],
+    "evolutionChain": [
+      {
+        "id": 353,
+        "name": "Shuppet"
+      },
+      {
+        "id": 354,
+        "name": "Banette"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/354.png"
+  },
+  {
+    "id": 355,
+    "name": "Duskull",
+    "types": [
+      "ghost"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "grove"
+    ],
+    "evolutionChain": [
+      {
+        "id": 355,
+        "name": "Duskull"
+      },
+      {
+        "id": 356,
+        "name": "Dusclops"
+      },
+      {
+        "id": 477,
+        "name": "Dusknoir"
+      }
+    ],
+    "evolvesTo": [
+      356
+    ],
+    "sprite": "sprites/355.png"
+  },
+  {
+    "id": 356,
+    "name": "Dusclops",
+    "types": [
+      "ghost"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "grove"
+    ],
+    "evolutionChain": [
+      {
+        "id": 355,
+        "name": "Duskull"
+      },
+      {
+        "id": 356,
+        "name": "Dusclops"
+      },
+      {
+        "id": 477,
+        "name": "Dusknoir"
+      }
+    ],
+    "evolvesTo": [
+      477
+    ],
+    "sprite": "sprites/356.png"
+  },
+  {
+    "id": 357,
+    "name": "Tropius",
+    "types": [
+      "grass",
+      "flying"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "meadow",
+      "forest",
+      "beach",
+      "mountain"
+    ],
+    "evolutionChain": [
+      {
+        "id": 357,
+        "name": "Tropius"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/357.png"
+  },
+  {
+    "id": 358,
+    "name": "Chimecho",
+    "types": [
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "grove"
+    ],
+    "evolutionChain": [
+      {
+        "id": 433,
+        "name": "Chingling"
+      },
+      {
+        "id": 358,
+        "name": "Chimecho"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/358.png"
+  },
+  {
+    "id": 359,
+    "name": "Absol",
+    "types": [
+      "dark"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 359,
+        "name": "Absol"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/359.png"
+  },
+  {
+    "id": 360,
+    "name": "Wynaut",
+    "types": [
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "grove"
+    ],
+    "evolutionChain": [
+      {
+        "id": 360,
+        "name": "Wynaut"
+      },
+      {
+        "id": 202,
+        "name": "Wobbuffet"
+      }
+    ],
+    "evolvesTo": [
+      202
+    ],
+    "sprite": "sprites/360.png"
+  },
+  {
+    "id": 361,
+    "name": "Snorunt",
+    "types": [
+      "ice"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 361,
+        "name": "Snorunt"
+      },
+      {
+        "id": 362,
+        "name": "Glalie"
+      },
+      {
+        "id": 478,
+        "name": "Froslass"
+      }
+    ],
+    "evolvesTo": [
+      362,
+      478
+    ],
+    "sprite": "sprites/361.png"
+  },
+  {
+    "id": 362,
+    "name": "Glalie",
+    "types": [
+      "ice"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 361,
+        "name": "Snorunt"
+      },
+      {
+        "id": 362,
+        "name": "Glalie"
+      },
+      {
+        "id": 478,
+        "name": "Froslass"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/362.png"
+  },
+  {
+    "id": 363,
+    "name": "Spheal",
+    "types": [
+      "ice",
+      "water"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 363,
+        "name": "Spheal"
+      },
+      {
+        "id": 364,
+        "name": "Sealeo"
+      },
+      {
+        "id": 365,
+        "name": "Walrein"
+      }
+    ],
+    "evolvesTo": [
+      364
+    ],
+    "sprite": "sprites/363.png"
+  },
+  {
+    "id": 364,
+    "name": "Sealeo",
+    "types": [
+      "ice",
+      "water"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 363,
+        "name": "Spheal"
+      },
+      {
+        "id": 364,
+        "name": "Sealeo"
+      },
+      {
+        "id": 365,
+        "name": "Walrein"
+      }
+    ],
+    "evolvesTo": [
+      365
+    ],
+    "sprite": "sprites/364.png"
+  },
+  {
+    "id": 365,
+    "name": "Walrein",
+    "types": [
+      "ice",
+      "water"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 363,
+        "name": "Spheal"
+      },
+      {
+        "id": 364,
+        "name": "Sealeo"
+      },
+      {
+        "id": 365,
+        "name": "Walrein"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/365.png"
+  },
+  {
+    "id": 366,
+    "name": "Clamperl",
+    "types": [
+      "water"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 366,
+        "name": "Clamperl"
+      },
+      {
+        "id": 367,
+        "name": "Huntail"
+      },
+      {
+        "id": 368,
+        "name": "Gorebyss"
+      }
+    ],
+    "evolvesTo": [
+      367,
+      368
+    ],
+    "sprite": "sprites/366.png"
+  },
+  {
+    "id": 367,
+    "name": "Huntail",
+    "types": [
+      "water"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 366,
+        "name": "Clamperl"
+      },
+      {
+        "id": 367,
+        "name": "Huntail"
+      },
+      {
+        "id": 368,
+        "name": "Gorebyss"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/367.png"
+  },
+  {
+    "id": 368,
+    "name": "Gorebyss",
+    "types": [
+      "water"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 366,
+        "name": "Clamperl"
+      },
+      {
+        "id": 367,
+        "name": "Huntail"
+      },
+      {
+        "id": 368,
+        "name": "Gorebyss"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/368.png"
+  },
+  {
+    "id": 369,
+    "name": "Relicanth",
+    "types": [
+      "water",
+      "rock"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "mountain",
+      "desert",
+      "volcano",
+      "snowfield",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 369,
+        "name": "Relicanth"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/369.png"
+  },
+  {
+    "id": 370,
+    "name": "Luvdisc",
+    "types": [
+      "water"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 370,
+        "name": "Luvdisc"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/370.png"
+  },
+  {
+    "id": 371,
+    "name": "Bagon",
+    "types": [
+      "dragon"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 371,
+        "name": "Bagon"
+      },
+      {
+        "id": 372,
+        "name": "Shelgon"
+      },
+      {
+        "id": 373,
+        "name": "Salamence"
+      }
+    ],
+    "evolvesTo": [
+      372
+    ],
+    "sprite": "sprites/371.png"
+  },
+  {
+    "id": 372,
+    "name": "Shelgon",
+    "types": [
+      "dragon"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 371,
+        "name": "Bagon"
+      },
+      {
+        "id": 372,
+        "name": "Shelgon"
+      },
+      {
+        "id": 373,
+        "name": "Salamence"
+      }
+    ],
+    "evolvesTo": [
+      373
+    ],
+    "sprite": "sprites/372.png"
+  },
+  {
+    "id": 373,
+    "name": "Salamence",
+    "types": [
+      "dragon",
+      "flying"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "mountain",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 371,
+        "name": "Bagon"
+      },
+      {
+        "id": 372,
+        "name": "Shelgon"
+      },
+      {
+        "id": 373,
+        "name": "Salamence"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/373.png"
+  },
+  {
+    "id": 374,
+    "name": "Beldum",
+    "types": [
+      "steel",
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "desert",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 374,
+        "name": "Beldum"
+      },
+      {
+        "id": 375,
+        "name": "Metang"
+      },
+      {
+        "id": 376,
+        "name": "Metagross"
+      }
+    ],
+    "evolvesTo": [
+      375
+    ],
+    "sprite": "sprites/374.png"
+  },
+  {
+    "id": 375,
+    "name": "Metang",
+    "types": [
+      "steel",
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "desert",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 374,
+        "name": "Beldum"
+      },
+      {
+        "id": 375,
+        "name": "Metang"
+      },
+      {
+        "id": 376,
+        "name": "Metagross"
+      }
+    ],
+    "evolvesTo": [
+      376
+    ],
+    "sprite": "sprites/375.png"
+  },
+  {
+    "id": 376,
+    "name": "Metagross",
+    "types": [
+      "steel",
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "desert",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 374,
+        "name": "Beldum"
+      },
+      {
+        "id": 375,
+        "name": "Metang"
+      },
+      {
+        "id": 376,
+        "name": "Metagross"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/376.png"
+  },
+  {
+    "id": 377,
+    "name": "Regirock",
+    "types": [
+      "rock"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 377,
+        "name": "Regirock"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/377.png"
+  },
+  {
+    "id": 378,
+    "name": "Regice",
+    "types": [
+      "ice"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 378,
+        "name": "Regice"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/378.png"
+  },
+  {
+    "id": 379,
+    "name": "Registeel",
+    "types": [
+      "steel"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "desert",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 379,
+        "name": "Registeel"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/379.png"
+  },
+  {
+    "id": 380,
+    "name": "Latias",
+    "types": [
+      "dragon",
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "volcano",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 380,
+        "name": "Latias"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/380.png"
+  },
+  {
+    "id": 381,
+    "name": "Latios",
+    "types": [
+      "dragon",
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "volcano",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 381,
+        "name": "Latios"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/381.png"
+  },
+  {
+    "id": 382,
+    "name": "Kyogre",
+    "types": [
+      "water"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "snowfield"
+    ],
+    "evolutionChain": [
+      {
+        "id": 382,
+        "name": "Kyogre"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/382.png"
+  },
+  {
+    "id": 383,
+    "name": "Groudon",
+    "types": [
+      "ground"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "mountain",
+      "desert",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 383,
+        "name": "Groudon"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/383.png"
+  },
+  {
+    "id": 384,
+    "name": "Rayquaza",
+    "types": [
+      "dragon",
+      "flying"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "beach",
+      "mountain",
+      "volcano",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 384,
+        "name": "Rayquaza"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/384.png"
+  },
+  {
+    "id": 385,
+    "name": "Jirachi",
+    "types": [
+      "steel",
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "desert",
+      "grove",
+      "cave"
+    ],
+    "evolutionChain": [
+      {
+        "id": 385,
+        "name": "Jirachi"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/385.png"
+  },
+  {
+    "id": 386,
+    "name": "Deoxys",
+    "types": [
+      "psychic"
+    ],
+    "generation": "generation-iii",
+    "zones": [
+      "grove"
+    ],
+    "evolutionChain": [
+      {
+        "id": 386,
+        "name": "Deoxys"
+      }
+    ],
+    "evolvesTo": [],
+    "sprite": "sprites/386.png"
   }
 ];

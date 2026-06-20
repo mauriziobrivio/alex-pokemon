@@ -37,6 +37,8 @@ export const OCEAN_IDS = new Set([
   72, 73, 90, 91, 98, 99, 116, 117, 118, 119, 120, 121, 129, 130, 131,
   138, 139, 140, 141, 230,            // Gen 1 deep-water + fossils (+ Kingdra)
   170, 171, 211, 222, 223, 224, 226,  // Gen 2 deep-water
+  318, 319, 320, 321, 339, 340, 341, 342, 349, 350, // Gen 3: Carvanha/Sharpedo, Wailmer/Wailord, Barboach/Whiscash, Corphish/Crawdaunt, Feebas/Milotic
+  363, 364, 365, 366, 367, 368, 369, 370,           // Spheal line, Clamperl/Huntail/Gorebyss, Relicanth, Luvdisc
 ]);
 
 // Alex's favourites — gifted in the starter moment (not caught).
