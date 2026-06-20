@@ -45,6 +45,11 @@ export const earnedCount = () => getFeathers().length;
 export const totalChapters = () => CHAPTERS.length;
 export const allChaptersDone = () => earnedCount() >= totalChapters();
 
+// The Ho-Oh finale: a once-ever wondrous reveal when every feather is home.
+export const HOOH_ID = 250; // the Rainbow Pokémon (swappable: Lugia 249 / Rayquaza 384)
+export const finaleSeen = () => !!read('finaleSeen', false);
+export const markFinaleSeen = () => write('finaleSeen', true);
+
 // The next chapter still missing its feather — where Mama gently points. Null when
 // the (currently lit) rainbow is complete.
 export const nextChapterZone = () => {

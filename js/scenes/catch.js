@@ -11,7 +11,7 @@ import { el, clear, spriteImg, charImg, icon } from '../ui.js';
 import * as audio from '../audio.js';
 import { clip, PRAISE_COUNT, CATCH_CHEER_COUNT, rnd } from '../voices.js';
 import { sfx } from '../sfx.js';
-import { isTeen, zoneById, zonePool, sameSound, MISSES_TO_ESCAPE, OUTING_LENGTH } from '../data.js';
+import { isTeen, zoneById, spawnPool, sameSound, MISSES_TO_ESCAPE, OUTING_LENGTH } from '../data.js';
 import * as mastery from '../mastery.js';
 import { tenFrame } from '../tenframe.js';
 import { isCaught, recordCatch, markFoil } from '../game.js';
@@ -27,7 +27,7 @@ const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math
 
 export function renderCatch({ zoneId, story, from }, ctx) {
   const zone = zoneById(zoneId);
-  const pool = zonePool(zone.id);
+  const pool = spawnPool(zone.id); // wild spawns exclude reserved legendaries (binder still shows them)
   music.playForZone(zone.id); // the zone's gentle bed (ducks under Dada)
 
   // "Back" returns wherever Alex came from: the Story journey (a chapter, or

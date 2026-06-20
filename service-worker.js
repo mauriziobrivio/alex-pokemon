@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v19';
+const CACHE = 'dada-academy-v20';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -61,7 +61,8 @@ for (const f of ['thats-enough', 'playlearn-intro', 'game-quick-count', 'game-wh
 // Phase 9: the "My Words" review-wall intro line.
 CORE.push('./audio/dada/my-words.mp3');
 // Phase 10: Story Mode narration (Mama-suggest reuses the suggest-* lines).
-for (const f of ['story-intro', 'feather-found', 'story-more']) CORE.push(`./audio/dada/${f}.mp3`);
+for (const f of ['story-intro', 'feather-found', 'story-more', 'story-finale']) CORE.push(`./audio/dada/${f}.mp3`);
+CORE.push('./sprites/250.png'); // Ho-Oh — the finale star (precache the set-piece sprite)
 // Starter evolution lines' sprites (1-6, 25-26) so the first evolutions show offline.
 for (const id of [1, 2, 3, 4, 5, 6, 25, 26]) CORE.push(`./sprites/${id}.png`);
 // build-a-word whole-word clips (the blend climax) — small; precache all 72.

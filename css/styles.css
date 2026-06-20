@@ -662,3 +662,15 @@ html, body {
 .story-banner:active { transform: scale(0.97); }
 .story-banner__icon { width: 28px; height: 28px; }
 .story-banner__text { text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
+
+/* the Ho-Oh finale — a calm, wondrous reveal (never scary) */
+.finale { position: absolute; inset: 0; z-index: 20; display: grid; place-items: center; padding: 4%; overflow: hidden;
+  background: radial-gradient(circle at 50% 36%, rgba(255,248,231,0.97), rgba(191,230,242,0.97)); }
+.finale__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.92; }
+.finale__card { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: clamp(8px, 2vh, 18px);
+  animation: popIn 0.5s cubic-bezier(0.2,1.4,0.4,1); }
+.finale__card .story__rainbow { width: min(360px, 76vw); }
+.finale__hooh { width: clamp(180px, 44vw, 300px); height: clamp(180px, 44vw, 300px);
+  filter: drop-shadow(0 8px 22px rgba(0,0,0,0.25)); animation: finale-float 3.2s ease-in-out infinite; }
+.finale__title { font-size: clamp(24px, 5.4vw, 40px); font-weight: 900; color: var(--ink); text-align: center; line-height: 1.15; }
+@keyframes finale-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }

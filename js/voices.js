@@ -79,6 +79,7 @@ export const clip = {
   storyIntro: () => url('story-intro.mp3'),            // "Let's go on a rainbow adventure, Alex!"
   featherFound: () => url('feather-found.mp3'),        // "You found a rainbow feather! The rainbow is growing!"
   storyMore: () => url('story-more.mp3'),              // "More rainbow feathers are waiting — let's keep exploring!"
+  finale: () => url('story-finale.mp3'),               // "You found every rainbow feather! Look — Ho-Oh has come to say hello, Alex!"
 };
 
 export const PRAISE_COUNT = 4;

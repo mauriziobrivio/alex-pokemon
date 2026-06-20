@@ -5,11 +5,12 @@
 // rainbow feather; the rainbow arc fills in. Free-play is one tap away ("Just
 // explore") and completely unchanged. No locks, no fail, no fixed order.
 
-import { el, charImg, icon } from '../ui.js';
+import { el, charImg, icon, spriteImg } from '../ui.js';
 import * as audio from '../audio.js';
 import { clip } from '../voices.js';
 import { sfx } from '../sfx.js';
-import { ZONES } from '../data.js';
+import { ZONES, pokemonById } from '../data.js';
+import { recordCatch } from '../game.js';
 import * as story from '../story.js';
 import { SPOTS } from './worldmap.js';
 import { confetti, sparkleBurst, centerOf, haloRing, driftSparkles } from '../fx.js';
@@ -92,20 +93,24 @@ export function renderStory(params, ctx) {
     else ctx.go('catch', { zoneId: zone, story: true });
   }
 
-  // Entry narration. Returning from a just-earned feather → celebrate + grow the
-  // rainbow; otherwise the once-per-session intro, then Mama points at what's next.
+  // Entry narration / set-piece. When every feather is home and the finale hasn't
+  // played yet, the Ho-Oh reveal supersedes everything (once ever). Otherwise:
+  // returning from a just-earned feather → celebrate + grow the rainbow; else the
+  // once-per-session intro, then Mama gently points at what's next.
   const feathered = params && params.feathered;
-  if (feathered) {
+  if (story.allChaptersDone() && !story.finaleSeen()) {
+    ctx.after(feathered ? 1100 : 600, () => { if (ctx.alive()) showFinale(); });
+  } else if (feathered) {
     ctx.after(450, () => { if (ctx.alive()) celebrate(); });
   } else {
     const next = story.nextChapterZone();
     if (!storyGreeted) {
       // One queued sequence → deterministic order (intro, THEN Mama points), no timer skew.
-      ctx.after(500, () => (next ? audio.speakSequence([clip.storyIntro(), clip.suggest(next)]) : audio.speak(clip.storyIntro())));
+      ctx.after(500, () => (next ? audio.speakSequence([clip.storyIntro(), clip.suggest(next)]) : audio.speak(clip.storyMore())));
     } else if (next) {
       ctx.after(500, () => audio.speak(clip.suggest(next)));
     } else {
-      ctx.after(500, () => audio.speak(clip.storyMore()));
+      ctx.after(500, () => audio.speak(clip.storyMore())); // rainbow complete (finale already seen)
     }
     storyGreeted = true;
   }
@@ -121,8 +126,35 @@ export function renderStory(params, ctx) {
       driftSparkles(root, c.x, c.y, 9);
       rb.classList.add('is-growing');
     }
-    if (story.allChaptersDone()) audio.speak(clip.storyMore()); // Stage 1: graceful "more coming" (Stage 3 = Ho-Oh finale)
-    else { const next = story.nextChapterZone(); if (next) audio.speak(clip.suggest(next)); }
+    const next = story.nextChapterZone();
+    if (next) audio.speak(clip.suggest(next)); // (all-done is handled by the finale path above)
+  }
+
+  // The finale — a calm, wondrous reveal (never a battle, never scary): Ho-Oh
+  // comes to the kind trainer who gathered every feather, and joins the Pokédex.
+  function showFinale() {
+    recordCatch(story.HOOH_ID); // met with joy, not caught in a ball
+    story.markFinaleSeen();
+    const hooh = pokemonById(story.HOOH_ID);
+    const sprite = spriteImg(hooh); sprite.classList.add('finale__hooh');
+    const overlay = el('div', { class: 'finale' },
+      charImg('assets/screens/scene-finale-rainbow.png', 'finale__bg'), // bespoke art if dropped in; else the card's CSS rainbow carries it
+      el('div', { class: 'finale__card' },
+        rainbowArc(),
+        sprite,
+        el('div', { class: 'finale__title' }, hooh ? `${hooh.name} came to say hello!` : 'A beautiful friend has come!'),
+        el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); } }, 'Yay!'),
+      ));
+    root.append(overlay);
+    audio.play(sfx.catch());
+    audio.speak(clip.finale());
+    requestAnimationFrame(() => {
+      const c = centerOf(sprite, root);
+      haloRing(root, c.x, c.y, { size: 320, color: 'rgba(255,224,106,0.9)', dur: 1100 });
+      sparkleBurst(root, c.x, c.y, 22);
+      driftSparkles(root, c.x, c.y, 12);
+      confetti(root);
+    });
   }
 
   return root;

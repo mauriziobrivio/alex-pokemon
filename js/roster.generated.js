@@ -7097,7 +7097,7 @@ export const ROSTER = [
   },
   {
     "id": 250,
-    "name": "Ho-oh",
+    "name": "Ho-Oh",
     "types": [
       "fire",
       "flying"
@@ -7112,7 +7112,7 @@ export const ROSTER = [
     "evolutionChain": [
       {
         "id": 250,
-        "name": "Ho-oh"
+        "name": "Ho-Oh"
       }
     ],
     "evolvesTo": [],

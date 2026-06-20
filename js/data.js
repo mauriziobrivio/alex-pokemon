@@ -41,21 +41,39 @@ export const OCEAN_IDS = new Set([
   363, 364, 365, 366, 367, 368, 369, 370,           // Spheal line, Clamperl/Huntail/Gorebyss, Relicanth, Luvdisc
 ]);
 
+// Legendaries are reserved as SPECIAL, story-only friends — never random wild
+// catches (founder decision). Ho-Oh (#250) is met at the Story finale (the
+// Rainbow Wonder-Quest); the rest await future story rewards. They're excluded
+// from every wild zonePool below; in the binder they stay warm "discovery to
+// come" silhouettes — never a deficit, never "complete the set" pressure.
+export const LEGENDARY_IDS = new Set([
+  144, 145, 146, 150, 151,                            // Gen 1: birds, Mewtwo, Mew
+  243, 244, 245, 249, 250, 251,                       // Gen 2: beasts, Lugia, Ho-Oh, Celebi
+  377, 378, 379, 380, 381, 382, 383, 384, 385, 386,   // Gen 3: Regis, Lati@s, Kyogre/Groudon/Rayquaza, Jirachi, Deoxys
+]);
+
 // Alex's favourites — gifted in the starter moment (not caught).
 export const STARTER_IDS = [25, 4, 1]; // Pikachu, Charmander, Bulbasaur
 
 const BY_ID = new Map(ROSTER.map((p) => [p.id, p]));
 export const pokemonById = (id) => BY_ID.get(id) || null;
 
-// Pokémon that live in a given zone. The Ocean Depths is the curated deep-water
+// Pokémon that live in a given zone — the BINDER's source of truth (every
+// Pokémon, incl. reserved legendaries, has ≥1 home so it shows as a card or a
+// "discovery to come" silhouette). The Ocean Depths is the curated deep-water
 // set; the Beach is shore/surface (its deep-water residents re-homed to Ocean).
-// zonePool is the single source of truth for spawning + the binder, so every
-// Pokémon still has ≥1 home (the ocean residents gain Ocean as they leave Beach).
+// Wild SPAWNING uses spawnPool (below), which drops the reserved legendaries.
 export function zonePool(zoneId) {
   if (zoneId === 'ocean') return ROSTER.filter((p) => OCEAN_IDS.has(p.id));
   if (zoneId === 'beach') return ROSTER.filter((p) => p.zones.includes('beach') && !OCEAN_IDS.has(p.id));
   return ROSTER.filter((p) => p.zones.includes(zoneId));
 }
+
+// The WILD-SPAWN pool — what actually appears in a Catch outing: the zone's pool
+// MINUS the reserved legendaries (special/story-only; Ho-Oh is met at the finale).
+// The binder still uses zonePool, so legendaries remain "discovery to come"
+// silhouettes there and a caught Ho-Oh shows on its habitat page — never orphaned.
+export const spawnPool = (zoneId) => zonePool(zoneId).filter((p) => !LEGENDARY_IDS.has(p.id));
 
 // The next evolution stage (direct child, first that exists in the Gen-1 roster),
 // or null at the end of the line. Uses evolvesTo so branches (Eevee) don't

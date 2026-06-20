@@ -4,7 +4,7 @@
 // guarantee lives in the scene (there is simply no enemy-damage mechanic).
 
 import * as mastery from './mastery.js';
-import { CVC_WORDS, wordBuildable, ROSTER, sameSound } from './data.js';
+import { CVC_WORDS, wordBuildable, ROSTER, sameSound, LEGENDARY_IDS } from './data.js';
 
 // 4 HP = one of each question type per battle: compare(-1) + match(-1) + blend(-2,
 // charged) faints the wild after exactly the 3 shuffled turns, in any order.
@@ -14,7 +14,8 @@ export const BATTLE_BOND = 2;   // a win feeds the Train→Evolution loop
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
 export function pickWild() {
-  const spawnable = ROSTER.filter((p) => p.zones.length);
+  // Reserved legendaries are special/story-only — not casual battle opponents either.
+  const spawnable = ROSTER.filter((p) => p.zones.length && !LEGENDARY_IDS.has(p.id));
   return spawnable[Math.floor(Math.random() * spawnable.length)];
 }
 
