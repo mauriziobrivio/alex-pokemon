@@ -60,7 +60,7 @@ function showEvolutionChoice(root, ctx, targets, onChoose) {
   let selected = null;
   let idle = null;
   // gentle audio-first nudge if Alex just looks (mirrors catch/train/battle)
-  const scheduleIdle = () => { clearTimeout(idle); idle = ctx.after(7000, () => { if (overlay.isConnected) { audio.play(clip.starterIntro()); scheduleIdle(); } }); };
+  const scheduleIdle = () => { clearTimeout(idle); idle = ctx.after(7000, () => { if (overlay.isConnected) { audio.speak(clip.starterIntro()); scheduleIdle(); } }); };
 
   const confirm = el('button', { class: 'btn btn--confirm', type: 'button', style: { visibility: 'hidden' } });
   confirm.addEventListener('click', () => { if (selected != null) { clearTimeout(idle); audio.play(sfx.pop()); overlay.remove(); onChoose(selected); } });
@@ -70,7 +70,7 @@ function showEvolutionChoice(root, ctx, targets, onChoose) {
       onClick: () => {
         selected = nid;
         scheduleIdle();
-        audio.play(sfx.pop()); audio.play(clip.name(nid));
+        audio.play(sfx.pop()); audio.speak(clip.name(nid));
         [...opts.children].forEach((b) => b.classList.toggle('is-selected', b === btn));
         confirm.textContent = `Choose ${mon.name}!`;
         confirm.style.visibility = 'visible';
@@ -82,7 +82,7 @@ function showEvolutionChoice(root, ctx, targets, onChoose) {
   overlay.append(el('div', { class: 'evolve-choice__stage' },
     el('div', { class: 'evolve-choice__title' }, 'Choose your evolution!'), opts, confirm));
   root.append(overlay);
-  ctx.after(400, () => audio.play(clip.starterIntro())); // reuse the warm "choose!" intro
+  ctx.after(400, () => audio.speak(clip.starterIntro())); // reuse the warm "choose!" intro
   scheduleIdle();
 }
 

@@ -71,6 +71,9 @@ export const clip = {
   putInOrder: () => url('put-in-order.mp3'),           // "Put them in order!"
   whichStartSame: () => url('which-start-same.mp3'),   // "Which two start the same?" (the phoneme plays after)
   whichRhyme: () => url('which-rhyme.mp3'),            // "Which ones rhyme?" (rhyme variant — backlog)
+
+  // --- Phase 9: My Words (review wall) ---
+  myWords: () => url('my-words.mp3'),                  // "Here are all the words you built! Tap one to read it."
 };
 
 export const PRAISE_COUNT = 4;

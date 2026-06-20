@@ -40,13 +40,13 @@ export function renderSubitize(_params, ctx) {
       flash.classList.remove('is-hidden');
       if (!prefersReducedMotion()) ctx.after(950, () => { if (myToken === token) flash.classList.add('is-hidden'); });
     };
-    const speak = () => audio.play(clip.howMany());
+    const speak = () => audio.speak(clip.howMany());
 
     const opts = shuffle([target, ...shuffle(SMALL.filter((n) => n !== target)).slice(0, 2)]);
     opts.forEach((v) => choicesRow.append(choiceBtn(v, 'number', (btn) => {
       if (busy) return;
-      if (v === target) { busy = true; win(root, ctx, { record: () => mastery.record(target, firstTry), next: round, say: () => audio.play(clip.number(target)) }); }
-      else { firstTry = false; reveal(); wrongTap(btn, ctx, () => audio.play(clip.howMany())); }
+      if (v === target) { busy = true; win(root, ctx, { record: () => mastery.record(target, firstTry), next: round, say: () => audio.speak(clip.number(target)) }); }
+      else { firstTry = false; reveal(); wrongTap(btn, ctx, () => audio.speak(clip.howMany())); }
     })));
 
     reveal();

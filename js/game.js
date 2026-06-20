@@ -71,6 +71,19 @@ export function takeMilestone() {
   return hit;
 }
 
+// --- "My Words" (Phase 9): the CVC words Alex has built in Train ---
+// A growing review wall he can revisit and re-blend. Distinct words, most-recent
+// first; generously capped (above the full CVC set) so a built word is never lost.
+export const getWords = () => read('words', []);
+export function recordWord(word) {
+  if (!word) return getWords();
+  const list = read('words', []).filter((w) => w !== word); // move-to-front, no dupes
+  list.unshift(word);
+  const capped = list.slice(0, 80);
+  write('words', capped);
+  return capped;
+}
+
 // Settings (grown-up): voice/SFX volume + mute, and the music bed volume + mute
 // (music defaults to a gentle low level, beneath Dada's voice).
 export const getSettings = () => read('settings', { volume: 1, muted: false, music: 0.5, musicMuted: false });

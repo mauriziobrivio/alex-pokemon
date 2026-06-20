@@ -48,7 +48,7 @@ export function win(root, ctx, { record, next, say } = {}) {
   confetti(root);
   Promise.resolve(say ? say() : 0).then((dur) => {
     ctx.after(Math.round(((Number(dur) || 0.5) + 0.3) * 1000), () => {
-      if (ctx.alive() && Math.random() < 0.5) audio.play(clip.praise(rnd(PRAISE_COUNT)));
+      if (ctx.alive() && Math.random() < 0.5) audio.speak(clip.praise(rnd(PRAISE_COUNT)));
     });
   });
   ctx.after(1600, () => { if (ctx.alive() && next) next(); });

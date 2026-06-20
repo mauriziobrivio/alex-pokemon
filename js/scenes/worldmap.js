@@ -36,7 +36,7 @@ export function renderWorldmap(_params, ctx) {
     const s = SPOTS[z.id] || { x: 50, y: 50 };
     const spot = el('button', { class: `hotspot hotspot--${z.id}`, type: 'button', 'aria-label': z.name,
       style: { left: `${s.x}%`, top: `${s.y}%` },
-      onClick: () => { audio.play(sfx.pop()); audio.play(clip.zone(z.id)); ctx.after(380, () => { if (ctx.alive()) ctx.go('catch', { zoneId: z.id }); }); } });
+      onClick: () => { audio.play(sfx.pop()); audio.speak(clip.zone(z.id)); ctx.after(380, () => { if (ctx.alive()) ctx.go('catch', { zoneId: z.id }); }); } });
     const fx = el('span', { class: 'hotspot__fx', 'aria-hidden': 'true' });
     const kind = FX[z.id];
     if (kind && kind !== 'glow') for (let i = 0; i < 3; i++) fx.append(el('i', { class: `particle particle--${kind}` }));

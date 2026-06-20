@@ -16,6 +16,7 @@ import * as mastery from '../mastery.js';
 import { tenFrame } from '../tenframe.js';
 import { isCaught, recordCatch, markFoil } from '../game.js';
 import { openPack } from '../cards.js';
+import { typeBadges } from '../typeicon.js';
 import * as quests from '../quests.js';
 import * as music from '../music.js';
 import { confetti, sparkleBurst, centerOf, haloRing } from '../fx.js';
@@ -62,6 +63,7 @@ export function renderCatch({ zoneId }, ctx) {
   let misses = 0;                 // wrong taps this encounter (-> escape at MISSES_TO_ESCAPE)
   let encountersDone = 0;         // caught OR escaped, toward OUTING_LENGTH
   const outingCatches = [];       // ids caught this outing (for the soft-stop haul)
+  let lastCatchPraised = false;   // praise is occasional — never two catches in a row
 
   const fillPips = () => pips.forEach((p, i) => p.classList.toggle('is-filled', i < encountersDone));
 
@@ -117,10 +119,10 @@ export function renderCatch({ zoneId }, ctx) {
       choices: numberChoices(t, mastery.choiceCount(t)),
       label: (v) => String(v),
       speak: () => {
-        const p = isTeen(t) && level !== 'bare' ? audio.playSequence([clip.prompt(t), clip.number(t)]) : audio.play(clip.prompt(t));
+        const p = isTeen(t) && level !== 'bare' ? audio.playSequence([clip.prompt(t), clip.number(t)]) : audio.speak(clip.prompt(t));
         p.then(() => { if (level === 'fade' && tf && ctx.alive()) ctx.after(700, () => tf.classList.add('is-faded')); });
       },
-      reprompt: () => audio.play(clip.reprompt(t)),
+      reprompt: () => audio.speak(clip.reprompt(t)),
       record: (ft) => mastery.record(t, ft),
       tenframe: tf,
     };
@@ -200,7 +202,7 @@ export function renderCatch({ zoneId }, ctx) {
     wildSlot.classList.add('is-escaping');
     await sleep(720);
     if (!ctx.alive()) return;
-    audio.play(clip.escape());        // "Aw, it hopped away! Here comes another!"
+    audio.speak(clip.escape());        // "Aw, it hopped away! Here comes another!"
     encountersDone += 1;
     fillPips();
     ctx.after(1200, () => {
@@ -236,6 +238,7 @@ export function renderCatch({ zoneId }, ctx) {
     haloRing(root, c.x, c.y, { size: 220, dur: 850 }); // soft bloom behind the reveal
     sparkleBurst(root, c.x, c.y, 18);
     confetti(root);
+    const isNew = !isCaught(pokemon.id); // BEFORE recordCatch: first catch of this species?
     recordCatch(pokemon.id);
     if (firstTry) markFoil(pokemon.id); // earn the card's foil by a first-try catch — skill, never luck
     quests.onCatch(zone.id); // passive quest progress (gentle, no pressure)
@@ -243,8 +246,13 @@ export function renderCatch({ zoneId }, ctx) {
     encountersDone += 1;
     fillPips();
 
-    audio.playSequence([clip.catchCheer(rnd(CATCH_CHEER_COUNT)), clip.name(pokemon.id)]);
-    ctx.after(1700, () => audio.play(clip.praise(rnd(PRAISE_COUNT))));
+    // Always the informative "You caught {name}!"; praise is OCCASIONAL — a NEW
+    // species, else ~1 in 4 — and never twice in a row, queued AFTER the name so
+    // Dada never talks over himself (no overlap, no fixed timer).
+    audio.speakSequence([clip.catchCheer(rnd(CATCH_CHEER_COUNT)), clip.name(pokemon.id)]);
+    const praiseNow = (isNew || Math.random() < 0.25) && !lastCatchPraised;
+    lastCatchPraised = praiseNow;
+    if (praiseNow) audio.speak(clip.praise(rnd(PRAISE_COUNT)));
 
     showCaughtCard();
   }
@@ -259,6 +267,8 @@ export function renderCatch({ zoneId }, ctx) {
       el('div', { class: 'caught__badge' }, 'Caught!'),
       sprite,
       el('div', { class: 'caught__name' }, pokemon.name),
+      typeBadges(pokemon.types, 'caught__types'), // its types as TCG-style symbols
+
       el('div', { class: 'caught__actions' },
         el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); advance(); } }, last ? 'See who we met!' : 'Keep going!'),
         el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, 'Home'),

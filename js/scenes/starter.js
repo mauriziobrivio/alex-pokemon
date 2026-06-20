@@ -38,7 +38,7 @@ export function renderStarter(_params, ctx) {
     selectedId = id;
     const p = pokemonById(id);
     audio.play(sfx.pop());
-    audio.play(clip.name(id));
+    audio.speak(clip.name(id));
     [...balls.children].forEach((b) => b.classList.toggle('is-selected', b === ball));
     clear(preview);
     const s = spriteImg(p);
@@ -68,7 +68,7 @@ export function renderStarter(_params, ctx) {
     ctx.after(2000, () => ctx.go('home'));
   });
 
-  ctx.after(450, () => audio.play(clip.starterIntro()));
+  ctx.after(450, () => audio.speak(clip.starterIntro()));
 
   stage.append(title, preview, name, balls, confirmBtn);
   root.append(stage);

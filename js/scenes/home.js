@@ -12,6 +12,8 @@ import * as quests from '../quests.js';
 import * as music from '../music.js';
 import { confetti, sparkleBurst, centerOf, haloRing, driftSparkles } from '../fx.js';
 
+let homeGreeted = false; // one gentle home nudge per session (resets on page reload)
+
 export function renderHome(_params, ctx) {
   const root = el('div', { class: 'scene home', style: { backgroundImage: "url('assets/screens/bg-lab.png')" } });
   music.play('home');
@@ -53,9 +55,9 @@ export function renderHome(_params, ctx) {
   // Gentle quest — an invitation, tap to hear it or just ignore it. No pressure.
   const quest = quests.getActiveQuest();
   const speakQuest = () => {
-    if (quest.kind === 'catch-in-zone') audio.play(clip.suggest(quest.zone));
-    else if (quest.kind === 'evolve') audio.play(clip.questEvolve());
-    else audio.play(clip.questCatch());
+    if (quest.kind === 'catch-in-zone') audio.speak(clip.suggest(quest.zone));
+    else if (quest.kind === 'evolve') audio.speak(clip.questEvolve());
+    else audio.speak(clip.questCatch());
   };
   const questBanner = el('button', { class: 'quest-banner', type: 'button', 'aria-label': quest.prompt, onClick: () => { audio.play(sfx.pop()); speakQuest(); } },
     icon('quest', 'quest-banner__icon'),
@@ -66,14 +68,17 @@ export function renderHome(_params, ctx) {
 
   root.append(cast, hello, questBanner, menu, playLearn, stickerStrip, gear);
 
-  // Celebrate a completed quest (taken above) gently, on return.
-  ctx.after(500, () => audio.play(clip.homeWelcome()));
+  // The session greeting plays once on the splash (neutral "Hi Alex!"); home stays
+  // quiet on later returns (no repeated welcome). A completed quest always
+  // celebrates (earned + meaningful); otherwise the FIRST home of the session adds
+  // one gentle quest nudge.
   if (completed) {
-    ctx.after(1400, () => { if (ctx.alive()) celebrateQuest(root, completed.reward); });
-  } else {
+    ctx.after(1200, () => { if (ctx.alive()) celebrateQuest(root, completed.reward); });
+  } else if (!homeGreeted) {
     const sz = quests.questZoneSuggest(quest) || (ZONES.find((z) => z.suggested) || ZONES[0]).id;
-    ctx.after(2400, () => audio.play(clip.suggest(sz)));
+    ctx.after(1400, () => audio.speak(clip.suggest(sz)));
   }
+  homeGreeted = true;
 
   return root;
 }
@@ -81,7 +86,7 @@ export function renderHome(_params, ctx) {
 function celebrateQuest(root, reward) {
   confetti(root);
   audio.play(sfx.catch());
-  audio.play(clip.praise(rnd(PRAISE_COUNT)));
+  audio.speak(clip.praise(rnd(PRAISE_COUNT)));
   const overlay = el('div', { class: 'sticker-pop' },
     el('div', { class: 'sticker-pop__card' },
       el('div', { class: 'sticker-pop__badge' }, 'You earned a sticker!'),
@@ -168,7 +173,7 @@ function buildGearAndPanel(root) {
         el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => setMusic((s.music ?? 0.5) + 0.2) }, '+'),
         el('button', { class: 'btn btn--ghost', type: 'button', onClick: toggleMusicMute }, 'Mute'),
       ),
-      el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => audio.play(clip.homeWelcome()) }, icon('replay'), ' Replay voice'),
+      el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => audio.speak(clip.homeWelcome()) }, icon('replay'), ' Replay voice'),
       el('div', { class: 'panel__row' }, el('span', {}, `Pokémon caught: ${caughtCount()}`)),
       resetBtn,
       el('button', { class: 'btn', type: 'button', onClick: () => panel.remove() }, 'Done'),

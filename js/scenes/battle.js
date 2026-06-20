@@ -131,7 +131,7 @@ export function renderBattle(_params, ctx) {
       ctx.after(380, () => wildEl && wildEl.classList.remove('is-hit'));
       wildHp -= charged ? 2 : 1;
       updateHp();
-      audio.play(clip.praise(rnd(PRAISE_COUNT)));
+      audio.speak(clip.praise(rnd(PRAISE_COUNT)));
       turn += 1;
       ctx.after(950, () => { if (ctx.alive()) (wildHp <= 0 ? win() : nextTurn()); });
     });
@@ -208,10 +208,10 @@ export function renderBattle(_params, ctx) {
     const tileRow = el('div', { class: 'tile-row' });
     let nextIndex = 0, firstTry = true, locked = false;
 
-    const speakNext = () => { if (nextIndex < slots.length) audio.play(clip.phoneme(slots[nextIndex].dataset.want)); };
+    const speakNext = () => { if (nextIndex < slots.length) audio.speak(clip.phoneme(slots[nextIndex].dataset.want)); };
     function activateSlot() {
       slots.forEach((s, i) => s.classList.toggle('is-active', i === nextIndex));
-      if (nextIndex < slots.length) { const want = slots[nextIndex].dataset.want; ctx.after(300, () => { if (myToken === token) audio.play(clip.phoneme(want)); }); scheduleIdle(speakNext, myToken); }
+      if (nextIndex < slots.length) { const want = slots[nextIndex].dataset.want; ctx.after(300, () => { if (myToken === token) audio.speak(clip.phoneme(want)); }); scheduleIdle(speakNext, myToken); }
     }
     function renderTiles() {
       clear(tileRow);
@@ -227,7 +227,7 @@ export function renderBattle(_params, ctx) {
       if (ch === want) {
         audio.play(sfx.pop());
         slots[nextIndex].textContent = ch; slots[nextIndex].classList.add('is-filled');
-        audio.play(clip.phoneme(ch));
+        audio.speak(clip.phoneme(ch));
         tiles[idx] = null; renderTiles();
         nextIndex += 1;
         chargeFill.style.width = `${(nextIndex / slots.length) * 100}%`;
@@ -238,7 +238,7 @@ export function renderBattle(_params, ctx) {
         audio.play(sfx.soft());
         tile.classList.add('is-wrong');
         tile.addEventListener('animationend', () => tile.classList.remove('is-wrong'), { once: true });
-        ctx.after(450, () => { if (!locked && myToken === token) audio.play(clip.phoneme(want)); });
+        ctx.after(450, () => { if (!locked && myToken === token) audio.speak(clip.phoneme(want)); });
         scheduleIdle(speakNext, myToken);
       }
     }
@@ -247,14 +247,14 @@ export function renderBattle(_params, ctx) {
       slots.forEach((s) => s.classList.remove('is-active'));
       await audio.playSequence(letters.map((ch) => clip.phoneme(ch)), 0.14);
       if (!ctx.alive() || myToken !== token) return;
-      await audio.play(clip.word(q.word));
+      await audio.speak(clip.word(q.word));
       if (!ctx.alive() || myToken !== token) return;
       onHit(q, firstTry, true); // charged hit
     }
 
     renderTiles();
     tray.append(slotRow, tileRow);
-    ctx.after(400, () => { if (myToken === token) { audio.play(clip.chargeUp()); ctx.after(900, activateSlot); } });
+    ctx.after(400, () => { if (myToken === token) { audio.speak(clip.chargeUp()); ctx.after(900, activateSlot); } });
   }
 
   // ---------- Win (always) ----------
@@ -263,14 +263,14 @@ export function renderBattle(_params, ctx) {
     clearTimeout(idleTimer);
     clear(tray);
     if (wildEl) wildEl.classList.add('is-fainted');
-    audio.play(clip.fainted());
+    audio.speak(clip.fainted());
     const c = wildEl ? centerOf(wildEl, root) : { x: 0, y: 0 };
     sparkleBurst(root, c.x, c.y - 20, 10); // sleepy stars
     ctx.after(900, () => {
       if (!ctx.alive()) return;
       confetti(root);
       addBond(buddyId, battle.BATTLE_BOND);
-      audio.play(clip.youWin());
+      audio.speak(clip.youWin());
       if (canEvolve(buddyId)) {
         triggerEvolution(root, ctx, buddyId, (evolvedId) => { buddyId = evolvedId; showWinCard(true); });
       } else {

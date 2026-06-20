@@ -13,6 +13,7 @@ const GAMES = [
   { id: 'game-subitize', name: 'Quick Count', icon: 'game-subitize' },
   { id: 'game-whatnext', name: 'What Comes Next', icon: 'game-whatnext' },
   { id: 'game-soundmatch', name: 'Sound Match', icon: 'game-soundmatch' },
+  { id: 'game-mywords', name: 'My Words', icon: 'build-word' }, // review wall of words he's built (reuses the build-a-word icon)
 ];
 
 export function renderGames(_params, ctx) {
@@ -30,6 +31,6 @@ export function renderGames(_params, ctx) {
   });
 
   root.append(back, el('h1', { class: 'games__title' }, 'Play & Learn'), grid);
-  ctx.after(450, () => { if (ctx.alive()) audio.play(clip.playLearnIntro()); });
+  ctx.after(450, () => { if (ctx.alive()) audio.speak(clip.playLearnIntro()); });
   return root;
 }

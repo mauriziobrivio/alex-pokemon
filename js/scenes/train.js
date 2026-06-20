@@ -14,7 +14,7 @@ import { sfx } from '../sfx.js';
 import { CVC_WORDS, wordBuildable, isTeen, pokemonById, nextStageId, sameSound } from '../data.js';
 import * as mastery from '../mastery.js';
 import { tenFrame } from '../tenframe.js';
-import { getPokedex, getBond, addBond, bondCost } from '../game.js';
+import { getPokedex, getBond, addBond, bondCost, recordWord } from '../game.js';
 import { canEvolve, triggerEvolution } from '../evolve.js';
 import { sparkleBurst, centerOf } from '../fx.js';
 import * as music from '../music.js';
@@ -62,7 +62,7 @@ export function renderTrain(_params, ctx) {
     });
     panel.append(grid);
     const myToken = token;
-    ctx.after(400, () => { if (myToken === token) audio.play(clip.pickBuddy()); });
+    ctx.after(400, () => { if (myToken === token) audio.speak(clip.pickBuddy()); });
   }
 
   function showActivityPicker() {
@@ -119,13 +119,13 @@ export function renderTrain(_params, ctx) {
       clearTimeout(idleTimer);
       if (nextIndex >= slots.length) return;
       const want = slots[nextIndex].dataset.want;
-      idleTimer = ctx.after(7000, () => { if (myToken === token && !locked) { audio.play(clip.phoneme(want)); scheduleIdle(); } });
+      idleTimer = ctx.after(7000, () => { if (myToken === token && !locked) { audio.speak(clip.phoneme(want)); scheduleIdle(); } });
     }
     function activateSlot() {
       slots.forEach((s, i) => s.classList.toggle('is-active', i === nextIndex));
       if (nextIndex < slots.length) {
         const want = slots[nextIndex].dataset.want;
-        ctx.after(300, () => { if (myToken === token) audio.play(clip.phoneme(want)); });
+        ctx.after(300, () => { if (myToken === token) audio.speak(clip.phoneme(want)); });
         scheduleIdle();
       }
     }
@@ -144,7 +144,7 @@ export function renderTrain(_params, ctx) {
         audio.play(sfx.pop());
         slots[nextIndex].textContent = ch;
         slots[nextIndex].classList.add('is-filled');
-        audio.play(clip.phoneme(ch));
+        audio.speak(clip.phoneme(ch));
         tiles[idx] = null; renderTiles();
         nextIndex += 1;
         if (nextIndex === slots.length) { locked = true; blendAndFinish(word, slots, myToken); }
@@ -153,23 +153,24 @@ export function renderTrain(_params, ctx) {
         audio.play(sfx.soft());
         tile.classList.add('is-wrong');
         tile.addEventListener('animationend', () => tile.classList.remove('is-wrong'), { once: true });
-        ctx.after(450, () => { if (!locked && myToken === token) audio.play(clip.phoneme(want)); });
+        ctx.after(450, () => { if (!locked && myToken === token) audio.speak(clip.phoneme(want)); });
         scheduleIdle();
       }
     }
 
     renderTiles();
     panel.append(slotRow, tileRow, el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => showActivityPicker() }, 'Done'));
-    ctx.after(400, () => { if (myToken === token) { audio.play(clip.letsBuild()); ctx.after(900, activateSlot); } });
+    ctx.after(400, () => { if (myToken === token) { audio.speak(clip.letsBuild()); ctx.after(900, activateSlot); } });
   }
 
   async function blendAndFinish(word, slots, myToken) {
     clearTimeout(idleTimer);
+    recordWord(word); // add to his "My Words" wall (the moment the word is complete)
     slots.forEach((s) => s.classList.remove('is-active'));
     // segment (each sound, fully) then blend (the whole word) — duration-aware so phonemes don't smear
     await audio.playSequence(word.split('').map((ch) => clip.phoneme(ch)), 0.14);
     if (!ctx.alive() || myToken !== token) return;
-    await audio.play(clip.word(word));
+    await audio.speak(clip.word(word));
     if (!ctx.alive() || myToken !== token) return;
     const c = centerOf(panel, root);
     sparkleBurst(root, c.x, c.y, 18);
@@ -234,7 +235,7 @@ export function renderTrain(_params, ctx) {
         locked = true; // freeze the field the moment we reach the target — the extra berries go inert
         const c = centerOf(field, root);
         sparkleBurst(root, c.x, c.y, 16);
-        ctx.after(700, () => { if (myToken === token) audio.play(clip.praise(rnd(PRAISE_COUNT))); });
+        ctx.after(700, () => { if (myToken === token) audio.speak(clip.praise(rnd(PRAISE_COUNT))); });
         ctx.after(1600, () => { if (ctx.alive() && myToken === token) afterTrainSuccess(); });
       } else {
         scheduleIdle();

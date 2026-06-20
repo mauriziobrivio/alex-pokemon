@@ -13,6 +13,7 @@ import { sfx } from '../sfx.js';
 import { ZONES, zoneById, zonePool, pokemonById } from '../data.js';
 import { isCaught, isFoil, caughtCount } from '../game.js';
 import { cardEl } from '../cards.js';
+import { typeBadges } from '../typeicon.js';
 import { sparkleBurst, centerOf } from '../fx.js';
 import * as music from '../music.js';
 
@@ -70,7 +71,7 @@ export function renderPokedex(_params, ctx) {
 
   // Uncaught — a gentle "discovery to come", never a deficit. Spoken (audio-first).
   function peek(mon) {
-    audio.play(clip.peek());
+    audio.speak(clip.peek());
     const overlay = el('div', { class: 'detail-overlay' });
     overlay.append(el('div', { class: 'detail detail--locked' },
       spriteImg(mon, { silhouette: true }),
@@ -83,7 +84,7 @@ export function renderPokedex(_params, ctx) {
 
   // Living card — the Pokémon comes alive in its home habitat. Wonder, not stats.
   function openLivingCard(mon) {
-    audio.play(clip.name(mon.id));
+    audio.speak(clip.name(mon.id));
     const zoneId = activeZone; // the habitat page you're viewing it in (always a valid backdrop)
     const foil = isFoil(mon.id);
 
@@ -104,8 +105,8 @@ export function renderPokedex(_params, ctx) {
     });
 
     const panel = el('div', { class: 'living__panel' },
-      el('div', { class: 'living__name', onClick: () => audio.play(clip.name(mon.id)) }, mon.name),
-      el('div', { class: 'detail__types' }, ...mon.types.map((t) => el('span', { class: `type type--${t}` }, t))),
+      el('div', { class: 'living__name', onClick: () => audio.speak(clip.name(mon.id)) }, mon.name),
+      typeBadges(mon.types, 'detail__types'),
       stages.length > 1 ? el('div', { class: 'detail__evolabel' }, 'Evolution line') : null,
       stages.length > 1 ? line : null,
       el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); } }, 'Back to my cards'),

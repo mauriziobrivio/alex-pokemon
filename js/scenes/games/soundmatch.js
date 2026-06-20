@@ -34,7 +34,7 @@ export function renderSoundMatch(_params, ctx) {
     const myToken = ++token;
     const target = pickLetter();
     clear(panel);
-    if (!target) { panel.append(el('h2', { class: 'game__title' }, 'Catch more Pokémon to play this!')); ctx.after(450, () => { if (ctx.alive()) audio.play(clip.questCatch()); }); return; } // audio-first even when empty
+    if (!target) { panel.append(el('h2', { class: 'game__title' }, 'Catch more Pokémon to play this!')); ctx.after(450, () => { if (ctx.alive()) audio.speak(clip.questCatch()); }); return; } // audio-first even when empty
     last = target;
     const tSound = LETTER_SOUND[target];
     let firstTry = true;

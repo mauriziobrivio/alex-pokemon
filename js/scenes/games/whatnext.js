@@ -36,7 +36,7 @@ export function renderWhatNext(_params, ctx) {
     while (set.size < 3) set.add(1 + Math.floor(Math.random() * 20));
     shuffle([...set].slice(0, 3)).forEach((v) => choicesRow.append(choiceBtn(v, 'number', (btn) => {
       if (busy) return;
-      if (v === answer) { busy = true; win(root, ctx, { record: () => mastery.record(answer, firstTry), next: round, say: () => audio.play(clip.number(answer)) }); }
+      if (v === answer) { busy = true; win(root, ctx, { record: () => mastery.record(answer, firstTry), next: round, say: () => audio.speak(clip.number(answer)) }); }
       else { firstTry = false; wrongTap(btn, ctx, speak); }
     })));
 

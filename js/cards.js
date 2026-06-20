@@ -46,7 +46,7 @@ export function openPack(root, ctx, ids, { onGoAgain } = {}) {
 
   // Graceful empty pack (a rare all-escape outing) — warm, never a failure.
   if (!uniq.length) {
-    audio.play(clip.outingEnd());
+    audio.speak(clip.outingEnd());
     overlay.append(el('div', { class: 'pack__done' },
       el('div', { class: 'pack__title' }, 'What an adventure!'),
       el('div', { class: 'pack__sub' }, 'They were shy today — let\'s find some friends!'),
@@ -55,7 +55,7 @@ export function openPack(root, ctx, ids, { onGoAgain } = {}) {
     return overlay;
   }
 
-  audio.play(clip.outingEnd()); // "...let's head home and see who we met!"
+  audio.speak(clip.outingEnd()); // "...let's head home and see who we met!"
   const title = el('div', { class: 'pack__title' }, 'Your adventure pack!');
   const pack = el('button', { class: 'pack', type: 'button', 'aria-label': 'Open your pack!' },
     el('div', { class: 'pack__art', 'aria-hidden': 'true' }),
@@ -74,9 +74,10 @@ export function openPack(root, ctx, ids, { onGoAgain } = {}) {
     card.classList.add('is-revealing');
     stage.append(card);
     audio.play(sfx.sparkle()); // SFX layers under the voice
-    // Chain the spoken lines so they never overlap (audio-first): foil cue, then name.
-    if (foil) audio.playSequence([clip.revealFoil(), clip.name(mon.id)]);
-    else audio.play(clip.name(mon.id));
+    // Names play on the EXCLUSIVE channel (each replaces the last) so they stay in
+    // sync with the fast card flips — no queue lag, never two voices at once. The
+    // foil's specialness is carried by its halo + sparkle below.
+    audio.playExclusive(clip.name(mon.id));
     ctx.after(80, () => {
       if (!ctx.alive()) return;
       const c = centerOf(card, root);
@@ -90,8 +91,8 @@ export function openPack(root, ctx, ids, { onGoAgain } = {}) {
   function finish() {
     if (!ctx.alive()) return;
     const m = takeMilestone(); // celebratory, once each, never names what's missing
-    if (m != null) ctx.after(450, () => { if (ctx.alive()) audio.play(clip.milestone(m)); });
-    else ctx.after(350, () => { if (ctx.alive()) audio.play(clip.praise(rnd(PRAISE_COUNT))); });
+    if (m != null) ctx.after(450, () => { if (ctx.alive()) audio.speak(clip.milestone(m)); });
+    else ctx.after(350, () => { if (ctx.alive()) audio.speak(clip.praise(rnd(PRAISE_COUNT))); });
     overlay.append(packActions());
   }
 

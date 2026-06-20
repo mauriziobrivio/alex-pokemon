@@ -22,12 +22,14 @@ import { renderGames } from './scenes/games/index.js';
 import { renderSubitize } from './scenes/games/subitize.js';
 import { renderWhatNext } from './scenes/games/whatnext.js';
 import { renderSoundMatch } from './scenes/games/soundmatch.js';
+import { renderMyWords } from './scenes/games/mywords.js';
 
 const app = document.getElementById('app');
 const scenes = {
   starter: renderStarter, home: renderHome, worldmap: renderWorldmap, catch: renderCatch,
   pokedex: renderPokedex, train: renderTrain, battle: renderBattle,
   games: renderGames, 'game-subitize': renderSubitize, 'game-whatnext': renderWhatNext, 'game-soundmatch': renderSoundMatch,
+  'game-mywords': renderMyWords,
 };
 
 let epoch = 0;
@@ -36,6 +38,7 @@ function go(name, params = {}) {
   const render = scenes[name];
   if (!render) return;
   const myEpoch = ++epoch; // anything from the previous scene is now stale
+  audio.clearVoice();      // drop the leaving scene's pending voice so it can't bleed forward
   const ctx = {
     go,
     alive: () => myEpoch === epoch,
@@ -70,8 +73,8 @@ function boot() {
     entered = true;
     audio.unlock();
     music.unlock(); // in-gesture: build the music graph + register the duck hook (iOS unlock)
-    audio.play(clip.greeting());
-    go(getStarterId() ? 'home' : 'starter');
+    go(getStarterId() ? 'home' : 'starter'); // clears the (empty) queue, then we greet
+    audio.speak(clip.greeting());            // the once-per-session greeting, first in the queue
     warmCache(); // populate the SW cache so names/words/sprites work offline later
   };
   splash.addEventListener('pointerup', enter);

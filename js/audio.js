@@ -106,6 +106,14 @@ function duckFor(url, durationSec) {
   setTimeout(() => duckHook && duckHook.end(), (Math.max(0, durationSec) + 0.15) * 1000);
 }
 
+// All VOICE playback shares ONE current-voice source — the queue (play) AND the
+// exclusive channel (playExclusive, used for counting + the pack reveal). Any new
+// voice stops the one currently sounding before it starts, so two of Dada's lines
+// can NEVER overlap (audio-first), no matter which path queued them. SFX never
+// participate (no /sfx/ url is a "voice") so they still layer freely under speech.
+let currentVoiceSrc = null;
+function stopCurrentVoice() { if (currentVoiceSrc) { try { currentVoiceSrc.stop(); } catch (_) {} currentVoiceSrc = null; } }
+
 // Play one clip by URL. Returns a promise that resolves when it (roughly) ends,
 // so callers can chain. Resolves immediately-ish for missing clips.
 export function play(url) {
@@ -116,7 +124,10 @@ export function play(url) {
         let buf = buffers.get(url);
         if (buf === undefined) buf = await preload(url);
         if (!buf) { playFallback(url); return 0; }
-        startBuffer(c, buf);
+        const voice = isVoiceUrl(url);
+        if (voice) stopCurrentVoice();       // a queued voice line replaces any voice still sounding
+        const src = startBuffer(c, buf);
+        if (voice) { currentVoiceSrc = src; src.onended = () => { if (currentVoiceSrc === src) currentVoiceSrc = null; }; }
         duckFor(url, buf.duration);
         return buf.duration;
       };
@@ -130,10 +141,10 @@ export function play(url) {
   return Promise.resolve(0);
 }
 
-// Play on a single "voice channel": stop the previous exclusive clip before
-// starting the next, so rapid counts ("one… two… three…") replace rather than
-// overlap. Returns the clip duration.
-let exclusiveSrc = null;
+// Play on the shared voice channel, replacing whatever voice is sounding: rapid
+// counts ("one… two… three…") and pack-reveal names replace rather than overlap,
+// and — because it's the SAME currentVoiceSrc the queue uses — a queued line and
+// an exclusive line can never sound together either. Returns the clip duration.
 export function playExclusive(url) {
   if (useWebAudio) {
     const c = getCtx();
@@ -142,13 +153,13 @@ export function playExclusive(url) {
         let buf = buffers.get(url);
         if (buf === undefined) buf = await preload(url);
         if (!buf) { playFallback(url); return 0; }
-        if (exclusiveSrc) { try { exclusiveSrc.stop(); } catch (_) {} }
+        stopCurrentVoice();
         const src = c.createBufferSource();
         src.buffer = buf;
         src.connect(master || c.destination);
-        src.onended = () => { if (exclusiveSrc === src) exclusiveSrc = null; };
+        src.onended = () => { if (currentVoiceSrc === src) currentVoiceSrc = null; };
         src.start(0);
-        exclusiveSrc = src;
+        currentVoiceSrc = src;
         duckFor(url, buf.duration);
         return buf.duration;
       };
@@ -160,19 +171,56 @@ export function playExclusive(url) {
   return Promise.resolve(0);
 }
 
-// Play clips back-to-back with a small gap (e.g. cheer → Pokémon name).
-export async function playSequence(urls, gap = 0.12) {
-  for (const url of urls) {
-    const dur = (await play(url)) || 0;
-    if (dur > 0) await new Promise((r) => setTimeout(r, (dur + gap) * 1000));
+// ---- The single VOICE queue (audio-first: two voice lines NEVER overlap) ----
+// Every spoken line goes through here: each waits for the previous to finish +
+// a calm beat, so Dada is never talking over himself. SFX (play) stay immediate
+// and parallel; counting (playExclusive) deliberately replaces. clearVoice()
+// drops anything pending (called on scene change) so voice can't bleed forward.
+const vq = [];          // { url, gap, resolve }
+let vBusy = false;
+let vGen = 0;
+export function clearVoice() { vGen += 1; vq.splice(0).forEach((it) => it.resolve(0)); }
+export function speak(url, after = 0.6) {
+  return new Promise((resolve) => { vq.push({ url, gap: after, resolve }); pumpVoice(); });
+}
+export function speakSequence(urls, between = 0.12, after = 0.6) {
+  if (!urls || !urls.length) return Promise.resolve(0);
+  let last = Promise.resolve(0);
+  urls.forEach((u, i) => { const isLast = i === urls.length - 1; last = new Promise((resolve) => vq.push({ url: u, gap: isLast ? after : between, resolve })); });
+  pumpVoice();
+  return last;
+}
+async function pumpVoice() {
+  if (vBusy) return;
+  vBusy = true;
+  const myGen = vGen;
+  while (vq.length && myGen === vGen) {
+    const it = vq.shift();
+    const dur = (await play(it.url)) || 0;
+    if (myGen !== vGen) { it.resolve(dur); break; }
+    if (dur > 0 || it.gap > 0) await new Promise((r) => setTimeout(r, (dur + it.gap) * 1000));
+    it.resolve(dur);
   }
+  vBusy = false;
+  // If clearVoice() bumped the generation mid-loop while a next-scene line was
+  // already queued, the loop exits on the stale gen — re-pump so that newer line
+  // isn't stranded (voice would otherwise go silent until the next scene change).
+  if (vq.length) pumpVoice();
 }
 
+// Back-compat: existing callers' voice sequences route through the one queue.
+export function playSequence(urls, gap = 0.12) { return speakSequence(urls, gap, 0.6); }
+
+let currentVoiceEl = null;
 function playFallback(url) {
   let el = elements.get(url);
   if (!el) { el = new Audio(url); elements.set(url, el); }
   el.muted = muted;
   el.volume = volume;
+  if (isVoiceUrl(url)) { // mirror the WebAudio voice mutex on the <audio> fallback path
+    if (currentVoiceEl && currentVoiceEl !== el) { try { currentVoiceEl.pause(); } catch (_) {} }
+    currentVoiceEl = el;
+  }
   try {
     el.currentTime = 0;
     const p = el.play();
