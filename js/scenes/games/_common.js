@@ -9,17 +9,23 @@ import * as audio from '../../audio.js';
 import { clip, PRAISE_COUNT, rnd } from '../../voices.js';
 import { sfx } from '../../sfx.js';
 import { sparkleBurst, confetti, centerOf } from '../../fx.js';
+import { gateAnswers, replayButton } from '../../attention.js';
+
+export { gateAnswers }; // re-export so each game gates its choices from one place
 
 export const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
-// A scene scaffold: a .scene root, a back→corner button, and a panel to fill.
+// A scene scaffold: a .scene root, a back→corner button, a panel to fill, and a
+// persistent "hear it again" button that re-speaks the CURRENT round's prompt
+// (each round registers its speak via setPrompt).
 export function gameShell(ctx, sceneClass) {
   const root = el('div', { class: `scene game ${sceneClass}` });
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': 'Back to games',
     onClick: () => { audio.play(sfx.pop()); ctx.go('games'); } }, icon('back'));
   const panel = el('div', { class: 'game__panel' });
-  root.append(back, panel);
-  return { root, panel, clear: () => clear(panel) };
+  let promptFn = null;
+  root.append(back, panel, replayButton(() => { if (promptFn) promptFn(); }));
+  return { root, panel, clear: () => clear(panel), setPrompt: (fn) => { promptFn = fn; } };
 }
 
 // A choice tile (number or letter look). onTap(btn).

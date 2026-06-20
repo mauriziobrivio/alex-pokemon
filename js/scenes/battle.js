@@ -17,6 +17,7 @@ import { sparkleBurst, confetti, centerOf } from '../fx.js';
 import * as mastery from '../mastery.js';
 import * as battle from '../battle.js';
 import * as music from '../music.js';
+import { gateAnswers, replayButton } from '../attention.js';
 
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
@@ -26,7 +27,8 @@ export function renderBattle({ story, zone }, ctx) {
     onClick: () => { audio.play(sfx.pop()); ctx.go(story ? 'story' : 'home'); } }, icon('back')); // always a safe exit; deferred work is epoch-guarded
   const stage = el('div', { class: 'battle__stage' });
   const tray = el('div', { class: 'battle__tray' });
-  root.append(back, stage, tray);
+  let currentSpeak = null; // the live question's prompt, for "hear it again"
+  root.append(back, stage, tray, replayButton(() => { if (currentSpeak) currentSpeak(); }));
   music.play('battle'); // upbeat-but-calm battle bed (ducks under Dada)
 
   let buddyId = null;
@@ -160,11 +162,13 @@ export function renderBattle({ story, zone }, ctx) {
     tray.append(row);
     let firstTry = true;
     const speak = () => audio.playSequence([q.bigger ? clip.hitBigger() : clip.hitSmaller(), clip.number(q.a), clip.number(q.b)]);
+    currentSpeak = speak;
     function onPick(n, btn) {
       if (busy) return;
       if (n === q.answer) onHit(q, firstTry, false);
       else { firstTry = false; wrongTap(btn, speak, myToken); }
     }
+    gateAnswers(row, ctx); // tappable a beat after the prompt
     ctx.after(350, () => { if (myToken === token) speak(); });
     scheduleIdle(speak, myToken);
   }
@@ -186,6 +190,7 @@ export function renderBattle({ story, zone }, ctx) {
     const speak = () => (q.kind === 'letter'
       ? audio.playSequence([clip.whichSays(), clip.phoneme(q.target)])
       : audio.playSequence([clip.yourMove(), clip.number(q.target)]));
+    currentSpeak = speak;
     function onPick(v, btn) {
       if (busy) return;
       if (v === q.target) onHit(q, firstTry, false);
@@ -197,6 +202,7 @@ export function renderBattle({ story, zone }, ctx) {
         if (live.length) live[Math.floor(Math.random() * live.length)].classList.add('is-dimmed');
       }
     }
+    gateAnswers(row, ctx); // tappable a beat after the prompt
     ctx.after(350, () => { if (myToken === token) speak(); });
     scheduleIdle(speak, myToken);
   }
@@ -218,6 +224,7 @@ export function renderBattle({ story, zone }, ctx) {
     let nextIndex = 0, firstTry = true, locked = false;
 
     const speakNext = () => { if (nextIndex < slots.length) audio.speak(clip.phoneme(slots[nextIndex].dataset.want)); };
+    currentSpeak = speakNext; // "hear it again" replays the current sound to tap
     function activateSlot() {
       slots.forEach((s, i) => s.classList.toggle('is-active', i === nextIndex));
       if (nextIndex < slots.length) { const want = slots[nextIndex].dataset.want; ctx.after(300, () => { if (myToken === token) audio.speak(clip.phoneme(want)); }); scheduleIdle(speakNext, myToken); }
@@ -263,6 +270,7 @@ export function renderBattle({ story, zone }, ctx) {
 
     renderTiles();
     tray.append(slotRow, tileRow);
+    gateAnswers(tileRow, ctx); // the sound tiles arrive a beat after "Charge it up!"
     ctx.after(400, () => { if (myToken === token) { audio.speak(clip.chargeUp()); ctx.after(900, activateSlot); } });
   }
 

@@ -18,6 +18,7 @@ import { getPokedex, getBond, addBond, bondCost, recordWord, getStarterId } from
 import { earnFeather } from '../story.js';
 import { canEvolve, triggerEvolution } from '../evolve.js';
 import { sparkleBurst, centerOf } from '../fx.js';
+import { replayButton } from '../attention.js';
 import * as music from '../music.js';
 
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
@@ -27,7 +28,8 @@ export function renderTrain({ story, zone, kind }, ctx) {
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': story ? 'Back to the adventure' : 'Back home',
     onClick: () => { audio.play(sfx.pop()); ctx.go(story ? 'story' : 'home'); } }, icon('back'));
   const panel = el('div', { class: 'train__panel' });
-  root.append(back, panel);
+  let currentSpeak = null; // the live activity's prompt, for "hear it again"
+  root.append(back, panel, replayButton(() => { if (currentSpeak) currentSpeak(); }));
   music.play('home');
 
   let buddyId = null;
@@ -62,12 +64,14 @@ export function renderTrain({ story, zone, kind }, ctx) {
       grid.append(cell);
     });
     panel.append(grid);
+    currentSpeak = () => audio.speak(clip.pickBuddy());
     const myToken = token;
     ctx.after(400, () => { if (myToken === token) audio.speak(clip.pickBuddy()); });
   }
 
   function showActivityPicker() {
     bump();
+    currentSpeak = null; // the activity picker has no spoken prompt
     const p = pokemonById(buddyId);
     if (!p) { showBuddyPicker(); return; }     // never render a null buddy
     clear(panel);
@@ -118,6 +122,7 @@ export function renderTrain({ story, zone, kind }, ctx) {
     const tileRow = el('div', { class: 'tile-row' });
     let nextIndex = 0;
     let locked = false;
+    currentSpeak = () => { if (!locked && nextIndex < slots.length) audio.speak(clip.phoneme(slots[nextIndex].dataset.want)); }; // "hear it again" = the current sound
 
     function scheduleIdle() {
       clearTimeout(idleTimer);
@@ -196,6 +201,7 @@ export function renderTrain({ story, zone, kind }, ctx) {
     let count = 0;
     let locked = false;
     let enoughSaid = false;
+    currentSpeak = () => audio.playSequence([clip.feedBerries(), clip.number(target)]); // "hear it again"
 
     panel.append(el('h2', { class: 'train__title' }, 'Count the berries!'));
     panel.append(el('div', { class: 'feed-target' }, String(target)));

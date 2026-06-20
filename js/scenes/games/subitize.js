@@ -7,7 +7,7 @@ import { el, clear, prefersReducedMotion } from '../../ui.js';
 import * as audio from '../../audio.js';
 import { clip } from '../../voices.js';
 import * as mastery from '../../mastery.js';
-import { gameShell, choiceBtn, wrongTap, win, shuffle } from './_common.js';
+import { gameShell, choiceBtn, wrongTap, win, shuffle, gateAnswers } from './_common.js';
 
 const SMALL = [2, 3, 4, 5];
 const BOX_W = { 1: 6, 2: 3, 3: 1 };
@@ -19,7 +19,7 @@ function pickSmall(avoid) {
 }
 
 export function renderSubitize(_params, ctx) {
-  const { root, panel } = gameShell(ctx, 'game-subitize');
+  const { root, panel, setPrompt } = gameShell(ctx, 'game-subitize');
   let last = null;
   let token = 0;
 
@@ -41,6 +41,7 @@ export function renderSubitize(_params, ctx) {
       if (!prefersReducedMotion()) ctx.after(950, () => { if (myToken === token) flash.classList.add('is-hidden'); });
     };
     const speak = () => audio.speak(clip.howMany());
+    setPrompt(speak); // "hear it again" re-asks
 
     const opts = shuffle([target, ...shuffle(SMALL.filter((n) => n !== target)).slice(0, 2)]);
     opts.forEach((v) => choicesRow.append(choiceBtn(v, 'number', (btn) => {
@@ -48,6 +49,7 @@ export function renderSubitize(_params, ctx) {
       if (v === target) { busy = true; win(root, ctx, { record: () => mastery.record(target, firstTry), next: round, say: () => audio.speak(clip.number(target)) }); }
       else { firstTry = false; reveal(); wrongTap(btn, ctx, () => audio.speak(clip.howMany())); }
     })));
+    gateAnswers(choicesRow, ctx); // answers arrive a beat after "How many?"
 
     reveal();
     ctx.after(450, () => { if (myToken === token) speak(); });

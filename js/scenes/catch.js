@@ -21,6 +21,7 @@ import { earnFeather } from '../story.js';
 import * as quests from '../quests.js';
 import * as music from '../music.js';
 import { confetti, sparkleBurst, centerOf, haloRing } from '../fx.js';
+import { gateAnswers, replayButton } from '../attention.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
@@ -54,7 +55,8 @@ export function renderCatch({ zoneId, story, from }, ctx) {
   const tenframeSlot = el('div', { class: 'catch__tenframe' });
   const choicesRow = el('div', { class: 'catch__choices' });
   const tray = el('div', { class: 'catch__tray' }, tenframeSlot, choicesRow);
-  root.append(back, outingRow, stage, tray);
+  // "Hear it again" re-speaks the current wild's prompt (and the phoneme for letters).
+  root.append(back, outingRow, stage, tray, replayButton(() => { if (challenge) challenge.speak(); }));
 
   let pokemon = null;
   let challenge = null;
@@ -164,6 +166,7 @@ export function renderCatch({ zoneId, story, from }, ctx) {
     if (tfEl) tenframeSlot.append(tfEl);
 
     clear(choicesRow);
+    choicesRow.classList.remove('q-gate', 'q-ready'); // reset the gate for the new question
     challenge.choices.forEach((value) => {
       const btn = el('button', {
         class: 'numbtn' + (challenge.kind === 'letter' ? ' lettertile' : ''),
@@ -172,6 +175,7 @@ export function renderCatch({ zoneId, story, from }, ctx) {
       }, challenge.label(value));
       choicesRow.append(btn);
     });
+    gateAnswers(choicesRow, ctx); // tappable only a beat after the prompt is heard
 
     ctx.after(450, () => challenge.speak()); // a calm beat before the prompt
     scheduleIdle();

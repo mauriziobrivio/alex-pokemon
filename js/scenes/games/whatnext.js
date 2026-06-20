@@ -6,10 +6,10 @@ import { el, clear } from '../../ui.js';
 import * as audio from '../../audio.js';
 import { clip } from '../../voices.js';
 import * as mastery from '../../mastery.js';
-import { gameShell, choiceBtn, wrongTap, win, shuffle } from './_common.js';
+import { gameShell, choiceBtn, wrongTap, win, shuffle, gateAnswers } from './_common.js';
 
 export function renderWhatNext(_params, ctx) {
-  const { root, panel } = gameShell(ctx, 'game-whatnext');
+  const { root, panel, setPrompt } = gameShell(ctx, 'game-whatnext');
   let last = null;
   let token = 0;
 
@@ -30,6 +30,7 @@ export function renderWhatNext(_params, ctx) {
     panel.append(el('h2', { class: 'game__title' }, 'What comes next?'), anchor, choicesRow);
 
     const speak = () => audio.playSequence([clip.whatComesAfter(), clip.number(n)]);
+    setPrompt(speak); // "hear it again" re-asks
 
     const set = new Set([answer]);
     for (const d of [n - 1, n + 2, answer + 1, n]) { if (d >= 1 && d <= 20 && d !== answer) set.add(d); if (set.size >= 3) break; }
@@ -39,6 +40,7 @@ export function renderWhatNext(_params, ctx) {
       if (v === answer) { busy = true; win(root, ctx, { record: () => mastery.record(answer, firstTry), next: round, say: () => audio.speak(clip.number(answer)) }); }
       else { firstTry = false; wrongTap(btn, ctx, speak); }
     })));
+    gateAnswers(choicesRow, ctx); // answers arrive a beat after the question
 
     ctx.after(450, () => { if (myToken === token) speak(); });
     const idle = () => ctx.after(7000, () => { if (myToken === token && !busy) { speak(); idle(); } });

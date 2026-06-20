@@ -9,7 +9,7 @@ import { clip } from '../../voices.js';
 import * as mastery from '../../mastery.js';
 import { ROSTER, LETTER_SOUND } from '../../data.js';
 import { isCaught } from '../../game.js';
-import { gameShell, wrongTap, win, shuffle } from './_common.js';
+import { gameShell, wrongTap, win, shuffle, gateAnswers } from './_common.js';
 
 const firstSound = (name) => { const c = (name[0] || '').toLowerCase(); return LETTER_SOUND[c] || c; };
 
@@ -17,7 +17,7 @@ const firstSound = (name) => { const c = (name[0] || '').toLowerCase(); return L
 const INDEX = (() => { const idx = {}; for (const p of ROSTER) { const s = firstSound(p.name); (idx[s] = idx[s] || []).push(p); } return idx; })();
 
 export function renderSoundMatch(_params, ctx) {
-  const { root, panel } = gameShell(ctx, 'game-soundmatch');
+  const { root, panel, setPrompt } = gameShell(ctx, 'game-soundmatch');
   let last = null;
   let token = 0;
 
@@ -34,7 +34,7 @@ export function renderSoundMatch(_params, ctx) {
     const myToken = ++token;
     const target = pickLetter();
     clear(panel);
-    if (!target) { panel.append(el('h2', { class: 'game__title' }, 'Catch more Pokémon to play this!')); ctx.after(450, () => { if (ctx.alive()) audio.speak(clip.questCatch()); }); return; } // audio-first even when empty
+    if (!target) { panel.append(el('h2', { class: 'game__title' }, 'Catch more Pokémon to play this!')); setPrompt(() => audio.speak(clip.questCatch())); ctx.after(450, () => { if (ctx.alive()) audio.speak(clip.questCatch()); }); return; } // audio-first even when empty
     last = target;
     const tSound = LETTER_SOUND[target];
     let firstTry = true;
@@ -50,6 +50,7 @@ export function renderSoundMatch(_params, ctx) {
     const cards = shuffle([...pair, distractor].filter(Boolean));
 
     const speak = () => audio.playSequence([clip.whichStartSame(), clip.phoneme(target)]);
+    setPrompt(speak); // "hear it again" re-asks (carrier + the pure sound)
     const row = el('div', { class: 'soundmatch__cards' });
     cards.forEach((mon) => {
       const isMatch = firstSound(mon.name) === tSound;
@@ -68,6 +69,7 @@ export function renderSoundMatch(_params, ctx) {
       row.append(card);
     });
     panel.append(el('h2', { class: 'game__title' }, 'Sound Match'), row);
+    gateAnswers(row, ctx); // the cards arrive a beat after "which two start the same? /sound/"
 
     ctx.after(450, () => { if (myToken === token) speak(); });
     const idle = () => ctx.after(7000, () => { if (myToken === token && !busy) { speak(); idle(); } });

@@ -573,7 +573,24 @@ html, body {
   .scene-enter, .scene-enter-active, .scene-leave { transition: none; opacity: 1; transform: none; }
   /* the faint's meaning lives in its end-state — keep a static sleepy pose */
   .combatant--wild .combatant__sprite.is-fainted { transform: translateY(18px) rotate(18deg) scale(0.8); opacity: 0.35; }
+  /* the answer gate still gates (timing), just without the pop motion */
+  .q-gate { transform: none; }
+  .q-gate.q-ready { transition: none; }
 }
+
+/* ====================================================================
+   Brief 016 — attentive timing (answers after the prompt) + "hear it again" */
+/* The answer area is hidden + inert until the prompt has been heard, then it pops
+   in and becomes tappable. An early tap lands on nothing — never a wrong answer. */
+.q-gate { opacity: 0; pointer-events: none; transform: translateY(8px) scale(0.97); }
+.q-gate.q-ready { opacity: 1; pointer-events: auto; transform: none; transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.2, 1.4, 0.4, 1); }
+
+/* "Hear it again" — a friendly round replay button; a top-right mirror of Back. */
+.replay-btn { position: absolute; top: calc(env(safe-area-inset-top) + 12px); right: calc(env(safe-area-inset-right) + 12px); z-index: 6;
+  width: 76px; height: 76px; min-height: 0; padding: 0; border-radius: 50%;
+  display: inline-grid; place-items: center; background: rgba(255, 255, 255, 0.92); color: var(--ink); box-shadow: var(--shadow); }
+.replay-btn .ic { width: 42px; height: 42px; }
+.replay-btn:active { transform: scale(0.93); }
 
 /* ====================================================================
    Phase 8 — Play & Learn corner + mini-games ======================== */
