@@ -14,6 +14,7 @@ const GAMES = [
   { id: 'game-whatnext', name: 'What Comes Next', icon: 'game-whatnext' },
   { id: 'game-soundmatch', name: 'Sound Match', icon: 'game-soundmatch' },
   { id: 'game-mywords', name: 'My Words', icon: 'build-word' }, // review wall of words he's built (reuses the build-a-word icon)
+  { id: 'game-stickers', name: 'Sticker Fun', icon: 'stickers' }, // the calm creative sandbox (reuses the sticker-cap icon)
 ];
 
 export function renderGames(_params, ctx) {

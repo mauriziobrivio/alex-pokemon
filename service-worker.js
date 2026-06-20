@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v22';
+const CACHE = 'dada-academy-v23';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -17,7 +17,7 @@ const CORE = [
   './js/scenes/starter.js', './js/scenes/story.js', './js/scenes/home.js', './js/scenes/worldmap.js',
   './js/scenes/catch.js', './js/scenes/pokedex.js', './js/scenes/train.js', './js/scenes/battle.js',
   './js/scenes/games/index.js', './js/scenes/games/_common.js',
-  './js/scenes/games/subitize.js', './js/scenes/games/whatnext.js', './js/scenes/games/soundmatch.js', './js/scenes/games/mywords.js',
+  './js/scenes/games/subitize.js', './js/scenes/games/whatnext.js', './js/scenes/games/soundmatch.js', './js/scenes/games/mywords.js', './js/scenes/games/stickerscene.js',
   './assets/screens/screen-title.png', './assets/screens/bg-lab.png',
   './assets/screens/screen-worldmap.png', './assets/screens/scene-starter-select.png',
   './assets/screens/bg-evolution.png',

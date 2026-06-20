@@ -84,6 +84,13 @@ export function recordWord(word) {
   return capped;
 }
 
+// --- Sticker scene (Phase 11, slice 2): the calm creative board ---
+// His decorated picture, kept between sessions (a child's creation matters). Shape:
+// { bg: 'board' | <zoneId>, items: [{ t: 's'|'p', r: <sticker src | Pokémon id>, x, y }] }
+// where x,y are percentages of the canvas so it scales across screens.
+export const getBoard = () => read('board', { bg: 'board', items: [] });
+export const setBoard = (b) => write('board', b);
+
 // Settings (grown-up): voice/SFX volume + mute, and the music bed volume + mute
 // (music defaults to a gentle low level, beneath Dada's voice).
 export const getSettings = () => read('settings', { volume: 1, muted: false, music: 0.5, musicMuted: false });

@@ -24,13 +24,14 @@ import { renderSubitize } from './scenes/games/subitize.js';
 import { renderWhatNext } from './scenes/games/whatnext.js';
 import { renderSoundMatch } from './scenes/games/soundmatch.js';
 import { renderMyWords } from './scenes/games/mywords.js';
+import { renderStickers } from './scenes/games/stickerscene.js';
 
 const app = document.getElementById('app');
 const scenes = {
   starter: renderStarter, story: renderStory, home: renderHome, worldmap: renderWorldmap, catch: renderCatch,
   pokedex: renderPokedex, train: renderTrain, battle: renderBattle,
   games: renderGames, 'game-subitize': renderSubitize, 'game-whatnext': renderWhatNext, 'game-soundmatch': renderSoundMatch,
-  'game-mywords': renderMyWords,
+  'game-mywords': renderMyWords, 'game-stickers': renderStickers,
 };
 
 let epoch = 0;
