@@ -74,6 +74,11 @@ export const clip = {
 
   // --- Phase 9: My Words (review wall) ---
   myWords: () => url('my-words.mp3'),                  // "Here are all the words you built! Tap one to read it."
+
+  // --- Phase 10: Story Mode — the Rainbow Wonder-Quest (Mama-suggest reuses suggest(zone)) ---
+  storyIntro: () => url('story-intro.mp3'),            // "Let's go on a rainbow adventure, Alex!"
+  featherFound: () => url('feather-found.mp3'),        // "You found a rainbow feather! The rainbow is growing!"
+  storyMore: () => url('story-more.mp3'),              // "More rainbow feathers are waiting — let's keep exploring!"
 };
 
 export const PRAISE_COUNT = 4;

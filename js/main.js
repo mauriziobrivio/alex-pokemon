@@ -12,6 +12,7 @@ import { SFX_URLS } from './sfx.js';
 import { ROSTER, CVC_WORDS } from './data.js';
 import { getStarterId, getSettings } from './game.js';
 import { renderStarter } from './scenes/starter.js';
+import { renderStory } from './scenes/story.js';
 import { renderHome } from './scenes/home.js';
 import { renderWorldmap } from './scenes/worldmap.js';
 import { renderCatch } from './scenes/catch.js';
@@ -26,7 +27,7 @@ import { renderMyWords } from './scenes/games/mywords.js';
 
 const app = document.getElementById('app');
 const scenes = {
-  starter: renderStarter, home: renderHome, worldmap: renderWorldmap, catch: renderCatch,
+  starter: renderStarter, story: renderStory, home: renderHome, worldmap: renderWorldmap, catch: renderCatch,
   pokedex: renderPokedex, train: renderTrain, battle: renderBattle,
   games: renderGames, 'game-subitize': renderSubitize, 'game-whatnext': renderWhatNext, 'game-soundmatch': renderSoundMatch,
   'game-mywords': renderMyWords,
@@ -73,8 +74,10 @@ function boot() {
     entered = true;
     audio.unlock();
     music.unlock(); // in-gesture: build the music graph + register the duck hook (iOS unlock)
-    go(getStarterId() ? 'home' : 'starter'); // clears the (empty) queue, then we greet
-    audio.speak(clip.greeting());            // the once-per-session greeting, first in the queue
+    // The Story journey is the new front door; first-timers choose a starter first.
+    const landing = getStarterId() ? 'story' : 'starter';
+    go(landing);                                  // clears the (empty) queue
+    if (landing === 'starter') audio.speak(clip.greeting()); // Story owns its own warm welcome
     warmCache(); // populate the SW cache so names/words/sprites work offline later
   };
   splash.addEventListener('pointerup', enter);

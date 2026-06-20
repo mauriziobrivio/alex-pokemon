@@ -17,6 +17,7 @@ import { tenFrame } from '../tenframe.js';
 import { isCaught, recordCatch, markFoil } from '../game.js';
 import { openPack } from '../cards.js';
 import { typeBadges } from '../typeicon.js';
+import { earnFeather } from '../story.js';
 import * as quests from '../quests.js';
 import * as music from '../music.js';
 import { confetti, sparkleBurst, centerOf, haloRing } from '../fx.js';
@@ -24,14 +25,18 @@ import { confetti, sparkleBurst, centerOf, haloRing } from '../fx.js';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
-export function renderCatch({ zoneId }, ctx) {
+export function renderCatch({ zoneId, story, from }, ctx) {
   const zone = zoneById(zoneId);
   const pool = zonePool(zone.id);
   music.playForZone(zone.id); // the zone's gentle bed (ducks under Dada)
 
+  // "Back" returns wherever Alex came from: the Story journey (a chapter, or
+  // free-explore launched from it) or the world map (free-play). Only the `story`
+  // flag changes gameplay; `from` is a pure navigation hint.
+  const backToStory = !!story || from === 'story';
   const root = el('div', { class: 'scene catch', style: { backgroundImage: `url('${zone.background}')` } });
-  const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': 'Back to the map',
-    onClick: () => { if (busy) return; audio.play(sfx.pop()); ctx.go('worldmap'); } }, icon('back'));
+  const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': backToStory ? 'Back to the adventure' : 'Back to the map',
+    onClick: () => { if (busy) return; audio.play(sfx.pop()); ctx.go(backToStory ? 'story' : 'worldmap'); } }, icon('back'));
 
   // Outing progress cue — a calm row of pips that fill as encounters resolve.
   // Pacing & closure, never a stressful timer (no countdown, no numbers).
@@ -260,22 +265,27 @@ export function renderCatch({ zoneId }, ctx) {
   function showCaughtCard() {
     const last = encountersDone >= OUTING_LENGTH;
     const advance = () => { last ? showOutingEnd() : startEncounter(); };
+    // Story chapter: one catch IS the goal — earn this zone's feather and return
+    // to the journey (the Pokémon is already recorded). Free-play: the usual outing.
+    const toFeather = () => { earnFeather(zoneId); ctx.go('story', { feathered: zoneId }); };
     const overlay = el('div', { class: 'caught' });
     const sprite = spriteImg(pokemon);
     sprite.classList.add('caught__sprite');
+    const actions = story
+      ? el('div', { class: 'caught__actions' },
+          el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); toFeather(); } }, 'Find the rainbow feather!'))
+      : el('div', { class: 'caught__actions' },
+          el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); advance(); } }, last ? 'See who we met!' : 'Keep going!'),
+          el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, 'Home'));
     const card = el('div', { class: 'caught__card' },
       el('div', { class: 'caught__badge' }, 'Caught!'),
       sprite,
       el('div', { class: 'caught__name' }, pokemon.name),
       typeBadges(pokemon.types, 'caught__types'), // its types as TCG-style symbols
-
-      el('div', { class: 'caught__actions' },
-        el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); advance(); } }, last ? 'See who we met!' : 'Keep going!'),
-        el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, 'Home'),
-      ),
+      actions,
     );
     overlay.append(card);
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) { overlay.remove(); advance(); } });
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) { overlay.remove(); story ? toFeather() : advance(); } });
     root.append(overlay);
   }
 
@@ -285,6 +295,10 @@ export function renderCatch({ zoneId }, ctx) {
   function showOutingEnd() {
     clearTimeout(idleTimer);
     clearTimeout(repromptTimer);
+    // In a Story chapter the first catch already earns the feather and leaves; the
+    // only way here is an all-escaped outing (vanishingly rare) — return to the
+    // journey gently (no empty pack, no dead end; the chapter can be retried).
+    if (story) { ctx.go('story'); return; }
     openPack(root, ctx, outingCatches, { onGoAgain: startNewOuting });
   }
 

@@ -6,15 +6,15 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v17';
+const CACHE = 'dada-academy-v18';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
   './js/main.js', './js/audio.js', './js/voices.js', './js/sfx.js',
   './js/data.js', './js/storage.js', './js/game.js', './js/mastery.js',
   './js/tenframe.js', './js/ui.js', './js/fx.js', './js/roster.generated.js',
-  './js/evolve.js', './js/battle.js', './js/quests.js', './js/cards.js', './js/music.js', './js/typeicon.js',
-  './js/scenes/starter.js', './js/scenes/home.js', './js/scenes/worldmap.js',
+  './js/evolve.js', './js/battle.js', './js/quests.js', './js/cards.js', './js/music.js', './js/typeicon.js', './js/story.js',
+  './js/scenes/starter.js', './js/scenes/story.js', './js/scenes/home.js', './js/scenes/worldmap.js',
   './js/scenes/catch.js', './js/scenes/pokedex.js', './js/scenes/train.js', './js/scenes/battle.js',
   './js/scenes/games/index.js', './js/scenes/games/_common.js',
   './js/scenes/games/subitize.js', './js/scenes/games/whatnext.js', './js/scenes/games/soundmatch.js', './js/scenes/games/mywords.js',
@@ -60,6 +60,8 @@ for (const f of ['reveal-foil', 'peek', 'milestone-10', 'milestone-25', 'milesto
 for (const f of ['thats-enough', 'playlearn-intro', 'game-quick-count', 'game-what-next', 'game-sound-match', 'how-many', 'what-comes-after', 'put-in-order', 'which-start-same', 'which-rhyme']) CORE.push(`./audio/dada/${f}.mp3`);
 // Phase 9: the "My Words" review-wall intro line.
 CORE.push('./audio/dada/my-words.mp3');
+// Phase 10: Story Mode narration (Mama-suggest reuses the suggest-* lines).
+for (const f of ['story-intro', 'feather-found', 'story-more']) CORE.push(`./audio/dada/${f}.mp3`);
 // Starter evolution lines' sprites (1-6, 25-26) so the first evolutions show offline.
 for (const id of [1, 2, 3, 4, 5, 6, 25, 26]) CORE.push(`./sprites/${id}.png`);
 // build-a-word whole-word clips (the blend climax) — small; precache all 72.

@@ -48,6 +48,12 @@ export function renderHome(_params, ctx) {
     el('button', { class: 'btn btn--big btn--games', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('games'); } },
       icon('games', 'btn__icon'), 'Play & Learn'));
 
+  // A calm way back to the Rainbow Adventure (Story is the front door; free-play
+  // is reached from there, and this returns to it). Additive — nothing removed.
+  const storyBanner = el('button', { class: 'story-banner', type: 'button', 'aria-label': 'Rainbow Adventure',
+    onClick: () => { audio.play(sfx.pop()); ctx.go('story'); } },
+    icon('star', 'story-banner__icon'), el('span', { class: 'story-banner__text' }, 'Rainbow Adventure'));
+
   // If a quest finished during play, take it now (rolls a fresh one) so the
   // banner below advertises the NEW invitation, not the just-completed one.
   const completed = quests.takeCompleted();
@@ -66,7 +72,7 @@ export function renderHome(_params, ctx) {
   const stickerStrip = buildStickerStrip(root);
   const gear = buildGearAndPanel(root);
 
-  root.append(cast, hello, questBanner, menu, playLearn, stickerStrip, gear);
+  root.append(cast, hello, storyBanner, questBanner, menu, playLearn, stickerStrip, gear);
 
   // The session greeting plays once on the splash (neutral "Hi Alex!"); home stays
   // quiet on later returns (no repeated welcome). A completed quest always

@@ -14,7 +14,8 @@ import { getActiveQuest, questZoneSuggest } from '../quests.js';
 import * as music from '../music.js';
 
 // Hotspot centres as % of the map art (screen-worldmap.png, 1536×1024).
-const SPOTS = {
+// Exported so Story Mode's journey map can reuse the exact same geography.
+export const SPOTS = {
   mountain: { x: 30, y: 19 }, volcano: { x: 63, y: 15 }, forest: { x: 13, y: 31 },
   snowfield: { x: 85, y: 31 }, desert: { x: 57, y: 38 }, meadow: { x: 42, y: 48 },
   beach: { x: 12, y: 65 }, grove: { x: 38, y: 75 }, cave: { x: 57, y: 71 }, ocean: { x: 85, y: 81 },

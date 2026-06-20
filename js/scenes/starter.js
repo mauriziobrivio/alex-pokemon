@@ -65,7 +65,7 @@ export function renderStarter(_params, ctx) {
     sparkleBurst(root, c.x, c.y, 22);
     preview.firstChild && preview.firstChild.classList.add('celebrate');
     audio.playSequence([clip.name(selectedId), clip.greatChoice()]);
-    ctx.after(2000, () => ctx.go('home'));
+    ctx.after(2000, () => ctx.go('story')); // into the Rainbow Adventure (free-play is one tap away there)
   });
 
   ctx.after(450, () => audio.speak(clip.starterIntro()));
