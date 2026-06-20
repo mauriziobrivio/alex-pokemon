@@ -4,15 +4,23 @@
 // "the photos from the adventure" — DETERMINISTICALLY: you get cards for who you
 // actually caught, never a random pull. No currency, no timer, no rarity gamble.
 
-import { el, spriteImg } from './ui.js';
+import { el, spriteImg, clear } from './ui.js';
 import * as audio from './audio.js';
 import { clip, PRAISE_COUNT, rnd } from './voices.js';
 import { sfx } from './sfx.js';
 import { pokemonById } from './data.js';
 import { isCaught, isFoil, takeMilestone } from './game.js';
 import { sparkleBurst, centerOf, driftSparkles, haloRing } from './fx.js';
+import { typeBadges, TYPE_COLOR } from './typeicon.js';
+import { CARD_ART } from './cards.generated.js';
+
+// Does this Pokémon have a premium full-art card (assets/cards/<id>.png)?
+export const hasCardArt = (id) => CARD_ART.has(id);
 
 // A single collectible card. opts: { caught, foil, onTap }.
+// Premium full-art (assets/cards/<id>.png) when present — the art IS the card, with
+// only a name banner + type symbol over it. Otherwise a framed sprite whose FACE is
+// tinted to its type, with the type symbol in the corner. Foils shimmer over either.
 // With onTap it's a focusable button; without, an inert div (pack reveal).
 export function cardEl(mon, opts = {}) {
   const caught = opts.caught != null ? opts.caught : isCaught(mon.id);
@@ -24,10 +32,31 @@ export function cardEl(mon, opts = {}) {
   if (opts.onTap) { props.type = 'button'; props.onClick = opts.onTap; }
   const card = el(opts.onTap ? 'button' : 'div', props);
   if (!caught) return card; // the card-back art is the whole card — a mystery to discover
-  const frame = el('div', { class: 'card__frame' }, spriteImg(mon)); // sprite sits in the frame's window
-  if (foil) frame.append(el('div', { class: 'card__shine', 'aria-hidden': 'true' })); // holographic foil overlay
-  card.append(frame, el('div', { class: 'card__name' }, mon.name));
+  const primary = (mon.types && mon.types[0]) || 'normal';
+  card.style.setProperty('--type-color', TYPE_COLOR[primary] || TYPE_COLOR.normal);
+  renderFace(card, mon, foil);
   return card;
+}
+
+// Build the card's visible face. Premium art covers the card (name + type symbol
+// overlaid); if the art ever fails to load (offline before it's cached) we
+// re-render the framed sprite face instead — never a broken image, never a flash.
+function renderFace(card, mon, foil) {
+  if (hasCardArt(mon.id) && !card.classList.contains('art-failed')) {
+    card.classList.add('card--premium');
+    const art = el('img', { class: 'card__art', src: `assets/cards/${mon.id}.png`, alt: '', draggable: false, decoding: 'async', loading: 'lazy' });
+    art.addEventListener('error', () => { card.classList.add('art-failed'); card.classList.remove('card--premium'); clear(card); renderFace(card, mon, foil); });
+    card.append(art, el('div', { class: 'card__overlay' },
+      el('div', { class: 'card__name card__name--premium' }, mon.name),
+      typeBadges(mon.types, 'card__types')));
+  } else {
+    card.classList.add('card--framed');
+    card.append(
+      el('div', { class: 'card__frame' }, spriteImg(mon)), // sprite on the type-tinted window
+      el('div', { class: 'card__name' }, mon.name),
+      typeBadges(mon.types, 'card__types'));
+  }
+  if (foil) card.append(el('div', { class: 'card__shine', 'aria-hidden': 'true' })); // holographic shimmer over either style
 }
 
 // The pack-opening ceremony. `ids` = the Pokémon met this outing (deterministic).

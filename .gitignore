@@ -59,6 +59,9 @@
 !/assets/stickers
 /assets/stickers/*
 !/assets/stickers/*.png
+!/assets/cards
+/assets/cards/*
+!/assets/cards/*.png
 
 # Build-time tooling (sprite fetch, audio manifest/generation) — local, not shipped.
 /tools/

@@ -44,7 +44,9 @@ export function renderPokedex(_params, ctx) {
       'aria-label': `${z.name}, ${got} of ${pool.length} found`,
       onClick: () => { audio.play(sfx.pop()); selectZone(z.id); },
     },
-      el('span', { class: 'binder__tabname' }, z.name),
+      // a picture of the place (no words) — recognisable to a non-reader; the zone
+      // name lives only in the aria-label.
+      el('span', { class: 'binder__tabthumb', 'aria-hidden': 'true', style: { backgroundImage: `url('${z.background}')` } }),
       el('span', { class: 'binder__tabcount' }, `${got}/${pool.length}`),
     );
     tab.dataset.zone = z.id;

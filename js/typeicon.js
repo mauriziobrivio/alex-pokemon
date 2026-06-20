@@ -35,6 +35,16 @@ const TYPES = {
   fairy:    { color: '#d685ad', glyph: '<path d="M12 3l2.1 5.9L20 11l-5.9 2.1L12 19l-2.1-5.9L4 11l5.9-2.1z"/>' },
 };
 
+// Softened "Sunlit Storybook" type palette — warm pastels for tinting a card's
+// FACE to its type (grass→soft green, fire→soft orange…), so the type reads at a
+// glance without the harsh competitive colors. The one place card tints live.
+export const TYPE_COLOR = {
+  normal: '#ece7d6', fire: '#ffd6b3', water: '#c9ddfb', grass: '#d3efb8', electric: '#fcecae',
+  ice: '#d3f1f0', fighting: '#f4c8c3', poison: '#e7cfee', ground: '#eddab8', flying: '#dbe7fb',
+  psychic: '#ffd3e0', bug: '#e3edb2', rock: '#e7ddba', ghost: '#d9d0e8', dragon: '#d6c8fb',
+  dark: '#d4cac1', steel: '#dddde8', fairy: '#fcd8e6',
+};
+
 const label = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 
 // One type badge. Decorative glyph + an aria-label naming the type. If the
