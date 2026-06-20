@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v23';
+const CACHE = 'dada-academy-v24';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -47,8 +47,8 @@ for (const id of [25, 4, 1]) CORE.push(`./audio/dada/name-${id}.mp3`);
 // Phase 2: phonemes + Train/evolution lines (gameplay audio).
 for (const ch of ['s', 'a', 't', 'i', 'p', 'n', 'c', 'k', 'e', 'h', 'r', 'm', 'd', 'g', 'o', 'u', 'l', 'f', 'b']) CORE.push(`./audio/dada/phoneme-${ch}.mp3`);
 for (const f of ['which-one-says', 'lets-build', 'you-taught', 'pick-buddy', 'feed-berries', 'is-evolving', 'evolve-cheer']) CORE.push(`./audio/dada/${f}.mp3`);
-// Phase 3: Battle lines.
-for (const f of ['battle-start', 'hit-bigger', 'hit-smaller', 'charge-up', 'your-move', 'you-win', 'fainted']) CORE.push(`./audio/dada/${f}.mp3`);
+// Phase 3: Battle lines. Phase 12 (Battle 2.0) adds the soft-landing + type-hint lines.
+for (const f of ['battle-start', 'hit-bigger', 'hit-smaller', 'charge-up', 'your-move', 'you-win', 'fainted', 'tuckered-out', 'super-effective']) CORE.push(`./audio/dada/${f}.mp3`);
 // Phase 4: quest lines.
 for (const f of ['quest-catch', 'quest-evolve']) CORE.push(`./audio/dada/${f}.mp3`);
 // Phase 5: Catch-deeper lines (gentle escape + outing soft-stop). The ~100 new

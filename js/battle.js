@@ -1,15 +1,37 @@
-// Battle logic — the retrieve step. A gentle, turn-based, ALWAYS-A-WIN battle.
-// Three Leitner-driven question types (compare / match / blend); the engine picks
-// what's on Alex's growth edge. No engine here loses or hurts his Pokémon — that
-// guarantee lives in the scene (there is simply no enemy-damage mechanic).
+// Battle logic — the retrieve step. Phase 12 (Battle 2.0): gentle REAL stakes — a
+// back-and-forth he can actually lose, with a warm "tuckered out, try again" soft
+// landing (the no-lose-by-construction rule, founder-evolved within no-shame /
+// no-dead-end). Three Leitner-driven question types (compare / match / blend).
 
 import * as mastery from './mastery.js';
 import { CVC_WORDS, wordBuildable, ROSTER, sameSound, LEGENDARY_IDS } from './data.js';
 
-// 4 HP = one of each question type per battle: compare(-1) + match(-1) + blend(-2,
-// charged) faints the wild after exactly the 3 shuffled turns, in any order.
-export const WILD_MAX_HP = 4;
+// Tunables. His Pokémon has hearts now; a wrong answer costs one. The wild's HP is
+// a little higher so battles are a real exchange (misses extend them), not a fixed
+// 3-turn clear. The spiral floor eases the wild quietly after a losing streak.
+export const PLAYER_MAX_HP = 3;     // hearts (pictures, never a number shown to Alex)
+export const WILD_MAX_HP = 6;
+export const SPIRAL_THRESHOLD = 3;  // losses in a row before the next battle quietly eases
+export const SPIRAL_EASE_HP = 3;    // the eased wild's starting HP (reverts the moment he wins)
 export const BATTLE_BOND = 2;   // a win feeds the Train→Evolution loop
+
+// Type wheel — a GENTLE hint only (no required choice, no win-gating). The set of
+// defending types each attacking type is super-effective against (standard chart).
+const SUPER_EFFECTIVE = {
+  normal: [], fire: ['grass', 'ice', 'bug', 'steel'], water: ['fire', 'ground', 'rock'],
+  electric: ['water', 'flying'], grass: ['water', 'ground', 'rock'], ice: ['grass', 'ground', 'flying', 'dragon'],
+  fighting: ['normal', 'ice', 'rock', 'dark', 'steel'], poison: ['grass', 'fairy'],
+  ground: ['fire', 'electric', 'poison', 'rock', 'steel'], flying: ['grass', 'fighting', 'bug'],
+  psychic: ['fighting', 'poison'], bug: ['grass', 'psychic', 'dark'], rock: ['fire', 'ice', 'flying', 'bug'],
+  ghost: ['psychic', 'ghost'], dragon: ['dragon'], dark: ['psychic', 'ghost'], steel: ['ice', 'rock', 'fairy'],
+  fairy: ['fighting', 'dragon', 'dark'],
+};
+// The attacker type that's strong against the defender (for the hint icon), or null.
+export function superType(atkTypes = [], defTypes = []) {
+  for (const a of atkTypes) if ((SUPER_EFFECTIVE[a] || []).some((d) => defTypes.includes(d))) return a;
+  return null;
+}
+export const isSuperEffective = (atk, def) => !!superType(atk, def);
 
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 

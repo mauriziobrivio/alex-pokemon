@@ -40,6 +40,8 @@ export const clip = {
 
   // --- Phase 3: Battle ---
   battleStart: () => url('battle-start.mp3'),          // "Let's battle!"
+  tuckeredOut: () => url('tuckered-out.mp3'),          // "Aw, all tuckered out — let's try again!" (the soft landing)
+  superEffective: () => url('super-effective.mp3'),    // "Super effective!" (gentle type hint)
   hitBigger: () => url('hit-bigger.mp3'),              // "Use the bigger number to hit harder!"
   hitSmaller: () => url('hit-smaller.mp3'),            // "Tap the smaller one!"
   chargeUp: () => url('charge-up.mp3'),                // "Charge it up — tap the sounds!"

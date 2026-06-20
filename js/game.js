@@ -91,6 +91,13 @@ export function recordWord(word) {
 export const getBoard = () => read('board', { bg: 'board', items: [] });
 export const setBoard = (b) => write('board', b);
 
+// --- Battle 2.0 (Phase 12): the anti-spiral wellbeing floor ---
+// Consecutive battle losses; after a streak the next battle quietly eases so he's
+// never stuck in a losing spiral. Resets the moment he wins. (Not a score.)
+export const getLossStreak = () => read('lossStreak', 0);
+export const recordBattleLoss = () => { const n = getLossStreak() + 1; write('lossStreak', n); return n; };
+export const clearBattleLosses = () => write('lossStreak', 0);
+
 // Settings (grown-up): voice/SFX volume + mute, and the music bed volume + mute
 // (music defaults to a gentle low level, beneath Dada's voice).
 export const getSettings = () => read('settings', { volume: 1, muted: false, music: 0.5, musicMuted: false });

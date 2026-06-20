@@ -10,10 +10,11 @@ import { clip, PRAISE_COUNT, rnd } from '../voices.js';
 import { sfx } from '../sfx.js';
 import { isTeen, pokemonById, ZONES, sameSound } from '../data.js';
 import { tenFrame } from '../tenframe.js';
-import { getPokedex, addBond, getStarterId } from '../game.js';
+import { getPokedex, addBond, getStarterId, getLossStreak, recordBattleLoss, clearBattleLosses } from '../game.js';
 import { earnFeather } from '../story.js';
 import { canEvolve, triggerEvolution } from '../evolve.js';
-import { sparkleBurst, confetti, centerOf } from '../fx.js';
+import { sparkleBurst, confetti, centerOf, driftSparkles } from '../fx.js';
+import { typeBadge } from '../typeicon.js';
 import * as mastery from '../mastery.js';
 import * as battle from '../battle.js';
 import * as music from '../music.js';
@@ -34,18 +35,21 @@ export function renderBattle({ story, zone }, ctx) {
   let buddyId = null;
   let wild = null;
   let wildHp = 0;
+  let playerHp = 0;        // hearts — a wrong answer costs one; 0 = "tuckered out" (Battle 2.0)
   let busy = false;
   let token = 0;
-  let plan = [];
-  let turn = 0;
+  let bag = [];            // refilling shuffled question-type bag (endless back-and-forth)
   let lastTarget = null;
   let idleTimer = null;
-  let wildEl = null, buddyEl = null, hpFill = null;
+  let superEff = false, saidSuper = false; // gentle type-matchup hint for this battle
+  let wildEl = null, buddyEl = null, buddyWrapEl = null, hpFill = null, heartsRow = null;
   let dbgQ = null; // inert test hook (mirrors catch's window.__catch) — the live question's answer
   const bump = () => { token += 1; clearTimeout(idleTimer); return token; };
   if (typeof window !== 'undefined') window.__battle = {
     get kind() { return dbgQ && dbgQ.kind; }, get answer() { return dbgQ && dbgQ.answer; },
     get word() { return dbgQ && dbgQ.word; }, get won() { return !!root.querySelector('.win'); },
+    get hearts() { return playerHp; }, get wildHp() { return wildHp; },
+    get tuckered() { return !!root.querySelector('.combatant--buddy.is-tuckered'); },
   };
 
   function scheduleIdle(speak, myToken) {
@@ -56,7 +60,7 @@ export function renderBattle({ story, zone }, ctx) {
     audio.play(sfx.soft());
     if (btn) { btn.classList.add('is-wrong', 'is-dimmed'); btn.addEventListener('animationend', () => btn.classList.remove('is-wrong'), { once: true }); }
     if (wildEl) { wildEl.classList.add('is-wiggle'); ctx.after(500, () => wildEl && wildEl.classList.remove('is-wiggle')); }
-    ctx.after(550, () => { if (myToken === token) speak(); });
+    ctx.after(550, () => { if (myToken === token) { busy = false; speak(); } }); // re-open input only after the scaffold + re-prompt
     scheduleIdle(speak, myToken);
   }
 
@@ -86,10 +90,15 @@ export function renderBattle({ story, zone }, ctx) {
     wild = battle.pickWild();
     const wildZone = ZONES.find((z) => wild.zones.includes(z.id)) || ZONES[0]; // not the Story chapter `zone` param
     root.style.backgroundImage = `url('${wildZone.background}')`;
-    wildHp = battle.WILD_MAX_HP;
-    plan = battle.battlePlan();
-    turn = 0;
+    // Anti-spiral wellbeing floor: after a losing streak the wild starts quietly
+    // weaker, so he's never stuck — it reverts the moment he wins (clearBattleLosses).
+    wildHp = getLossStreak() >= battle.SPIRAL_THRESHOLD ? battle.SPIRAL_EASE_HP : battle.WILD_MAX_HP;
+    playerHp = battle.PLAYER_MAX_HP;
+    bag = [];
     lastTarget = null;
+    const buddy = pokemonById(buddyId);
+    superEff = !!(buddy && battle.isSuperEffective(buddy.types, wild.types)); // gentle hint for this matchup
+    saidSuper = false;
     renderStage();
     const myToken = token;
     ctx.after(500, () => { if (myToken === token) audio.playSequence([clip.battleStart(), clip.name(wild.id)]); }); // audio-first: announce the wild
@@ -103,22 +112,78 @@ export function renderBattle({ story, zone }, ctx) {
     const hp = el('div', { class: 'hpbar' }, (hpFill = el('div', { class: 'hpbar__fill' })));
     wildEl = spriteImg(wild); wildEl.classList.add('combatant__sprite');
     wildWrap.append(hp, el('div', { class: 'combatant__name' }, wild.name), wildEl, el('div', { class: 'combatant__platform', 'aria-hidden': 'true' }));
-    const buddyWrap = el('div', { class: 'combatant combatant--buddy' });
+    buddyWrapEl = el('div', { class: 'combatant combatant--buddy' });
+    heartsRow = el('div', { class: 'battle__hearts', 'aria-label': "Your Pokémon's energy" }); // hearts, not HP numbers
     buddyEl = spriteImg(pokemonById(buddyId)); buddyEl.classList.add('combatant__sprite');
-    buddyWrap.append(buddyEl, el('div', { class: 'combatant__platform', 'aria-hidden': 'true' }));
-    stage.append(wildWrap, buddyWrap);
+    buddyWrapEl.append(heartsRow, buddyEl, el('div', { class: 'combatant__platform', 'aria-hidden': 'true' }));
+    stage.append(wildWrap, buddyWrapEl);
     updateHp();
+    renderHearts();
   }
   function updateHp() { if (hpFill) hpFill.style.width = `${Math.max(0, (wildHp / battle.WILD_MAX_HP) * 100)}%`; }
 
+  // Hearts (emoji-free CSS/SVG). `broke` animates the heart that was just lost.
+  const heartSvg = '<svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true"><path d="M12 21s-7-4.6-9.3-9C1.2 8.6 2.8 5.6 5.9 5.6c1.9 0 3.2 1.2 4.1 2.5 .9-1.3 2.2-2.5 4.1-2.5 3.1 0 4.7 3 3.2 6.4C19 16.4 12 21 12 21z" fill="currentColor"/></svg>';
+  function renderHearts(broke) {
+    if (!heartsRow) return;
+    clear(heartsRow);
+    for (let i = 0; i < battle.PLAYER_MAX_HP; i++) {
+      const h = el('span', { class: 'heart' + (i < playerHp ? '' : ' heart--lost'), 'aria-hidden': 'true', html: heartSvg });
+      if (broke && i === playerHp) h.classList.add('is-breaking'); // the one just lost
+      heartsRow.append(h);
+    }
+  }
+
+  const pickType = () => { if (!bag.length) bag = battle.battlePlan(); return bag.shift(); };
   function nextTurn() {
-    if (turn >= plan.length || wildHp <= 0) { win(); return; }
+    if (wildHp <= 0) { win(); return; }
+    if (playerHp <= 0) { tuckeredOut(); return; }
     busy = false;
     const myToken = bump();
-    const type = plan[turn];
+    const type = pickType();
     if (type === 'compare') { const q = battle.makeCompare(lastTarget); lastTarget = q.a; renderCompare(q, myToken); }
     else if (type === 'match') { const q = battle.makeMatch(lastTarget); lastTarget = q.kind === 'number' ? q.target : lastTarget; renderMatch(q, myToken); }
     else renderBlend(battle.makeBlend(), myToken);
+  }
+
+  // A wrong answer (compare/match) costs a heart — real stakes. Blend mis-taps stay
+  // errorless (a sub-step, not a wrong answer). 0 hearts → the soft landing.
+  function loseHeart(btn, speak, myToken) {
+    if (busy) return;
+    busy = true; // hold input through the re-prompt so rapid mis-taps can't drain extra hearts past the scaffold (wrongTap re-opens it)
+    playerHp -= 1;
+    renderHearts(true);
+    if (playerHp <= 0) { tuckeredOut(); return; }
+    wrongTap(btn, speak, myToken); // re-prompt (errorless within the question) + the wild's playful wiggle
+  }
+
+  // The soft landing (sacred): his Pokémon gets sleepy and needs a rest, the wild
+  // gently wins, then a warm "let's try again!" and an INSTANT fresh battle. A loss
+  // costs nothing — no lost Pokémon, progress, stickers, or feathers; nothing scary.
+  function tuckeredOut() {
+    busy = true;
+    bump(); // stop the turn loop + idle
+    clear(tray);
+    recordBattleLoss(); // anti-spiral counter (eases the next battle if it becomes a streak)
+    if (buddyWrapEl) buddyWrapEl.classList.add('is-tuckered'); // sleepy droop + z's (CSS, no new art)
+    if (wildEl) wildEl.classList.remove('is-hit', 'is-wiggle');
+    audio.play(sfx.soft());
+    audio.speak(clip.tuckeredOut());
+    ctx.after(2400, () => { if (ctx.alive()) startBattle(); }); // try again, right away
+  }
+
+  // A super-effective hit: extra sparkle + (once) the spoken cue + a little type
+  // icon — ambient delight + a seed of the type wheel. Never required, never a gate.
+  function superHitFx(c) {
+    sparkleBurst(root, c.x, c.y, 26);
+    driftSparkles(root, c.x, c.y, 6);
+    const buddy = pokemonById(buddyId);
+    const t = buddy && battle.superType(buddy.types, wild.types);
+    if (!t) return;
+    const badge = typeBadge(t, 'battle__supericon');
+    badge.style.left = `${c.x}px`; badge.style.top = `${c.y - 10}px`;
+    root.appendChild(badge);
+    ctx.after(1100, () => badge.remove());
   }
 
   // The hit — his Pokémon attacks, the wild one's energy eases down. Always safe.
@@ -139,8 +204,8 @@ export function renderBattle({ story, zone }, ctx) {
       ctx.after(380, () => wildEl && wildEl.classList.remove('is-hit'));
       wildHp -= charged ? 2 : 1;
       updateHp();
-      audio.speak(clip.praise(rnd(PRAISE_COUNT)));
-      turn += 1;
+      if (superEff) { superHitFx(c); if (!saidSuper) { saidSuper = true; audio.speak(clip.superEffective()); } else audio.speak(clip.praise(rnd(PRAISE_COUNT))); }
+      else audio.speak(clip.praise(rnd(PRAISE_COUNT)));
       ctx.after(950, () => { if (ctx.alive()) (wildHp <= 0 ? win() : nextTurn()); });
     });
   }
@@ -166,7 +231,7 @@ export function renderBattle({ story, zone }, ctx) {
     function onPick(n, btn) {
       if (busy) return;
       if (n === q.answer) onHit(q, firstTry, false);
-      else { firstTry = false; wrongTap(btn, speak, myToken); }
+      else { firstTry = false; loseHeart(btn, speak, myToken); } // a wrong answer costs a heart
     }
     gateAnswers(row, ctx); // tappable a beat after the prompt
     ctx.after(350, () => { if (myToken === token) speak(); });
@@ -196,10 +261,11 @@ export function renderBattle({ story, zone }, ctx) {
       if (v === q.target) onHit(q, firstTry, false);
       else {
         firstTry = false;
-        wrongTap(btn, speak, myToken);
-        // progressively dim a wrong option toward the answer
-        const live = [...row.children].filter((b) => !b.classList.contains('is-dimmed') && b.textContent !== String(q.target) && b !== btn);
-        if (live.length) live[Math.floor(Math.random() * live.length)].classList.add('is-dimmed');
+        loseHeart(btn, speak, myToken); // a wrong answer costs a heart (may end the battle)
+        if (playerHp > 0) { // still going → progressively dim a wrong option toward the answer
+          const live = [...row.children].filter((b) => !b.classList.contains('is-dimmed') && b.textContent !== String(q.target) && b !== btn);
+          if (live.length) live[Math.floor(Math.random() * live.length)].classList.add('is-dimmed');
+        }
       }
     }
     gateAnswers(row, ctx); // tappable a beat after the prompt
@@ -274,10 +340,11 @@ export function renderBattle({ story, zone }, ctx) {
     ctx.after(400, () => { if (myToken === token) { audio.speak(clip.chargeUp()); ctx.after(900, activateSlot); } });
   }
 
-  // ---------- Win (always) ----------
+  // ---------- Win (earned now — Battle 2.0) ----------
   function win() {
     busy = true;
     clearTimeout(idleTimer);
+    clearBattleLosses(); // a win resets the anti-spiral floor immediately
     clear(tray);
     if (wildEl) wildEl.classList.add('is-fainted');
     audio.speak(clip.fainted());
