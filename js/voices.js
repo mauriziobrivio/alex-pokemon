@@ -91,6 +91,16 @@ export const clip = {
   makeAWish: () => url('make-a-wish.mp3'),             // "Make a little wish, Alex!"
   wishMore: () => url('wish-more.mp3'),                // "More wish-stars are waiting — let's keep exploring!"
   jirachiFinale: () => url('jirachi-finale.mp3'),      // "Every wish-star is home — Jirachi woke up to say hello!" (Stage 3)
+
+  // --- Story Mode 2.0 — "Saving Professor Dada" (brief 024). Dada's voice grows
+  // from a whisper to whole as Alex recovers his words. Reuses word(w) for the
+  // recovered word said back; these are the narrative beats (placeholders). ---
+  dadaCall: () => url('dada-call.mp3'),                // opening whisper: "Alex… can you hear me? My words flew away…"
+  dadaGrow: (n) => url(`dada-grow-${n}.mp3`),          // tiered word-recovered beat (1 whisper → 3 nearly whole)
+  dadaGlimpse: () => url('dada-glimpse.mp3'),          // midpoint: "I can see you, Alex! Keep going!"
+  dadaReunion: () => url('dada-reunion.mp3'),          // climax: "You found all my words… and you found me!"
+  dadaEnding: () => url('dada-ending.mp3'),            // ending: "Now — let me read to you."
+  dadaMore: () => url('dada-more.mp3'),                // gentle progress: "Keep following my voice, find my words!"
 };
 
 export const PRAISE_COUNT = 4;

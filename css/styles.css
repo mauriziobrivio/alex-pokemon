@@ -891,3 +891,53 @@ html, body {
     radial-gradient(1.6px 1.6px at 44% 84%, rgba(255, 248, 220, 0.8), transparent 60%),
     radial-gradient(circle at 50% 34%, rgba(88, 80, 152, 0.98), rgba(54, 48, 104, 0.99)); }
 .finale--wishstar .finale__title { color: #fff8e7; }
+
+/* ====================================================================
+   Story Mode 2.0 — "Saving Professor Dada" (brief 024) */
+/* the headline adventure card — full-width, above the two collect-arc cards */
+.adventure-card--headline { width: min(720px, 94%); max-width: none; flex-direction: row; align-items: center; gap: clamp(14px, 3vw, 26px);
+  background: linear-gradient(110deg, #ffe7a8, #ffd0a0 55%, #ffc0c8); }
+.adventure-card--headline .adventure-card__art { width: clamp(120px, 30vw, 200px); height: clamp(64px, 16vw, 92px); flex: none; }
+.adventure-card--headline .adventure-card__title { font-size: clamp(20px, 4.4vw, 28px); }
+.adventure-card--headline .adventure-card__count { position: absolute; top: 10px; right: 16px; }
+
+/* arc-3 progress: the lighting path of word-stepping-stones toward Dada */
+.story__path { width: min(340px, 70%); margin: 2px 0 0; }
+.story__path-svg { display: block; width: 100%; }
+.story__path.is-growing { animation: rainbow-pop 0.9s ease; }
+
+/* arc-3 map skin — a warm, golden "journey home" glow (never dark) */
+.scene.story.story--journey { background: linear-gradient(168deg, #fff1d4, #ffe0bf 52%, #ffd2b0); }
+.story--journey .story__title { color: #6a4a1e; }
+.story--journey .story__map { box-shadow: 0 10px 28px rgba(150, 100, 40, 0.28); }
+
+/* word-stone marker on a chapter zone (a glowing stepping-stone) */
+.hotspot__wordstone { position: absolute; top: -11px; right: -3px; width: 30px; height: 30px; color: rgba(255,255,255,0.92); filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4)); }
+.hotspot.is-quest .hotspot__wordstone { color: #ffd86a; animation: feather-bob 1.8s ease-in-out infinite; }
+.hotspot.has-token .hotspot__wordstone { color: #ffc23d; }
+
+/* ---- Story cutscenes (opening / glimpse / reunion / ending) — warm, never scary ---- */
+.cutscene { position: absolute; inset: 0; z-index: 22; display: flex; flex-direction: column; overflow: hidden;
+  opacity: 0; transition: opacity 0.5s ease;
+  background: radial-gradient(circle at 50% 36%, rgba(255,248,231,0.98), rgba(255,224,186,0.97) 55%, rgba(255,206,170,0.98)); }
+.cutscene.is-in { opacity: 1; }
+.cutscene__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.96; z-index: 0; }
+.cutscene__stage { position: relative; z-index: 1; flex: 1 1 auto; display: flex; align-items: center; justify-content: center; gap: clamp(8px, 3vw, 28px); min-height: 0; }
+.cutscene__char { filter: drop-shadow(0 8px 22px rgba(0,0,0,0.22)); }
+/* opening + glimpse: Dada far away (small, top), Alex/Mama in the foreground */
+.cutscene__char--far { position: absolute; top: 8%; right: 12%; width: clamp(64px, 15vw, 116px); opacity: 0.95;
+  animation: dada-wave 2.4s ease-in-out infinite; transform-origin: bottom center; }
+.cutscene__char--mama { position: absolute; bottom: 3%; left: 14%; width: clamp(104px, 25vw, 190px); }
+.cutscene__char--alex { position: absolute; bottom: 1%; left: 40%; width: clamp(120px, 28vw, 210px); }
+@keyframes dada-wave { 0%, 100% { transform: rotate(-3deg) translateY(0); } 50% { transform: rotate(4deg) translateY(-5px); } }
+/* reunion + ending: Dada + Alex together, centered, big */
+.cutscene__char--reunion-dada, .cutscene__char--reunion-alex,
+.cutscene__char--cozy-dada, .cutscene__char--cozy-alex { position: relative; width: clamp(130px, 34vw, 280px); }
+.cutscene--reunion .cutscene__stage { animation: cut-pop 0.6s cubic-bezier(0.2,1.4,0.4,1); }
+@keyframes cut-pop { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+.cutscene--reunion { background: radial-gradient(circle at 50% 38%, rgba(255,250,235,0.98), rgba(255,232,180,0.97) 50%, rgba(255,210,160,0.98)); }
+.cutscene--ending { background: radial-gradient(circle at 50% 40%, rgba(255,244,222,0.98), rgba(255,224,190,0.97) 55%, rgba(246,214,196,0.98)); }
+/* the warm caption bar (title + continue) */
+.cutscene__caption { position: relative; z-index: 2; flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: clamp(10px, 2.4vh, 20px);
+  padding: clamp(16px, 3vh, 28px) 6% calc(clamp(18px, 4vh, 34px) + env(safe-area-inset-bottom)); }
+.cutscene__title { font-size: clamp(24px, 5.4vw, 40px); font-weight: 900; color: #6a4a1e; text-align: center; line-height: 1.15; text-shadow: 0 2px 10px rgba(255,255,255,0.65); }

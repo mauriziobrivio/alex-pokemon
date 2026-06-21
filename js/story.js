@@ -54,6 +54,38 @@ export const ARCS = {
       { zone: 'ocean', kind: 'count' },        // (rainbow's ocean is catch — varied)
     ],
   },
+
+  // Story Mode 2.0 — "Saving Professor Dada" (brief 024): a REAL narrative, not a
+  // collection. A friendly lab *whoosh* swept Dada to the world's edge and
+  // scattered his WORDS. Alex journeys zone by zone; each chapter recovers one of
+  // Dada's words → Dada says it back (his whisper growing stronger) → the next
+  // glowing stepping-stone of the path toward him lights. The words ARE the path.
+  // Climax: the last word ('dad') returns his full voice → the reunion. Warm,
+  // brave, a little wistful → triumphantly happy. NEVER scary (Dada is safe + happy).
+  savedada: {
+    id: 'savedada',
+    type: 'narrative',
+    earnedKey: 'dadaWords',            // recovered chapter zones (= words found)
+    finaleSeenKey: 'savedDadaSeen',    // the ENDING cutscene seen (the arc completed, once)
+    openingKey: 'savedDadaOpened',     // the opening cutscene seen (once)
+    midpointKey: 'savedDadaMid',       // the "I can see you!" glimpse shown (once)
+    midpointAfter: 5,                  // the glimpse beat after this many words (~halfway of 10)
+    // Literacy-leaning (we're gathering words): build-word ×5, pattern ×2, plus
+    // catch/count/battle. Each `word` is a real CVC word Dada says back (the
+    // word-*.mp3 clips already exist, in Dada's voice). The final word is 'dad'.
+    chapters: [
+      { zone: 'meadow', kind: 'build-word', word: 'sun' },
+      { zone: 'forest', kind: 'catch', word: 'dog' },
+      { zone: 'beach', kind: 'build-word', word: 'cat' },
+      { zone: 'mountain', kind: 'pattern', word: 'hat' },
+      { zone: 'desert', kind: 'build-word', word: 'hen' },
+      { zone: 'volcano', kind: 'battle', word: 'big' },
+      { zone: 'snowfield', kind: 'count', word: 'run' },
+      { zone: 'grove', kind: 'build-word', word: 'fun' },
+      { zone: 'cave', kind: 'pattern', word: 'hug' },
+      { zone: 'ocean', kind: 'build-word', word: 'dad' }, // the climax: the word "dad" → full voice → reunion
+    ],
+  },
 };
 
 export const DEFAULT_ARC = 'rainbow';
@@ -92,6 +124,21 @@ export const nextChapterZone = (arc) => {
 export const finaleId = (arc) => arcById(arc).finaleId;
 export const finaleSeen = (arc) => !!read(arcById(arc).finaleSeenKey, false);
 export const markFinaleSeen = (arc) => write(arcById(arc).finaleSeenKey, true);
+
+// --- Narrative arc (Saving Professor Dada) extras: cutscenes + voice-growth ---
+export const arcType = (arc) => arcById(arc).type || 'collect';
+export const wordFor = (arc, zone) => (chapterFor(arc, zone) || {}).word || null;
+// Dada's voice grows fuller with every recovered word (0 → 1). The script + visual
+// carry it; tier 0 = whisper, 1 = stronger, 2 = nearly whole.
+export const voiceGrowth = (arc) => (totalChapters(arc) ? earnedCount(arc) / totalChapters(arc) : 0);
+export const voiceTier = (arc) => { const g = voiceGrowth(arc); return g < 0.34 ? 0 : g < 0.7 ? 1 : 2; };
+// Cutscene flags — the opening (Dada's whisper) + the midpoint glimpse, each once.
+export const openingSeen = (arc) => !!read(arcById(arc).openingKey, false);
+export const markOpeningSeen = (arc) => write(arcById(arc).openingKey, true);
+export const midpointSeen = (arc) => !!read(arcById(arc).midpointKey, false);
+export const markMidpointSeen = (arc) => write(arcById(arc).midpointKey, true);
+export const midpointDue = (arc) => arcType(arc) === 'narrative' && !midpointSeen(arc)
+  && earnedCount(arc) >= (arcById(arc).midpointAfter || 5) && !allChaptersDone(arc);
 
 // --- Backward-compatible rainbow aliases (arc-1 byte-equivalence) ---
 export const CHAPTERS = ARCS.rainbow.chapters;

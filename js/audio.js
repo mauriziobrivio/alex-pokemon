@@ -191,7 +191,13 @@ export function playExclusive(url) {
 const vq = [];          // { url, gap, resolve }
 let vBusy = false;
 let vGen = 0;
-export function clearVoice() { vGen += 1; vq.splice(0).forEach((it) => it.resolve(0)); }
+// The inter-line "calm beat" wait, made abortable: on a scene change we must not
+// let a long line's trailing gap keep the queue busy and stall the NEXT scene's
+// first prompt (the mutex in play() still cuts any line still sounding).
+let gapTimer = null, gapResolve = null;
+function abortGap() { if (gapTimer) { clearTimeout(gapTimer); gapTimer = null; } if (gapResolve) { const r = gapResolve; gapResolve = null; r(); } }
+function waitGap(ms) { return new Promise((resolve) => { gapResolve = resolve; gapTimer = setTimeout(() => { gapTimer = null; gapResolve = null; resolve(); }, ms); }); }
+export function clearVoice() { vGen += 1; abortGap(); vq.splice(0).forEach((it) => it.resolve(0)); }
 export function speak(url, after = 0.6) {
   return new Promise((resolve) => { vq.push({ url, gap: after, resolve }); pumpVoice(); });
 }
@@ -210,7 +216,7 @@ async function pumpVoice() {
     const it = vq.shift();
     const dur = (await play(it.url)) || 0;
     if (myGen !== vGen) { it.resolve(dur); break; }
-    if (dur > 0 || it.gap > 0) await new Promise((r) => setTimeout(r, (dur + it.gap) * 1000));
+    if (dur > 0 || it.gap > 0) await waitGap((dur + it.gap) * 1000); // abortable on scene change
     it.resolve(dur);
   }
   vBusy = false;
