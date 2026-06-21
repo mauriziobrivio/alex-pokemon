@@ -850,6 +850,14 @@ html, body {
   animation: twinkle 4s ease-in-out infinite; }
 @keyframes twinkle { 0%, 100% { opacity: 0.88; } 50% { opacity: 1; } }
 
-/* arc 2 finale (Stage 3) — a calm twilight reveal, warm not dark */
-.finale--wishstar { background: radial-gradient(circle at 50% 34%, rgba(86, 78, 150, 0.97), rgba(52, 46, 100, 0.98)); }
+/* arc 2 finale (Stage 3) — a calm, wondrous twilight reveal: a warm indigo
+   starfield with glowing gold stars (never black, never eerie) */
+.finale--wishstar { background:
+    radial-gradient(2px 2px at 16% 22%, rgba(255, 248, 220, 0.95), transparent 60%),
+    radial-gradient(2px 2px at 78% 18%, rgba(255, 236, 150, 0.92), transparent 60%),
+    radial-gradient(1.6px 1.6px at 60% 30%, rgba(255, 248, 220, 0.85), transparent 60%),
+    radial-gradient(2px 2px at 28% 64%, rgba(255, 248, 220, 0.85), transparent 60%),
+    radial-gradient(1.6px 1.6px at 86% 70%, rgba(255, 236, 150, 0.9), transparent 60%),
+    radial-gradient(1.6px 1.6px at 44% 84%, rgba(255, 248, 220, 0.8), transparent 60%),
+    radial-gradient(circle at 50% 34%, rgba(88, 80, 152, 0.98), rgba(54, 48, 104, 0.99)); }
 .finale--wishstar .finale__title { color: #fff8e7; }

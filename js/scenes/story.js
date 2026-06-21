@@ -78,8 +78,8 @@ const ARC_VIEW = {
     findLabel: 'find the wish-star', gotLabel: 'wish-star found',
     haloColor: 'rgba(180,200,255,0.9)', finaleHalo: 'rgba(255,236,150,0.92)',
     clips: { intro: () => clip.wishIntro(), found: () => clip.wishStarFound(), more: () => clip.wishMore(), finale: () => clip.jirachiFinale(), wish: () => clip.makeAWish() },
-    finaleReady: false, // Stage 3 turns on the Jirachi finale
-    finaleArt: 'assets/screens/scene-jirachi-finale.png',
+    finaleReady: true, // Stage 3: Jirachi wakes when the constellation is complete
+    finaleArt: 'assets/screens/scene-jirachi-finale.png', // optional drop-in; the CSS starfield carries it otherwise
   },
 };
 
