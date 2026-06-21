@@ -7,10 +7,18 @@
 
 let ctx = null;
 let master = null;
+let voiceGain = null;        // Dada's voice — sits a notch ABOVE SFX so a spoken prompt always reads
+let sfxGain = null;          // the juice — a notch below voice
 let unlocked = false;
 let useWebAudio = true;
 let volume = 1;
 let muted = false;
+
+// Voice rides clearly above the sound effects (brief 023, item 1a). Clips are
+// loudness-normalized to a consistent target, so this relative balance holds
+// across all of them; music ducks under voice separately (music.js).
+const VOICE_GAIN = 1.0;
+const SFX_GAIN = 0.6;        // ≈ -4.4 dB under the voice
 let duckHook = null;         // { start, end } registered by music.js — engine stays music-agnostic
 const buffers = new Map();   // url -> AudioBuffer
 const pending = new Map();   // url -> Promise<AudioBuffer|null>
@@ -24,6 +32,10 @@ function getCtx() {
       master = ctx.createGain();
       master.gain.value = muted ? 0 : volume;
       master.connect(ctx.destination);
+      // Voice + SFX get their own gains under the master (volume/mute still gate both),
+      // so Dada's voice sits clearly above the effects.
+      voiceGain = ctx.createGain(); voiceGain.gain.value = VOICE_GAIN; voiceGain.connect(master);
+      sfxGain = ctx.createGain(); sfxGain.gain.value = SFX_GAIN; sfxGain.connect(master);
     } else {
       useWebAudio = false;
     }
@@ -87,10 +99,10 @@ export function unlock() {
   resumeIfNeeded();
 }
 
-function startBuffer(c, buf) {
+function startBuffer(c, buf, node) {
   const src = c.createBufferSource();
   src.buffer = buf;
-  src.connect(master || c.destination);
+  src.connect(node || master || c.destination);
   src.start(0);
   return src;
 }
@@ -126,7 +138,7 @@ export function play(url) {
         if (!buf) { playFallback(url); return 0; }
         const voice = isVoiceUrl(url);
         if (voice) stopCurrentVoice();       // a queued voice line replaces any voice still sounding
-        const src = startBuffer(c, buf);
+        const src = startBuffer(c, buf, voice ? voiceGain : sfxGain);
         if (voice) { currentVoiceSrc = src; src.onended = () => { if (currentVoiceSrc === src) currentVoiceSrc = null; }; }
         duckFor(url, buf.duration);
         return buf.duration;
@@ -156,7 +168,7 @@ export function playExclusive(url) {
         stopCurrentVoice();
         const src = c.createBufferSource();
         src.buffer = buf;
-        src.connect(master || c.destination);
+        src.connect(voiceGain || master || c.destination); // playExclusive is always voice (counts, pack names)
         src.onended = () => { if (currentVoiceSrc === src) currentVoiceSrc = null; };
         src.start(0);
         currentVoiceSrc = src;
@@ -216,7 +228,7 @@ function playFallback(url) {
   let el = elements.get(url);
   if (!el) { el = new Audio(url); elements.set(url, el); }
   el.muted = muted;
-  el.volume = volume;
+  el.volume = Math.max(0, Math.min(1, volume * (isVoiceUrl(url) ? VOICE_GAIN : SFX_GAIN))); // mirror the voice-over-SFX balance
   if (isVoiceUrl(url)) { // mirror the WebAudio voice mutex on the <audio> fallback path
     if (currentVoiceEl && currentVoiceEl !== el) { try { currentVoiceEl.pause(); } catch (_) {} }
     currentVoiceEl = el;
@@ -245,3 +257,9 @@ export function setMuted(m) {
   if (master) master.gain.value = muted ? 0 : volume;
 }
 export const isMuted = () => muted;
+
+// Inert test hook — the live gain split (voice sits above SFX). No side effects.
+export function __gains() {
+  getCtx();
+  return { voice: voiceGain ? voiceGain.gain.value : null, sfx: sfxGain ? sfxGain.gain.value : null, master: master ? master.gain.value : null };
+}

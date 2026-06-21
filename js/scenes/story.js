@@ -8,7 +8,7 @@
 // that zone's token (feather / wish-star); the rainbow / constellation fills in.
 // No locks, no fail, no fixed order. The rainbow journey is byte-equivalent to before.
 
-import { el, charImg, icon, spriteImg } from '../ui.js';
+import { el, charImg, icon, spriteImg, prefersReducedMotion } from '../ui.js';
 import * as audio from '../audio.js';
 import { clip } from '../voices.js';
 import { sfx } from '../sfx.js';
@@ -215,32 +215,59 @@ function renderJourney(arcId, params, ctx) {
     if (next) audio.speak(clip.suggest(next)); // (all-done is handled by the finale path above)
   }
 
-  // The finale — a calm, wondrous reveal (never a battle, never scary): the arc's
-  // friend comes to the kind trainer who gathered every token, and joins the Pokédex.
+  // The finale — a BIG, full-screen, wondrous reveal (brief 023, item 2). Never a
+  // battle, never scary: the arc's friend descends/awakens slowly into view in a
+  // bloom of warm light + abundant sparkles, the awe is held for a beat, THEN the
+  // title + "Yay!" appear. Reduced-motion → a calm, still, grand version.
   function showFinale() {
     const fid = story.finaleId(arcId);
     recordCatch(fid); // met with joy, not caught in a ball
     story.markFinaleSeen(arcId);
     const friend = pokemonById(fid);
+    const reduce = prefersReducedMotion();
+
     const sprite = spriteImg(friend); sprite.classList.add('finale__friend');
-    const overlay = el('div', { class: `finale finale--${arcId}` },
-      charImg(v.finaleArt, 'finale__bg'), // bespoke art if dropped in; else the card's CSS carries it
-      el('div', { class: 'finale__card' },
+    const stage = el('div', { class: 'finale__stage' },
+      el('div', { class: 'finale__rays', 'aria-hidden': 'true' }),   // soft warm god-rays behind
+      el('div', { class: 'finale__bloom', 'aria-hidden': 'true' }),  // a brightening bloom
+      el('div', { class: 'finale__arrive' }, sprite));               // the slow entrance wrapper
+    const reveal = el('div', { class: 'finale__reveal' });           // title + CTA, after the held beat
+    const overlay = el('div', { class: `finale finale--${arcId}` + (reduce ? ' is-still' : '') },
+      charImg(v.finaleArt, 'finale__bg'), // the grand hero image, full-bleed, when dropped in; else the CSS carries it
+      stage, reveal);
+    root.append(overlay);
+    requestAnimationFrame(() => overlay.classList.add('is-arriving')); // descend/awaken in
+
+    audio.play(sfx.catch());
+    audio.speakSequence([clip.name(fid), v.clips.finale()]); // the name + a warm line, clearly (rides the voice boost)
+
+    const burst = (sparkles, drift) => {
+      if (!ctx.alive()) return;
+      const c = centerOf(sprite, root);
+      haloRing(root, c.x, c.y, { size: reduce ? 380 : 500, color: v.finaleHalo, dur: 1300 });
+      sparkleBurst(root, c.x, c.y, sparkles);
+      driftSparkles(root, c.x, c.y, drift);
+    };
+    const showReveal = () => {
+      if (!ctx.alive()) return;
+      overlay.classList.add('is-revealed');
+      reveal.append(
         v.progress(arcId),
-        sprite,
         el('div', { class: 'finale__title' }, friend ? `${friend.name} came to say hello!` : 'A beautiful friend has come!'),
         el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); } }, 'Yay!'),
-      ));
-    root.append(overlay);
-    audio.play(sfx.catch());
-    audio.speak(v.clips.finale());
-    requestAnimationFrame(() => {
-      const c = centerOf(sprite, root);
-      haloRing(root, c.x, c.y, { size: 320, color: v.finaleHalo, dur: 1100 });
-      sparkleBurst(root, c.x, c.y, 22);
-      driftSparkles(root, c.x, c.y, 12);
-      confetti(root);
-    });
+      );
+    };
+
+    if (reduce) {
+      // calm, still, grand: the big legendary + one gentle bloom, then the title — no big motion
+      burst(14, 8); confetti(root);
+      showReveal();
+    } else {
+      ctx.after(450, () => burst(28, 14));
+      ctx.after(1500, () => { burst(30, 16); confetti(root); });
+      ctx.after(2400, () => burst(20, 12));
+      ctx.after(2700, showReveal); // let the awe breathe before the button
+    }
   }
 
   return root;
