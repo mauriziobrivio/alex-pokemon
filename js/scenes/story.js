@@ -1,9 +1,12 @@
-// Story Mode — the Rainbow Wonder-Quest journey map (Part 3, Stage 1). The new
-// front door: the world map IS the journey. Mama points (Dada narrates) at the
-// next zone whose feather is still missing, but Alex taps ANY zone freely. A
-// chapter zone → its learning activity (Stage 1: catch) → earns that zone's
-// rainbow feather; the rainbow arc fills in. Free-play is one tap away ("Just
-// explore") and completely unchanged. No locks, no fail, no fixed order.
+// Story Mode — the journey maps + the front-door chooser (brief 022).
+//
+// The front door is now a gentle chooser: "Which adventure today?" — the Rainbow
+// Wonder-Quest (sunlit day) or the Wish-Star Journey (cozy twilight) — with
+// free-play still one tap away ("Just explore"). Each arc's journey IS the world
+// map: Mama points (Dada narrates) at the next zone whose token is still missing,
+// but Alex taps ANY zone freely. A chapter zone → its learning activity → earns
+// that zone's token (feather / wish-star); the rainbow / constellation fills in.
+// No locks, no fail, no fixed order. The rainbow journey is byte-equivalent to before.
 
 import { el, charImg, icon, spriteImg } from '../ui.js';
 import * as audio from '../audio.js';
@@ -16,47 +19,126 @@ import { SPOTS } from './worldmap.js';
 import { confetti, sparkleBurst, centerOf, haloRing, driftSparkles } from '../fx.js';
 import * as music from '../music.js';
 
-let storyGreeted = false; // the warm intro plays once per session
+const greeted = {}; // per-arc: the warm intro plays once per session
 
-// The 7-band rainbow arc — outer (red) to inner (violet). Bands light up in
-// proportion to feathers gathered; the rest wait as a faint promise.
+// --- Arc 1 progress: the 7-band rainbow arc (outer red → inner violet) ---
 const BANDS = ['#ff5a5a', '#ff9e3d', '#ffd83d', '#7ed957', '#4db5ff', '#5a6cff', '#b06cff'];
-function rainbowArc() {
-  const lit = Math.round((story.earnedCount() / story.totalChapters()) * BANDS.length);
+function rainbowArc(arcId) {
+  const lit = Math.round((story.earnedCount(arcId) / story.totalChapters(arcId)) * BANDS.length);
   const arcs = BANDS.map((c, i) => {
     const r = 92 - i * 11;
     return `<path d="M ${100 - r} 100 A ${r} ${r} 0 0 1 ${100 + r} 100" fill="none" stroke="${c}" stroke-width="8" stroke-linecap="round" opacity="${i < lit ? 1 : 0.12}"/>`;
   }).join('');
-  return el('div', { class: 'story__rainbow', 'aria-label': `Rainbow: ${story.earnedCount()} of ${story.totalChapters()} feathers` },
+  return el('div', { class: 'story__rainbow', 'aria-label': `Rainbow: ${story.earnedCount(arcId)} of ${story.totalChapters(arcId)} feathers` },
     el('span', { class: 'story__rainbow-svg', 'aria-hidden': 'true',
       html: `<svg viewBox="0 0 200 104" width="100%" height="100%">${arcs}</svg>` }));
 }
 
-// A small feather marker on a chapter zone: a soft glowing one to find, or a
-// bright earned one.
+// --- Arc 2 progress: a constellation of golden wish-stars that fills as stars are
+// earned — warm indigo night, glowing gold, never dark. ---
+const CONSTELLATION = [
+  { x: 24, y: 74 }, { x: 46, y: 52 }, { x: 66, y: 66 }, { x: 86, y: 42 }, { x: 104, y: 60 },
+  { x: 120, y: 36 }, { x: 140, y: 56 }, { x: 160, y: 42 }, { x: 178, y: 64 }, { x: 100, y: 20 },
+];
+function constellation(arcId) {
+  const earned = story.earnedCount(arcId);
+  const total = story.totalChapters(arcId);
+  const pts = CONSTELLATION.slice(0, total);
+  const line = pts.map((p, i) => `${i ? 'L' : 'M'} ${p.x} ${p.y}`).join(' ');
+  const stars = pts.map((p, i) => {
+    const lit = i < earned;
+    return `<circle cx="${p.x}" cy="${p.y}" r="${lit ? 4.4 : 2.6}" fill="${lit ? '#ffe98a' : '#fff'}" opacity="${lit ? 1 : 0.32}"${lit ? ' filter="url(#wishglow)"' : ''}/>`;
+  }).join('');
+  return el('div', { class: 'story__constellation', 'aria-label': `Wish-stars: ${earned} of ${total}` },
+    el('span', { class: 'story__constellation-svg', 'aria-hidden': 'true',
+      html: `<svg viewBox="0 0 200 100" width="100%" height="100%"><defs><filter id="wishglow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="${line}" fill="none" stroke="rgba(255,233,138,0.35)" stroke-width="1" stroke-dasharray="3 3"/>${stars}</svg>` }));
+}
+
+// Zone markers: a soft glowing one to find, or a bright earned one.
 function feather(earned) {
   return el('span', { class: 'hotspot__feather' + (earned ? ' is-earned' : ''), 'aria-hidden': 'true',
     html: '<svg viewBox="0 0 24 24" width="100%" height="100%"><path d="M20 4C9 5 5 12 4 20l3-3c1 1 3 1 4 0 4-3 8-7 9-13z" fill="currentColor"/><path d="M7 17l5-5" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" fill="none"/></svg>' });
 }
+function wishStar(earned) {
+  return el('span', { class: 'hotspot__wishstar' + (earned ? ' is-earned' : ''), 'aria-hidden': 'true',
+    html: '<svg viewBox="0 0 24 24" width="100%" height="100%"><path d="M12 2l2.6 6.3L21 9l-4.8 4.2L17.6 20 12 16.4 6.4 20l1.4-6.8L3 9l6.4-.7z" fill="currentColor"/></svg>' });
+}
+
+// Per-arc view config — the only place the two journeys differ visually/audibly.
+const ARC_VIEW = {
+  rainbow: {
+    title: 'Rainbow Adventure', mapClass: '', progress: rainbowArc, marker: feather,
+    findLabel: 'find the rainbow feather', gotLabel: 'feather found',
+    haloColor: 'rgba(255,243,176,0.85)', finaleHalo: 'rgba(255,224,106,0.9)',
+    clips: { intro: () => clip.storyIntro(), found: () => clip.featherFound(), more: () => clip.storyMore(), finale: () => clip.finale() },
+    finaleReady: true, finaleArt: 'assets/screens/scene-finale-rainbow.png',
+  },
+  wishstar: {
+    title: 'Wish-Star Journey', mapClass: 'story--twilight', progress: constellation, marker: wishStar,
+    findLabel: 'find the wish-star', gotLabel: 'wish-star found',
+    haloColor: 'rgba(180,200,255,0.9)', finaleHalo: 'rgba(255,236,150,0.92)',
+    clips: { intro: () => clip.wishIntro(), found: () => clip.wishStarFound(), more: () => clip.wishMore(), finale: () => clip.jirachiFinale(), wish: () => clip.makeAWish() },
+    finaleReady: false, // Stage 3 turns on the Jirachi finale
+    finaleArt: 'assets/screens/scene-jirachi-finale.png',
+  },
+};
 
 export function renderStory(params, ctx) {
-  const root = el('div', { class: 'scene story' });
+  const arcId = params && params.arc;
+  if (arcId && story.arcExists(arcId)) return renderJourney(arcId, params, ctx);
+  return renderChooser(ctx);
+}
+
+// The front door: "Which adventure today?" — two arcs, plus free-play one tap away.
+function renderChooser(ctx) {
+  const root = el('div', { class: 'scene story story--chooser' });
+  music.play('home');
+
+  const card = (arcId, subtitle, preview) => {
+    const v = ARC_VIEW[arcId];
+    const done = story.earnedCount(arcId), total = story.totalChapters(arcId);
+    return el('button', { class: `adventure-card adventure-card--${arcId}`, type: 'button', 'aria-label': v.title,
+      onClick: () => { audio.play(sfx.pop()); ctx.go('story', { arc: arcId }); } },
+      el('span', { class: 'adventure-card__art' }, preview),
+      el('span', { class: 'adventure-card__title' }, v.title),
+      el('span', { class: 'adventure-card__sub' }, subtitle),
+      el('span', { class: 'adventure-card__count', 'aria-hidden': 'true' }, `${done} / ${total}`));
+  };
+
+  const explore = el('button', { class: 'btn btn--ghost story__explore', type: 'button',
+    onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, icon('catch'), ' Just explore');
+
+  root.append(
+    el('h1', { class: 'story__title' }, 'Which adventure today?'),
+    el('div', { class: 'adventure-choices' },
+      card('rainbow', 'A sunny rainbow quest', rainbowArc('rainbow')),
+      card('wishstar', 'A starlit wish journey', constellation('wishstar'))),
+    explore);
+  ctx.after(450, () => { if (ctx.alive()) audio.speak(clip.chooseAdventure()); });
+  return root;
+}
+
+// One generalized journey map, parameterized by arc.
+function renderJourney(arcId, params, ctx) {
+  const v = ARC_VIEW[arcId];
+  const root = el('div', { class: `scene story ${v.mapClass}`.trim() });
   music.play('home');
 
   const map = el('div', { class: 'story__map', style: { backgroundImage: "url('assets/screens/screen-worldmap.png')" } });
+  if (v.mapClass) map.append(el('span', { class: 'story__nightveil', 'aria-hidden': 'true' })); // warm twilight overlay
   ZONES.forEach((z) => {
     const s = SPOTS[z.id] || { x: 50, y: 50 };
-    const chap = story.isChapter(z.id);
-    const got = story.hasFeather(z.id);
-    const label = z.name + (chap ? (got ? ', feather found' : ', find the rainbow feather') : '');
+    const chap = story.isChapter(arcId, z.id);
+    const got = story.hasEarned(arcId, z.id);
+    const label = z.name + (chap ? (got ? `, ${v.gotLabel}` : `, ${v.findLabel}`) : '');
     const spot = el('button', {
-      class: `hotspot hotspot--${z.id}` + (chap && !got ? ' is-quest' : '') + (got ? ' has-feather' : ''),
+      class: `hotspot hotspot--${z.id}` + (chap && !got ? ' is-quest' : '') + (got ? ' has-token' : ''),
       type: 'button', 'aria-label': label, style: { left: `${s.x}%`, top: `${s.y}%` },
       onClick: () => tapZone(z),
     },
       el('span', { class: 'hotspot__ring', 'aria-hidden': 'true' }),
       el('span', { class: 'hotspot__label' }, z.name));
-    if (chap) spot.append(feather(got));
+    if (chap) spot.append(v.marker(got));
     map.append(spot);
   });
 
@@ -64,93 +146,97 @@ export function renderStory(params, ctx) {
     charImg('assets/characters/mama/mama-presenting.png', 'char char--mama', 'Mama'),
     charImg('assets/characters/dada/dada-presenting.png', 'char char--dada', 'Professor Dada'));
 
-  const explore = el('button', { class: 'btn btn--ghost story__explore', type: 'button',
-    onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, icon('catch'), ' Just explore');
+  // Back to the chooser (the front door) — free-play is one more tap from there.
+  const back = el('button', { class: 'btn btn--ghost story__explore', type: 'button',
+    onClick: () => { audio.play(sfx.pop()); ctx.go('story'); } }, icon('back'), ' Adventures');
 
-  root.append(rainbowArc(), el('h1', { class: 'story__title' }, 'Rainbow Adventure'), map, cast, explore);
+  root.append(v.progress(arcId), el('h1', { class: 'story__title' }, v.title), map, cast, back);
 
   function tapZone(z) {
     audio.play(sfx.pop());
     audio.speak(clip.zone(z.id));
-    const chap = story.chapterFor(z.id);
-    const questHere = chap && !story.hasFeather(z.id);
+    const chap = story.chapterFor(arcId, z.id);
+    const questHere = chap && !story.hasEarned(arcId, z.id);
     ctx.after(380, () => {
       if (!ctx.alive()) return;
-      // A quest zone starts its chapter's activity (→ feather). An already-earned
-      // zone is free exploration — never a dead end. `from:'story'` only steers the
-      // Back button home to the journey; it never changes the activity's behavior.
+      // A quest zone starts its chapter's activity (→ token). An already-earned zone
+      // is free exploration — never a dead end. `arc`/`from` only steer the activity's
+      // Back button back to THIS journey; they never change the activity's behavior.
       if (questHere) startChapter(z.id, chap.kind);
-      else ctx.go('catch', { zoneId: z.id, from: 'story' });
+      else ctx.go('catch', { zoneId: z.id, from: 'story', arc: arcId });
     });
   }
 
-  // Each chapter routes to the activity Alex already knows, in Story mode (it
-  // earns this zone's feather on success and returns to the journey).
+  // Each chapter routes to the activity Alex already knows, in Story mode (it earns
+  // this zone's token on success and returns to this journey).
   function startChapter(zone, kind) {
-    if (kind === 'build-word') ctx.go('train', { story: true, zone, kind: 'build-word' });
-    else if (kind === 'count') ctx.go('train', { story: true, zone, kind: 'count' });
-    else if (kind === 'battle') ctx.go('battle', { story: true, zone });
-    else ctx.go('catch', { zoneId: zone, story: true });
+    if (kind === 'build-word') ctx.go('train', { story: true, zone, kind: 'build-word', arc: arcId });
+    else if (kind === 'count') ctx.go('train', { story: true, zone, kind: 'count', arc: arcId });
+    else if (kind === 'battle') ctx.go('battle', { story: true, zone, arc: arcId });
+    else if (kind === 'pattern') ctx.go('game-pattern', { story: true, zone, arc: arcId });
+    else ctx.go('catch', { zoneId: zone, story: true, arc: arcId });
   }
 
-  // Entry narration / set-piece. When every feather is home and the finale hasn't
-  // played yet, the Ho-Oh reveal supersedes everything (once ever). Otherwise:
-  // returning from a just-earned feather → celebrate + grow the rainbow; else the
+  // Entry narration / set-pieces. When every token is home and the arc's finale is
+  // ready and unseen, the reveal supersedes everything (once ever). Otherwise:
+  // returning from a just-earned token → celebrate + grow the arc; else the
   // once-per-session intro, then Mama gently points at what's next.
-  const feathered = params && params.feathered;
-  if (story.allChaptersDone() && !story.finaleSeen()) {
-    ctx.after(feathered ? 1100 : 600, () => { if (ctx.alive()) showFinale(); });
-  } else if (feathered) {
+  const earnedZone = params && params.earned;
+  if (story.allChaptersDone(arcId) && v.finaleReady && !story.finaleSeen(arcId)) {
+    ctx.after(earnedZone ? 1100 : 600, () => { if (ctx.alive()) showFinale(); });
+  } else if (earnedZone) {
     ctx.after(450, () => { if (ctx.alive()) celebrate(); });
   } else {
-    const next = story.nextChapterZone();
-    if (!storyGreeted) {
-      // One queued sequence → deterministic order (intro, THEN Mama points), no timer skew.
-      ctx.after(500, () => (next ? audio.speakSequence([clip.storyIntro(), clip.suggest(next)]) : audio.speak(clip.storyMore())));
+    const next = story.nextChapterZone(arcId);
+    if (!greeted[arcId]) {
+      ctx.after(500, () => (next ? audio.speakSequence([v.clips.intro(), clip.suggest(next)]) : audio.speak(v.clips.more())));
     } else if (next) {
       ctx.after(500, () => audio.speak(clip.suggest(next)));
     } else {
-      ctx.after(500, () => audio.speak(clip.storyMore())); // rainbow complete (finale already seen)
+      ctx.after(500, () => audio.speak(v.clips.more()));
     }
-    storyGreeted = true;
+    greeted[arcId] = true;
   }
 
   function celebrate() {
     confetti(root);
     audio.play(sfx.catch());
-    audio.speak(clip.featherFound());
-    const rb = root.querySelector('.story__rainbow');
-    if (rb) {
-      const c = centerOf(rb, root);
-      haloRing(root, c.x, c.y, { size: 240, color: 'rgba(255,243,176,0.85)', dur: 950 });
+    audio.speak(v.clips.found());
+    const prog = root.querySelector('.story__rainbow, .story__constellation');
+    if (prog) {
+      const c = centerOf(prog, root);
+      haloRing(root, c.x, c.y, { size: 240, color: v.haloColor, dur: 950 });
       driftSparkles(root, c.x, c.y, 9);
-      rb.classList.add('is-growing');
+      prog.classList.add('is-growing');
     }
-    const next = story.nextChapterZone();
+    // Arc 2's gentle twist: each earned wish-star earns a little "make a wish".
+    if (v.clips.wish) audio.speak(v.clips.wish());
+    const next = story.nextChapterZone(arcId);
     if (next) audio.speak(clip.suggest(next)); // (all-done is handled by the finale path above)
   }
 
-  // The finale — a calm, wondrous reveal (never a battle, never scary): Ho-Oh
-  // comes to the kind trainer who gathered every feather, and joins the Pokédex.
+  // The finale — a calm, wondrous reveal (never a battle, never scary): the arc's
+  // friend comes to the kind trainer who gathered every token, and joins the Pokédex.
   function showFinale() {
-    recordCatch(story.HOOH_ID); // met with joy, not caught in a ball
-    story.markFinaleSeen();
-    const hooh = pokemonById(story.HOOH_ID);
-    const sprite = spriteImg(hooh); sprite.classList.add('finale__hooh');
-    const overlay = el('div', { class: 'finale' },
-      charImg('assets/screens/scene-finale-rainbow.png', 'finale__bg'), // bespoke art if dropped in; else the card's CSS rainbow carries it
+    const fid = story.finaleId(arcId);
+    recordCatch(fid); // met with joy, not caught in a ball
+    story.markFinaleSeen(arcId);
+    const friend = pokemonById(fid);
+    const sprite = spriteImg(friend); sprite.classList.add('finale__friend');
+    const overlay = el('div', { class: `finale finale--${arcId}` },
+      charImg(v.finaleArt, 'finale__bg'), // bespoke art if dropped in; else the card's CSS carries it
       el('div', { class: 'finale__card' },
-        rainbowArc(),
+        v.progress(arcId),
         sprite,
-        el('div', { class: 'finale__title' }, hooh ? `${hooh.name} came to say hello!` : 'A beautiful friend has come!'),
+        el('div', { class: 'finale__title' }, friend ? `${friend.name} came to say hello!` : 'A beautiful friend has come!'),
         el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); } }, 'Yay!'),
       ));
     root.append(overlay);
     audio.play(sfx.catch());
-    audio.speak(clip.finale());
+    audio.speak(v.clips.finale());
     requestAnimationFrame(() => {
       const c = centerOf(sprite, root);
-      haloRing(root, c.x, c.y, { size: 320, color: 'rgba(255,224,106,0.9)', dur: 1100 });
+      haloRing(root, c.x, c.y, { size: 320, color: v.finaleHalo, dur: 1100 });
       sparkleBurst(root, c.x, c.y, 22);
       driftSparkles(root, c.x, c.y, 12);
       confetti(root);

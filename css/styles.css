@@ -685,9 +685,13 @@ html, body {
 /* feather marker on a chapter zone — a soft one to find, a bright one earned */
 .hotspot__feather { position: absolute; top: -12px; right: -2px; width: 30px; height: 30px; color: rgba(255,255,255,0.92); filter: drop-shadow(0 1px 3px rgba(0,0,0,0.45)); }
 .hotspot.is-quest .hotspot__feather { color: #ffe06a; animation: feather-bob 1.8s ease-in-out infinite; }
-.hotspot.has-feather .hotspot__feather { color: #ffd83d; }
+.hotspot.has-token .hotspot__feather { color: #ffd83d; }
 .hotspot.is-quest .hotspot__ring { border-color: #ffe06a; box-shadow: 0 0 0 4px rgba(255,224,106,0.35); animation: invite-pulse 1.6s ease-in-out infinite; }
 @keyframes feather-bob { 0%, 100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-4px) rotate(4deg); } }
+/* arc 2 — wish-star marker (a soft one to find, a bright gold one earned) */
+.hotspot__wishstar { position: absolute; top: -13px; right: -3px; width: 30px; height: 30px; color: rgba(255,255,255,0.92); filter: drop-shadow(0 1px 3px rgba(0,0,0,0.45)); }
+.hotspot.is-quest .hotspot__wishstar { color: #ffe98a; animation: feather-bob 1.8s ease-in-out infinite; }
+.hotspot.has-token .hotspot__wishstar { color: #ffd83d; }
 
 /* the "Rainbow Adventure" banner back to Story from free-play home */
 .story-banner { display: inline-flex; align-items: center; gap: 10px; align-self: center; margin: 2px 0;
@@ -703,8 +707,8 @@ html, body {
 .finale__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.92; }
 .finale__card { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: clamp(8px, 2vh, 18px);
   animation: popIn 0.5s cubic-bezier(0.2,1.4,0.4,1); }
-.finale__card .story__rainbow { width: min(360px, 76vw); }
-.finale__hooh { width: clamp(180px, 44vw, 300px); height: clamp(180px, 44vw, 300px);
+.finale__card .story__rainbow, .finale__card .story__constellation { width: min(360px, 76vw); }
+.finale__friend { width: clamp(180px, 44vw, 300px); height: clamp(180px, 44vw, 300px);
   filter: drop-shadow(0 8px 22px rgba(0,0,0,0.25)); animation: finale-float 3.2s ease-in-out infinite; }
 .finale__title { font-size: clamp(24px, 5.4vw, 40px); font-weight: 900; color: var(--ink); text-align: center; line-height: 1.15; }
 @keyframes finale-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
@@ -803,3 +807,49 @@ html, body {
 @keyframes rhythm-pulse { 0%, 100% { transform: none; } 45% { transform: translateY(-9px) scale(1.1); } }
 /* reduced-motion hint (the `*` rule kills the wave): a calm static highlight instead */
 .pattern__row.is-hint-static .pattern__cell { box-shadow: 0 0 0 4px rgba(255, 143, 163, 0.75); border-radius: 16px; transition: box-shadow 0.3s; }
+
+/* ====================================================================
+   Story Mode arc 2 — Wish-Star Journey + the front-door chooser (brief 022) */
+/* "Which adventure today?" — two big arc cards + free-play one tap away */
+.story--chooser { justify-content: center; gap: clamp(14px, 3vh, 28px); }
+.adventure-choices { display: flex; gap: clamp(16px, 4vw, 32px); flex-wrap: wrap; justify-content: center; width: min(720px, 94%); }
+.adventure-card { flex: 1 1 240px; max-width: 320px; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: clamp(16px, 3vw, 26px); border: 5px solid #fff; border-radius: 28px; cursor: pointer; font-family: inherit;
+  box-shadow: var(--shadow); transition: transform 0.1s ease; }
+.adventure-card:active { transform: translateY(3px) scale(0.98); }
+.adventure-card--rainbow { background: linear-gradient(165deg, #fff3d6, #ffe6e6 55%, #e7f3ff); }
+.adventure-card--wishstar { background: linear-gradient(165deg, #4a4288, #5b4f9e 55%, #6f5fa6); }
+.adventure-card--wishstar .adventure-card__title,
+.adventure-card--wishstar .adventure-card__sub,
+.adventure-card--wishstar .adventure-card__count { color: #fff8e7; }
+.adventure-card__art { width: clamp(120px, 30vw, 180px); height: clamp(70px, 18vw, 104px); display: grid; place-items: center; }
+.adventure-card__art .story__rainbow, .adventure-card__art .story__constellation { width: 100%; margin: 0; }
+.adventure-card__title { font-size: clamp(18px, 3.6vw, 24px); font-weight: 900; color: var(--ink); }
+.adventure-card__sub { font-size: clamp(13px, 2.6vw, 16px); font-weight: 700; color: var(--ink-soft); }
+.adventure-card__count { font-size: 14px; font-weight: 800; color: var(--ink-soft); opacity: 0.85; }
+
+/* arc 2 progress: a constellation of golden wish-stars that fills */
+.story__constellation { width: min(320px, 64%); margin: 2px 0 0; }
+.story__constellation-svg { display: block; width: 100%; }
+.story__constellation.is-growing { animation: rainbow-pop 0.9s ease; }
+
+/* arc 2 twilight skin — warm indigo night, glowing gold, NEVER dark or eerie.
+   (.scene.story sets a sky gradient at higher specificity, so match it here.) */
+.scene.story.story--twilight { background: linear-gradient(172deg, #43406f 0%, #534a8c 52%, #6f5fa6 100%); }
+.story--twilight .story__title { color: #fff8e7; text-shadow: 0 1px 6px rgba(40, 30, 80, 0.5); }
+.story--twilight .story__map { box-shadow: 0 10px 30px rgba(30, 20, 70, 0.4); }
+.story--twilight .story__cast .char { filter: drop-shadow(0 2px 8px rgba(20, 12, 50, 0.45)); }
+.story__nightveil { position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background:
+    radial-gradient(2px 2px at 18% 24%, rgba(255, 248, 220, 0.95), transparent 60%),
+    radial-gradient(2px 2px at 72% 16%, rgba(255, 248, 220, 0.9), transparent 60%),
+    radial-gradient(1.6px 1.6px at 46% 62%, rgba(255, 248, 220, 0.85), transparent 60%),
+    radial-gradient(2px 2px at 86% 52%, rgba(255, 236, 150, 0.92), transparent 60%),
+    radial-gradient(1.6px 1.6px at 30% 80%, rgba(255, 248, 220, 0.8), transparent 60%),
+    linear-gradient(160deg, rgba(58, 52, 112, 0.5), rgba(74, 66, 136, 0.55));
+  animation: twinkle 4s ease-in-out infinite; }
+@keyframes twinkle { 0%, 100% { opacity: 0.88; } 50% { opacity: 1; } }
+
+/* arc 2 finale (Stage 3) — a calm twilight reveal, warm not dark */
+.finale--wishstar { background: radial-gradient(circle at 50% 34%, rgba(86, 78, 150, 0.97), rgba(52, 46, 100, 0.98)); }
+.finale--wishstar .finale__title { color: #fff8e7; }

@@ -17,7 +17,7 @@ import { tenFrame } from '../tenframe.js';
 import { isCaught, recordCatch, markFoil } from '../game.js';
 import { openPack } from '../cards.js';
 import { typeBadges } from '../typeicon.js';
-import { earnFeather } from '../story.js';
+import { earn } from '../story.js';
 import * as quests from '../quests.js';
 import * as music from '../music.js';
 import { confetti, sparkleBurst, centerOf, haloRing } from '../fx.js';
@@ -26,18 +26,19 @@ import { gateAnswers, replayButton } from '../attention.js';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
-export function renderCatch({ zoneId, story, from }, ctx) {
+export function renderCatch({ zoneId, story, from, arc }, ctx) {
   const zone = zoneById(zoneId);
   const pool = spawnPool(zone.id); // wild spawns exclude reserved legendaries (binder still shows them)
   music.playForZone(zone.id); // the zone's gentle bed (ducks under Dada)
+  const storyArc = arc || 'rainbow'; // which Story arc this chapter belongs to (token + return)
 
   // "Back" returns wherever Alex came from: the Story journey (a chapter, or
   // free-explore launched from it) or the world map (free-play). Only the `story`
-  // flag changes gameplay; `from` is a pure navigation hint.
+  // flag changes gameplay; `from`/`arc` are pure navigation hints.
   const backToStory = !!story || from === 'story';
   const root = el('div', { class: 'scene catch', style: { backgroundImage: `url('${zone.background}')` } });
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': backToStory ? 'Back to the adventure' : 'Back to the map',
-    onClick: () => { if (busy) return; audio.play(sfx.pop()); ctx.go(backToStory ? 'story' : 'worldmap'); } }, icon('back'));
+    onClick: () => { if (busy) return; audio.play(sfx.pop()); ctx.go(backToStory ? 'story' : 'worldmap', backToStory ? { arc: storyArc } : undefined); } }, icon('back'));
 
   // Outing progress cue — a calm row of pips that fill as encounters resolve.
   // Pacing & closure, never a stressful timer (no countdown, no numbers).
@@ -269,15 +270,16 @@ export function renderCatch({ zoneId, story, from }, ctx) {
   function showCaughtCard() {
     const last = encountersDone >= OUTING_LENGTH;
     const advance = () => { last ? showOutingEnd() : startEncounter(); };
-    // Story chapter: one catch IS the goal — earn this zone's feather and return
-    // to the journey (the Pokémon is already recorded). Free-play: the usual outing.
-    const toFeather = () => { earnFeather(zoneId); ctx.go('story', { feathered: zoneId }); };
+    // Story chapter: one catch IS the goal — earn this zone's token and return to
+    // the journey (the Pokémon is already recorded). Free-play: the usual outing.
+    const toFeather = () => { earn(storyArc, zoneId); ctx.go('story', { earned: zoneId, arc: storyArc }); };
+    const tokenCta = storyArc === 'wishstar' ? 'Find the wish-star!' : 'Find the rainbow feather!';
     const overlay = el('div', { class: 'caught' });
     const sprite = spriteImg(pokemon);
     sprite.classList.add('caught__sprite');
     const actions = story
       ? el('div', { class: 'caught__actions' },
-          el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); toFeather(); } }, 'Find the rainbow feather!'))
+          el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); toFeather(); } }, tokenCta))
       : el('div', { class: 'caught__actions' },
           el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); advance(); } }, last ? 'See who we met!' : 'Keep going!'),
           el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, 'Home'));
@@ -302,7 +304,7 @@ export function renderCatch({ zoneId, story, from }, ctx) {
     // In a Story chapter the first catch already earns the feather and leaves; the
     // only way here is an all-escaped outing (vanishingly rare) — return to the
     // journey gently (no empty pack, no dead end; the chapter can be retried).
-    if (story) { ctx.go('story'); return; }
+    if (story) { ctx.go('story', { arc: storyArc }); return; }
     openPack(root, ctx, outingCatches, { onGoAgain: startNewOuting });
   }
 

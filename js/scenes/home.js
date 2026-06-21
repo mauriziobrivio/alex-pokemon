@@ -48,11 +48,11 @@ export function renderHome(_params, ctx) {
     el('button', { class: 'btn btn--big btn--games', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('games'); } },
       icon('games', 'btn__icon'), 'Play & Learn'));
 
-  // A calm way back to the Rainbow Adventure (Story is the front door; free-play
-  // is reached from there, and this returns to it). Additive — nothing removed.
-  const storyBanner = el('button', { class: 'story-banner', type: 'button', 'aria-label': 'Rainbow Adventure',
+  // A calm way back to Story Mode (the chooser is the front door — pick the Rainbow
+  // or Wish-Star journey; free-play is reached from there). Additive — nothing removed.
+  const storyBanner = el('button', { class: 'story-banner', type: 'button', 'aria-label': 'Story adventures',
     onClick: () => { audio.play(sfx.pop()); ctx.go('story'); } },
-    icon('star', 'story-banner__icon'), el('span', { class: 'story-banner__text' }, 'Rainbow Adventure'));
+    icon('star', 'story-banner__icon'), el('span', { class: 'story-banner__text' }, 'Adventures'));
 
   // If a quest finished during play, take it now (rolls a fresh one) so the
   // banner below advertises the NEW invitation, not the just-completed one.

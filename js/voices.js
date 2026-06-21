@@ -78,11 +78,19 @@ export const clip = {
   // --- Phase 9: My Words (review wall) ---
   myWords: () => url('my-words.mp3'),                  // "Here are all the words you built! Tap one to read it."
 
-  // --- Phase 10: Story Mode — the Rainbow Wonder-Quest (Mama-suggest reuses suggest(zone)) ---
+  // --- Phase 10: Story Mode — arc 1, the Rainbow Wonder-Quest (Mama-suggest reuses suggest(zone)) ---
   storyIntro: () => url('story-intro.mp3'),            // "Let's go on a rainbow adventure, Alex!"
   featherFound: () => url('feather-found.mp3'),        // "You found a rainbow feather! The rainbow is growing!"
   storyMore: () => url('story-more.mp3'),              // "More rainbow feathers are waiting — let's keep exploring!"
   finale: () => url('story-finale.mp3'),               // "You found every rainbow feather! Look — Ho-Oh has come to say hello, Alex!"
+
+  // --- Story Mode — the front-door chooser + arc 2, Jirachi's Wish Stars (brief 022) ---
+  chooseAdventure: () => url('choose-adventure.mp3'),  // "Which adventure today?"
+  wishIntro: () => url('wish-intro.mp3'),              // "Let's follow the wish-stars tonight, Alex!"
+  wishStarFound: () => url('wish-star-found.mp3'),     // "You found a wish-star! The night sky is glowing!"
+  makeAWish: () => url('make-a-wish.mp3'),             // "Make a little wish, Alex!"
+  wishMore: () => url('wish-more.mp3'),                // "More wish-stars are waiting — let's keep exploring!"
+  jirachiFinale: () => url('jirachi-finale.mp3'),      // "Every wish-star is home — Jirachi woke up to say hello!" (Stage 3)
 };
 
 export const PRAISE_COUNT = 4;

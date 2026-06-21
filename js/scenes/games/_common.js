@@ -18,10 +18,12 @@ export const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j
 // A scene scaffold: a .scene root, a back→corner button, a panel to fill, and a
 // persistent "hear it again" button that re-speaks the CURRENT round's prompt
 // (each round registers its speak via setPrompt).
-export function gameShell(ctx, sceneClass) {
+export function gameShell(ctx, sceneClass, opts = {}) {
   const root = el('div', { class: `scene game ${sceneClass}` });
-  const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': 'Back to games',
-    onClick: () => { audio.play(sfx.pop()); ctx.go('games'); } }, icon('back'));
+  // Default back → the Play & Learn corner; a story chapter overrides onBack to
+  // return to its journey instead (and re-labels the button).
+  const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': opts.backLabel || 'Back to games',
+    onClick: () => { audio.play(sfx.pop()); opts.onBack ? opts.onBack() : ctx.go('games'); } }, icon('back'));
   const panel = el('div', { class: 'game__panel' });
   let promptFn = null;
   root.append(back, panel, replayButton(() => { if (promptFn) promptFn(); }));

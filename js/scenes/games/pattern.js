@@ -12,6 +12,7 @@ import { clip } from '../../voices.js';
 import { sfx } from '../../sfx.js';
 import { sparkleBurst, centerOf } from '../../fx.js';
 import { getPatternWins, recordPatternWin } from '../../game.js';
+import { earn } from '../../story.js';
 import { gameShell, win, shuffle } from './_common.js';
 import { gateAnswers } from '../../attention.js';
 
@@ -34,8 +35,14 @@ function unlockedTypes(wins) {
   return ['AB'];
 }
 
-export function renderPattern(_params, ctx) {
-  const { root, panel, setPrompt } = gameShell(ctx, 'game-pattern');
+export function renderPattern(params, ctx) {
+  // As a Story chapter (arc 2's Pattern Play zones): one completed pattern IS the
+  // goal — earn this zone's wish-star and return to the journey. Back goes there too.
+  const story = params && params.story;
+  const storyArc = (params && params.arc) || 'rainbow';
+  const storyZone = params && params.zone;
+  const { root, panel, setPrompt } = gameShell(ctx, 'game-pattern',
+    story ? { onBack: () => ctx.go('story', { arc: storyArc }), backLabel: 'Back to the adventure' } : {});
   let lastType = null;
   let token = 0;
 
@@ -92,8 +99,10 @@ export function renderPattern(_params, ctx) {
         audio.play(sfx.pop());
         const c = centerOf(gap, root);
         sparkleBurst(root, c.x, c.y, 16);
-        // record only FIRST-TRY successes toward the ramp (real pattern recognition)
-        win(root, ctx, { record: () => { if (firstTry) recordPatternWin(); }, next: round });
+        // record only FIRST-TRY successes toward the ramp (real pattern recognition).
+        // A Story chapter: one completed pattern earns the wish-star and returns.
+        const next = story ? () => { earn(storyArc, storyZone); ctx.go('story', { earned: storyZone, arc: storyArc }); } : round;
+        win(root, ctx, { record: () => { if (firstTry) recordPatternWin(); }, next });
       } else {
         firstTry = false;
         audio.play(sfx.soft());

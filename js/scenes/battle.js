@@ -11,7 +11,7 @@ import { sfx } from '../sfx.js';
 import { isTeen, pokemonById, ZONES, sameSound } from '../data.js';
 import { tenFrame } from '../tenframe.js';
 import { getPokedex, addBond, getStarterId, getLossStreak, recordBattleLoss, clearBattleLosses } from '../game.js';
-import { earnFeather } from '../story.js';
+import { earn } from '../story.js';
 import { canEvolve, triggerEvolution } from '../evolve.js';
 import { sparkleBurst, confetti, centerOf, driftSparkles } from '../fx.js';
 import { typeBadge } from '../typeicon.js';
@@ -22,10 +22,11 @@ import { gateAnswers, replayButton } from '../attention.js';
 
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
-export function renderBattle({ story, zone }, ctx) {
+export function renderBattle({ story, zone, arc }, ctx) {
   const root = el('div', { class: 'scene battle', style: { backgroundImage: "url('assets/screens/bg-lab.png')" } });
+  const storyArc = arc || 'rainbow'; // which Story arc this chapter belongs to (token + return)
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': story ? 'Back to the adventure' : 'Back home',
-    onClick: () => { audio.play(sfx.pop()); ctx.go(story ? 'story' : 'home'); } }, icon('back')); // always a safe exit; deferred work is epoch-guarded
+    onClick: () => { audio.play(sfx.pop()); ctx.go(story ? 'story' : 'home', story ? { arc: storyArc } : undefined); } }, icon('back')); // always a safe exit; deferred work is epoch-guarded
   const stage = el('div', { class: 'battle__stage' });
   const tray = el('div', { class: 'battle__tray' });
   let currentSpeak = null; // the live question's prompt, for "hear it again"
@@ -368,9 +369,10 @@ export function renderBattle({ story, zone }, ctx) {
     const overlay = el('div', { class: 'win' });
     const sprite = spriteImg(p); sprite.classList.add('win__sprite');
     // Story chapter: the win earns this zone's feather and returns to the journey.
+    const tokenCta = storyArc === 'wishstar' ? 'Find the wish-star!' : 'Find the rainbow feather!';
     const actions = story
       ? el('div', { class: 'win__actions' },
-          el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); earnFeather(zone); ctx.go('story', { feathered: zone }); } }, 'Find the rainbow feather!'))
+          el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); earn(storyArc, zone); ctx.go('story', { earned: zone, arc: storyArc }); } }, tokenCta))
       : el('div', { class: 'win__actions' },
           el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); startBattle(); } }, 'Play again!'),
           el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, 'Home'));

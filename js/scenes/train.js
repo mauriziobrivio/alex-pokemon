@@ -15,7 +15,7 @@ import { CVC_WORDS, wordBuildable, isTeen, pokemonById, nextStageId, sameSound }
 import * as mastery from '../mastery.js';
 import { tenFrame } from '../tenframe.js';
 import { getPokedex, getBond, addBond, bondCost, recordWord, getStarterId } from '../game.js';
-import { earnFeather } from '../story.js';
+import { earn } from '../story.js';
 import { canEvolve, triggerEvolution } from '../evolve.js';
 import { sparkleBurst, centerOf } from '../fx.js';
 import { replayButton } from '../attention.js';
@@ -23,10 +23,11 @@ import * as music from '../music.js';
 
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
-export function renderTrain({ story, zone, kind }, ctx) {
+export function renderTrain({ story, zone, kind, arc }, ctx) {
   const root = el('div', { class: 'scene train', style: { backgroundImage: "url('assets/backgrounds/bg-meadow.png')" } });
+  const storyArc = arc || 'rainbow'; // which Story arc this chapter belongs to (token + return)
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': story ? 'Back to the adventure' : 'Back home',
-    onClick: () => { audio.play(sfx.pop()); ctx.go(story ? 'story' : 'home'); } }, icon('back'));
+    onClick: () => { audio.play(sfx.pop()); ctx.go(story ? 'story' : 'home', story ? { arc: storyArc } : undefined); } }, icon('back'));
   const panel = el('div', { class: 'train__panel' });
   let currentSpeak = null; // the live activity's prompt, for "hear it again"
   root.append(back, panel, replayButton(() => { if (currentSpeak) currentSpeak(); }));
@@ -87,9 +88,9 @@ export function renderTrain({ story, zone, kind }, ctx) {
   }
 
   function afterTrainSuccess() {
-    // Story chapter: the activity IS the goal — earn this zone's feather and return
+    // Story chapter: the activity IS the goal — earn this zone's token and return
     // to the journey (no bond/evolve detour mid-story).
-    if (story) { earnFeather(zone); ctx.go('story', { feathered: zone }); return; }
+    if (story) { earn(storyArc, zone); ctx.go('story', { earned: zone, arc: storyArc }); return; }
     if (nextStageId(buddyId)) {
       addBond(buddyId, 1);
       if (canEvolve(buddyId)) {
@@ -168,7 +169,7 @@ export function renderTrain({ story, zone, kind }, ctx) {
     }
 
     renderTiles();
-    panel.append(slotRow, tileRow, el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => (story ? ctx.go('story') : showActivityPicker()) }, 'Done'));
+    panel.append(slotRow, tileRow, el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => (story ? ctx.go('story', { arc: storyArc }) : showActivityPicker()) }, 'Done'));
     ctx.after(400, () => { if (myToken === token) { audio.speak(clip.letsBuild()); ctx.after(900, activateSlot); } });
   }
 
@@ -252,7 +253,7 @@ export function renderTrain({ story, zone, kind }, ctx) {
       }
     }
 
-    panel.append(counter, field, el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => (story ? ctx.go('story') : showActivityPicker()) }, 'Done'));
+    panel.append(counter, field, el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => (story ? ctx.go('story', { arc: storyArc }) : showActivityPicker()) }, 'Done'));
     ctx.after(400, () => { if (myToken === token) audio.playSequence([clip.feedBerries(), clip.number(target)]); });
     scheduleIdle();
   }
