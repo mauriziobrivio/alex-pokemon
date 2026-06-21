@@ -2,11 +2,11 @@
 //
 // Strategy: stale-while-revalidate. The core shell, scene art, and the gameplay
 // audio are precached on install (tolerant — one missing file won't abort the
-// rest). Everything else (the 151 Pokémon-name clips, and sprites where present)
+// rest). Everything else (the 493 Pokémon-name clips, and sprites where present)
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v24';
+const CACHE = 'dada-academy-v25';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -42,7 +42,7 @@ for (let i = 1; i <= 4; i++) CORE.push(`./audio/dada/praise-${i}.mp3`);
 for (let i = 1; i <= 3; i++) CORE.push(`./audio/dada/catch-cheer-${i}.mp3`);
 for (const z of ['meadow', 'forest', 'beach', 'mountain', 'desert', 'volcano', 'snowfield', 'grove', 'cave', 'ocean']) CORE.push(`./audio/dada/zone-${z}.mp3`, `./audio/dada/suggest-${z}.mp3`);
 // Starter-trio names (Pikachu 25, Charmander 4, Bulbasaur 1) — heard first, so
-// precache them; the other 148 name clips warm into cache at runtime (SWR).
+// precache them; the other 490 name clips warm into cache at runtime (SWR).
 for (const id of [25, 4, 1]) CORE.push(`./audio/dada/name-${id}.mp3`);
 // Phase 2: phonemes + Train/evolution lines (gameplay audio).
 for (const ch of ['s', 'a', 't', 'i', 'p', 'n', 'c', 'k', 'e', 'h', 'r', 'm', 'd', 'g', 'o', 'u', 'l', 'f', 'b']) CORE.push(`./audio/dada/phoneme-${ch}.mp3`);
@@ -66,7 +66,7 @@ CORE.push('./sprites/250.png'); // Ho-Oh — the finale star (precache the set-p
 // Starter evolution lines' sprites (1-6, 25-26) so the first evolutions show offline.
 for (const id of [1, 2, 3, 4, 5, 6, 25, 26]) CORE.push(`./sprites/${id}.png`);
 // build-a-word whole-word clips (the blend climax) — small; precache all 72.
-// (Other sprites + the 251 name clips warm into cache at runtime via main.js.)
+// (Other sprites + the 490 name clips warm into cache at runtime via main.js.)
 const WORDS = ['sat', 'tap', 'pin', 'nap', 'pat', 'tip', 'sit', 'tin', 'pit', 'pan', 'tan', 'sap',
   'cat', 'hat', 'mat', 'rat', 'hen', 'men', 'ten', 'pen', 'net', 'can', 'man', 'ran',
   'mad', 'sad', 'had', 'dad', 'cap', 'map', 'ram', 'ham', 'kit', 'kid', 'red', 'set',

@@ -39,6 +39,7 @@ export const OCEAN_IDS = new Set([
   170, 171, 211, 222, 223, 224, 226,  // Gen 2 deep-water
   318, 319, 320, 321, 339, 340, 341, 342, 349, 350, // Gen 3: Carvanha/Sharpedo, Wailmer/Wailord, Barboach/Whiscash, Corphish/Crawdaunt, Feebas/Milotic
   363, 364, 365, 366, 367, 368, 369, 370,           // Spheal line, Clamperl/Huntail/Gorebyss, Relicanth, Luvdisc
+  418, 419, 422, 423, 456, 457, 458, 489, 490,      // Gen 4: Buizel/Floatzel, Shellos/Gastrodon, Finneon/Lumineon, Mantyke, Phione/Manaphy
 ]);
 
 // Legendaries are reserved as SPECIAL, story-only friends — never random wild
@@ -50,6 +51,8 @@ export const LEGENDARY_IDS = new Set([
   144, 145, 146, 150, 151,                            // Gen 1: birds, Mewtwo, Mew
   243, 244, 245, 249, 250, 251,                       // Gen 2: beasts, Lugia, Ho-Oh, Celebi
   377, 378, 379, 380, 381, 382, 383, 384, 385, 386,   // Gen 3: Regis, Lati@s, Kyogre/Groudon/Rayquaza, Jirachi, Deoxys
+  480, 481, 482, 483, 484, 485, 486, 487, 488, 489,   // Gen 4: lake trio, Dialga/Palkia, Heatran, Regigigas, Giratina, Cresselia, Phione
+  490, 491, 492, 493,                                 // Gen 4: Manaphy, Darkrai, Shaymin, Arceus
 ]);
 
 // Alex's favourites — gifted in the starter moment (not caught).

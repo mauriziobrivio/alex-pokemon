@@ -88,7 +88,7 @@ function boot() {
 }
 
 // Background warm-fetch (gentle concurrency) of long-tail assets the SW doesn't
-// precache: all 251 name clips, the 72 word clips, and the Gen-1 sprites. On
+// precache: all 493 name clips, the 72 word clips, and the Gen-1 sprites. On
 // first online launch this fills the SW cache so names, the build-a-word blend,
 // and Gen-1 art work offline. The ~100 Gen-2 sprites are deliberately NOT
 // bulk-warmed (~34 MB) — they lazily runtime-cache on first encounter, keeping
