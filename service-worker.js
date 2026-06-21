@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v26';
+const CACHE = 'dada-academy-v27';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -17,7 +17,7 @@ const CORE = [
   './js/scenes/starter.js', './js/scenes/story.js', './js/scenes/home.js', './js/scenes/worldmap.js',
   './js/scenes/catch.js', './js/scenes/pokedex.js', './js/scenes/train.js', './js/scenes/battle.js',
   './js/scenes/games/index.js', './js/scenes/games/_common.js',
-  './js/scenes/games/subitize.js', './js/scenes/games/whatnext.js', './js/scenes/games/soundmatch.js', './js/scenes/games/mywords.js', './js/scenes/games/stickerscene.js',
+  './js/scenes/games/subitize.js', './js/scenes/games/whatnext.js', './js/scenes/games/soundmatch.js', './js/scenes/games/mywords.js', './js/scenes/games/stickerscene.js', './js/scenes/games/pattern.js',
   './assets/screens/screen-title.png', './assets/screens/bg-lab.png',
   './assets/screens/screen-worldmap.png', './assets/screens/scene-starter-select.png',
   './assets/screens/bg-evolution.png',
@@ -57,7 +57,7 @@ for (const f of ['escape', 'outing-end']) CORE.push(`./audio/dada/${f}.mp3`);
 // Phase 6: collection lines (pack reveal + discovery milestones) — small, precache.
 for (const f of ['reveal-foil', 'peek', 'milestone-10', 'milestone-25', 'milestone-50', 'milestone-100', 'milestone-150', 'milestone-200', 'milestone-250']) CORE.push(`./audio/dada/${f}.mp3`);
 // Phase 8: counting + Play & Learn prompt lines (small; precache for offline parity).
-for (const f of ['thats-enough', 'playlearn-intro', 'game-quick-count', 'game-what-next', 'game-sound-match', 'how-many', 'what-comes-after', 'put-in-order', 'which-start-same', 'which-rhyme']) CORE.push(`./audio/dada/${f}.mp3`);
+for (const f of ['thats-enough', 'playlearn-intro', 'game-quick-count', 'game-what-next', 'game-sound-match', 'how-many', 'what-comes-after', 'put-in-order', 'which-start-same', 'which-rhyme', 'whats-next']) CORE.push(`./audio/dada/${f}.mp3`);
 // Phase 9: the "My Words" review-wall intro line.
 CORE.push('./audio/dada/my-words.mp3');
 // Phase 10: Story Mode narration (Mama-suggest reuses the suggest-* lines).

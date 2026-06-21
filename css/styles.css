@@ -773,3 +773,33 @@ html, body {
 /* the "super effective!" type-icon pop on a strong-matchup hit */
 .battle__supericon { position: absolute; width: clamp(42px, 10vw, 60px); height: auto; transform: translate(-50%, -50%); z-index: 6; pointer-events: none; animation: superpop 1.1s ease-out forwards; }
 @keyframes superpop { 0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0; } 25% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; } 100% { transform: translate(-50%, -50%) translateY(-32px) scale(1); opacity: 0; } }
+
+/* ====================================================================
+   Pattern Play (Play & Learn) — complete-the-pattern (brief 021) */
+/* corner tile shows a tiny repeating motif (●★●) so it reads as "pattern" */
+.game-card__pattern { display: inline-flex; gap: 3px; width: auto; height: 56px; background: none; box-shadow: none; }
+.game-card__patterncell { width: 24px; height: 24px; }
+
+.game-pattern .game__panel { gap: clamp(18px, 4vh, 34px); }
+.pattern__rowwrap { width: 100%; display: flex; justify-content: center; }
+.pattern__row { display: flex; gap: clamp(5px, 1.6vw, 12px); align-items: center; justify-content: center; flex-wrap: wrap;
+  padding: clamp(10px, 2.5vw, 18px); background: rgba(255, 255, 255, 0.6); border-radius: 26px; box-shadow: var(--shadow); }
+.pattern__cell { width: clamp(40px, 11vw, 60px); height: clamp(40px, 11vw, 60px); display: grid; place-items: center; box-sizing: border-box; }
+.pattern__cell .art, .pattern__motif { width: 100%; height: 100%; }
+.pattern__gap { border: 4px dashed rgba(90, 81, 112, 0.5); border-radius: 18px; background: rgba(255, 255, 255, 0.5);
+  animation: gap-breathe 1.8s ease-in-out infinite; }
+@keyframes gap-breathe { 0%, 100% { border-color: rgba(90, 81, 112, 0.4); } 50% { border-color: rgba(255, 143, 163, 0.95); } }
+
+/* choices reuse .numbtn but hold a motif image */
+.pattern__choice { padding: clamp(8px, 2vw, 12px); }
+.pattern__choice .pattern__motif { width: 100%; height: 100%; }
+
+/* the chosen piece SNAPS into the gap */
+.pattern__cell.is-snapped { border: none; background: none; animation: snap-pop 0.5s cubic-bezier(0.2, 1.4, 0.5, 1) both; }
+@keyframes snap-pop { 0% { transform: scale(0.3); opacity: 0; } 60% { transform: scale(1.18); opacity: 1; } 100% { transform: scale(1); } }
+
+/* scaffold hint: the unit pulses in a wave (delay keyed to its place in the unit) */
+.pattern__row.is-hinting .pattern__cell { animation: rhythm-pulse 0.85s ease both; animation-delay: calc(var(--i, 0) * 0.2s); }
+@keyframes rhythm-pulse { 0%, 100% { transform: none; } 45% { transform: translateY(-9px) scale(1.1); } }
+/* reduced-motion hint (the `*` rule kills the wave): a calm static highlight instead */
+.pattern__row.is-hint-static .pattern__cell { box-shadow: 0 0 0 4px rgba(255, 143, 163, 0.75); border-radius: 16px; transition: box-shadow 0.3s; }

@@ -100,6 +100,12 @@ export const getLossStreak = () => read('lossStreak', 0);
 export const recordBattleLoss = () => { const n = getLossStreak() + 1; write('lossStreak', n); return n; };
 export const clearBattleLosses = () => write('lossStreak', 0);
 
+// --- Pattern Play (Play & Learn cadence): a gentle persistent difficulty ramp ---
+// Counts first-try pattern completions; gates AB → AAB/ABB → ABC. NOT a score —
+// it only ever unlocks variety, is never shown to Alex, and never decreases.
+export const getPatternWins = () => read('patternWins', 0);
+export const recordPatternWin = () => { const n = getPatternWins() + 1; write('patternWins', n); return n; };
+
 // Settings (grown-up): voice/SFX volume + mute, and the music bed volume + mute
 // (music defaults to a gentle low level, beneath Dada's voice).
 export const getSettings = () => read('settings', { volume: 1, muted: false, music: 0.5, musicMuted: false });
