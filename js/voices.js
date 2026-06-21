@@ -60,7 +60,7 @@ export const clip = {
   // --- Phase 6: The Collection ---
   revealFoil: () => url('reveal-foil.mp3'),            // "Ooh, a sparkly one!" (earned foil)
   peek: () => url('peek.mp3'),                         // "Who could this be? Keep exploring!"
-  milestone: (m) => url(`milestone-${m === 251 ? 'all' : m}.mp3`), // "Fifty Pokémon! Amazing, Alex!"
+  milestone: (m) => url(`milestone-${m}.mp3`),         // "Fifty Pokémon! Amazing, Alex!" — top stop is a warm high-count "wow", no "all" claim
 
   // --- Phase 8: Train counting + the Play & Learn mini-games ---
   thatsEnough: () => url('thats-enough.mp3'),          // count-the-berries gentle stop (number plays after)

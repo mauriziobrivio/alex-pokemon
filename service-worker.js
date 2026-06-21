@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v25';
+const CACHE = 'dada-academy-v26';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -55,7 +55,7 @@ for (const f of ['quest-catch', 'quest-evolve']) CORE.push(`./audio/dada/${f}.mp
 // Gen-2 name clips warm into cache at runtime like the other names (not precached).
 for (const f of ['escape', 'outing-end']) CORE.push(`./audio/dada/${f}.mp3`);
 // Phase 6: collection lines (pack reveal + discovery milestones) — small, precache.
-for (const f of ['reveal-foil', 'peek', 'milestone-10', 'milestone-25', 'milestone-50', 'milestone-100', 'milestone-150', 'milestone-200', 'milestone-all']) CORE.push(`./audio/dada/${f}.mp3`);
+for (const f of ['reveal-foil', 'peek', 'milestone-10', 'milestone-25', 'milestone-50', 'milestone-100', 'milestone-150', 'milestone-200', 'milestone-250']) CORE.push(`./audio/dada/${f}.mp3`);
 // Phase 8: counting + Play & Learn prompt lines (small; precache for offline parity).
 for (const f of ['thats-enough', 'playlearn-intro', 'game-quick-count', 'game-what-next', 'game-sound-match', 'how-many', 'what-comes-after', 'put-in-order', 'which-start-same', 'which-rhyme']) CORE.push(`./audio/dada/${f}.mp3`);
 // Phase 9: the "My Words" review-wall intro line.

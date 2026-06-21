@@ -59,7 +59,9 @@ export function markFoil(id) {
 // Discovery milestones — spoken warmly when the collection crosses a threshold,
 // once each, ascending. CELEBRATORY, never a nag: we announce what's *found*,
 // never what's missing, and there's no "complete the set" pressure anywhere.
-export const MILESTONES = [10, 25, 50, 100, 150, 200, 251];
+// The top stop is a warm high-count "wow", NOT a "you found them all" claim — the
+// dex (493, 458 catchable) far outgrew any honest completion line. (Brief 020 follow-up.)
+export const MILESTONES = [10, 25, 50, 100, 150, 200, 250];
 // Returns the highest milestone just crossed (or null) and records it so each is
 // spoken exactly once. Call at the end of a pack reveal (the moment of earning).
 export function takeMilestone() {
