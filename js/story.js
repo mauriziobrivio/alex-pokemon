@@ -39,12 +39,19 @@ export const ARCS = {
     finaleId: 385,                 // Jirachi, the Wish-granting Star Pokémon (reserved like Ho-Oh)
     finaleSeenKey: 'jirachiSeen',
     // A DIFFERENT mix from the rainbow arc so the two journeys *feel* different —
-    // and it features the new Pattern Play. Stage 1 wires the first three; Stage 2
-    // lights all ten.
+    // and it features the new Pattern Play. All ten zones lit (Stage 2). Spread:
+    // pattern ×3, catch ×2, build-word ×2, count ×2, battle ×1.
     chapters: [
       { zone: 'meadow', kind: 'pattern' },     // Pattern Play (brief 021)
       { zone: 'forest', kind: 'catch' },
       { zone: 'beach', kind: 'pattern' },
+      { zone: 'mountain', kind: 'count' },     // (rainbow's mountain is catch — varied)
+      { zone: 'desert', kind: 'build-word' },  // (rainbow's desert is catch — varied)
+      { zone: 'volcano', kind: 'battle' },
+      { zone: 'snowfield', kind: 'catch' },    // (rainbow's snowfield is count — varied)
+      { zone: 'grove', kind: 'pattern' },      // (rainbow's grove is build-word — varied)
+      { zone: 'cave', kind: 'build-word' },    // (rainbow's cave is catch — varied)
+      { zone: 'ocean', kind: 'count' },        // (rainbow's ocean is catch — varied)
     ],
   },
 };
