@@ -94,14 +94,40 @@ export const LETTERS = [
   's', 'a', 't', 'i', 'p', 'n',        // group 1
   'c', 'k', 'e', 'h', 'r', 'm', 'd',   // group 2
   'g', 'o', 'u', 'l', 'f', 'b',        // group 3
+  'sh', 'ch', 'th', 'ng',              // consonant digraphs (Ch.4 Part 6) — unlock LAST, after every single sound
 ];
-export const LETTER_START_UNLOCKED = 6; // group 1 is available from the start
-export const isVowel = (ch) => 'aeiou'.includes(ch);
+// ORDER IS LOAD-BEARING: the letter Leitner unlocks LETTERS by index (mastery.js),
+// so LETTER_START_UNLOCKED must equal the count of group-1 sounds, and the digraphs
+// must stay at the END. If you reorder/insert, update LETTER_START_UNLOCKED to match.
+export const LETTER_START_UNLOCKED = 6; // group 1 (s a t i p n) is available from the start
+export const isVowel = (ch) => ch.length === 1 && 'aeiou'.includes(ch);
+
+// --- Digraphs: sh, ch, th, ng — taught as SINGLE sounds (Ch.4 Part 6) ---
+// A digraph is two letters that make ONE sound. It is one grapheme = one slot in
+// build-a-word, one cell in "Read it yourself", one phoneme clip. Sitting LAST in
+// LETTERS, the letter Leitner only introduces them once the single sounds are well
+// underway (gated, never rushed). Critically: "sh" is /sh/, never s-then-h.
+export const DIGRAPHS = ['sh', 'ch', 'th', 'ng'];
+export const isDigraph = (g) => DIGRAPHS.includes(g);
+// Split a word into grapheme tokens, treating each digraph as ONE token:
+//   graphemes('ship') → ['sh','i','p'] · graphemes('ring') → ['r','i','ng'] · graphemes('cat') → ['c','a','t']
+// (Greedy left-to-right; our word set never needs backtracking. CVC words are
+// unaffected — none contain a digraph pair — so this stays backward-compatible.)
+export function graphemes(word) {
+  const out = [];
+  for (let i = 0; i < word.length; i++) {
+    const pair = word.slice(i, i + 2);
+    if (DIGRAPHS.includes(pair)) { out.push(pair); i++; }
+    else out.push(word[i]);
+  }
+  return out;
+}
 
 // The SOUND each letter makes (phoneme key). 'c' and 'k' both say /k/ — homophones
 // must never be each other's distractor (a correct sound can't be a "wrong" answer).
 export const LETTER_SOUND = { s: 's', a: 'a', t: 't', i: 'i', p: 'p', n: 'n', c: 'k', k: 'k',
-  e: 'e', h: 'h', r: 'r', m: 'm', d: 'd', g: 'g', o: 'o', u: 'u', l: 'l', f: 'f', b: 'b' };
+  e: 'e', h: 'h', r: 'r', m: 'm', d: 'd', g: 'g', o: 'o', u: 'u', l: 'l', f: 'f', b: 'b',
+  sh: 'sh', ch: 'ch', th: 'th', ng: 'ng' }; // each digraph is its own sound (never s+h)
 export const sameSound = (a, b) => LETTER_SOUND[a] === LETTER_SOUND[b];
 
 // CVC words for build-a-word. Train only offers words whose letters are all
@@ -113,8 +139,13 @@ export const CVC_WORDS = [
   'dog', 'log', 'fog', 'big', 'dig', 'pig', 'sun', 'fun', 'run', 'bun', 'bug', 'hug',
   'mug', 'rug', 'bed', 'leg', 'lip', 'hot', 'pot', 'top', 'mop', 'hop', 'cup', 'cut',
   'bat', 'bad', 'bag', 'fan', 'fin', 'gap', 'lab', 'lad', 'nut', 'tub', 'bin', 'fit',
+  // Digraph words (Ch.4 Part 6) — buildable only once the digraph token is unlocked
+  // (its single letters all unlock earlier, so none is ever permanently unbuildable).
+  'ship', 'shop', 'chip', 'chop', 'this', 'then', 'ring', 'sing',
 ];
-export const wordBuildable = (word, unlocked) => [...word].every((c) => unlocked.has(c));
+// A word is buildable when every GRAPHEME is unlocked — so a digraph counts as one
+// unit (and a digraph word needs its digraph unlocked, not s+h separately).
+export const wordBuildable = (word, unlocked) => graphemes(word).every((g) => unlocked.has(g));
 
 // Bond meter cost (Train interactions to evolve). The first evolution is a touch
 // cheaper for the early dopamine; tune from watching Alex.

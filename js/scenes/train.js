@@ -11,7 +11,7 @@ import { el, clear, spriteImg, icon } from '../ui.js';
 import * as audio from '../audio.js';
 import { clip, PRAISE_COUNT, rnd } from '../voices.js';
 import { sfx } from '../sfx.js';
-import { CVC_WORDS, wordBuildable, isTeen, pokemonById, nextStageId, sameSound } from '../data.js';
+import { CVC_WORDS, wordBuildable, graphemes, isTeen, pokemonById, nextStageId, sameSound } from '../data.js';
 import * as mastery from '../mastery.js';
 import { tenFrame } from '../tenframe.js';
 import { getPokedex, getBond, addBond, bondCost, recordWord, getStarterId } from '../game.js';
@@ -108,13 +108,13 @@ export function renderTrain({ story, zone, kind, arc }, ctx) {
     const unlocked = mastery.unlockedLetterSet();
     const buildable = CVC_WORDS.filter((w) => wordBuildable(w, unlocked));
     const word = buildable[Math.floor(Math.random() * buildable.length)] || 'sat';
-    const letters = [...word];
+    const letters = graphemes(word); // a digraph (sh/ch/th/ng) is ONE slot — one sound, two letters
 
     panel.append(el('h2', { class: 'train__title' }, 'Build a word!'));
     panel.append(el('div', { class: 'train__buddy train__buddy--small' }, spriteImg(pokemonById(buddyId))));
 
     const slotRow = el('div', { class: 'word-slots' });
-    const slots = letters.map((ch) => el('div', { class: 'word-slot', dataset: { want: ch } }));
+    const slots = letters.map((ch) => el('div', { class: 'word-slot' + (ch.length > 1 ? ' is-digraph' : ''), dataset: { want: ch } }));
     slots.forEach((s) => slotRow.append(s));
 
     // distractor tiles: never a same-sound letter (so no "correct sound is wrong" trap)
@@ -143,7 +143,7 @@ export function renderTrain({ story, zone, kind, arc }, ctx) {
       clear(tileRow);
       tiles.forEach((ch, idx) => {
         if (ch === null) { tileRow.append(el('div', { class: 'tile tile--used', 'aria-hidden': 'true' })); return; }
-        tileRow.append(el('button', { class: 'tile', type: 'button', 'aria-label': ch, onClick: (e) => onTile(ch, idx, e.currentTarget) }, ch));
+        tileRow.append(el('button', { class: 'tile' + (ch.length > 1 ? ' is-digraph' : ''), type: 'button', 'aria-label': ch, onClick: (e) => onTile(ch, idx, e.currentTarget) }, ch));
       });
     }
     function onTile(ch, idx, tile) {
@@ -178,7 +178,7 @@ export function renderTrain({ story, zone, kind, arc }, ctx) {
     recordWord(word); // add to his "My Words" wall (the moment the word is complete)
     slots.forEach((s) => s.classList.remove('is-active'));
     // segment (each sound, fully) then blend (the whole word) — duration-aware so phonemes don't smear
-    await audio.playSequence(word.split('').map((ch) => clip.phoneme(ch)), 0.14);
+    await audio.playSequence(graphemes(word).map((g) => clip.phoneme(g)), 0.14);
     if (!ctx.alive() || myToken !== token) return;
     await audio.speak(clip.word(word));
     if (!ctx.alive() || myToken !== token) return;

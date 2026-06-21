@@ -86,12 +86,38 @@ export function recordWord(word) {
   return capped;
 }
 
+// --- "Read it yourself" (Chapter Four, Part 1): the independent-reading milestone ---
+// Words Alex has READ on his own (decoded unprompted), distinct, most-recent first —
+// separate from getWords (words he BUILT with the guided scaffold). His FIRST
+// independent read is a one-time keepsake (a trophy in his Room).
+export const getWordsRead = () => read('wordsRead', []);
+export function recordWordRead(word) {
+  if (!word) return getWordsRead();
+  const list = read('wordsRead', []).filter((w) => w !== word); // move-to-front, no dupes
+  list.unshift(word);
+  const capped = list.slice(0, 80);
+  write('wordsRead', capped);
+  return capped;
+}
+export const firstReadDone = () => !!read('firstReadDone', false);
+export const markFirstReadDone = () => write('firstReadDone', true);
+
 // --- Sticker scene (Phase 11, slice 2): the calm creative board ---
 // His decorated picture, kept between sessions (a child's creation matters). Shape:
 // { bg: 'board' | <zoneId>, items: [{ t: 's'|'p', r: <sticker src | Pokémon id>, x, y }] }
 // where x,y are percentages of the canvas so it scales across screens.
 export const getBoard = () => read('board', { bg: 'board', items: [] });
 export const setBoard = (b) => write('board', b);
+
+// --- My Room (Chapter Four, Part 4): his persistent, customizable home ---
+// A place that's HIS — caught Pokémon on shelves, stickers + trophies on display,
+// and his own colour choices. Everything is earned or freely chosen (no currency,
+// no shop). Shape:
+// { wall, floor, rug, bed, curtain: <palette index>,
+//   items: [{ t: 'p'|'s'|'r', r: <Pokémon id | sticker src | reward key>, x, y }] }
+// where x,y are percentages of the room stage so it scales across screens.
+export const getRoom = () => read('room', { wall: 0, floor: 0, rug: 0, bed: 0, curtain: 0, items: [] });
+export const setRoom = (r) => write('room', r);
 
 // --- Battle 2.0 (Phase 12): the anti-spiral wellbeing floor ---
 // Consecutive battle losses; after a streak the next battle quietly eases so he's

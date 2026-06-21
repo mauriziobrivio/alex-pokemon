@@ -8,7 +8,7 @@ import { el, clear, spriteImg, icon } from '../ui.js';
 import * as audio from '../audio.js';
 import { clip, PRAISE_COUNT, rnd } from '../voices.js';
 import { sfx } from '../sfx.js';
-import { isTeen, pokemonById, ZONES, sameSound } from '../data.js';
+import { isTeen, pokemonById, ZONES, sameSound, graphemes } from '../data.js';
 import { tenFrame } from '../tenframe.js';
 import { getPokedex, addBond, getStarterId, getLossStreak, recordBattleLoss, clearBattleLosses } from '../game.js';
 import { earn } from '../story.js';
@@ -278,12 +278,12 @@ export function renderBattle({ story, zone, arc }, ctx) {
   function renderBlend(q, myToken) {
     dbgQ = { kind: 'blend', word: q.word };
     clear(tray);
-    const letters = [...q.word];
+    const letters = graphemes(q.word); // a digraph (sh/ch/th/ng) is ONE sound — one slot, one tile
     tray.append(el('div', { class: 'q-prompt' }, 'Charge it up — tap the sounds!'));
     const chargeFill = el('div', { class: 'chargebar__fill', style: { width: '0%' } });
     tray.append(el('div', { class: 'chargebar' }, chargeFill));
     const slotRow = el('div', { class: 'word-slots' });
-    const slots = letters.map((ch) => el('div', { class: 'word-slot', dataset: { want: ch } }));
+    const slots = letters.map((ch) => el('div', { class: 'word-slot' + (ch.length > 1 ? ' is-digraph' : ''), dataset: { want: ch } }));
     slots.forEach((s) => slotRow.append(s));
     const distract = shuffle(mastery.unlockedLetters().filter((c) => !letters.includes(c) && !letters.some((l) => sameSound(l, c)))).slice(0, 2);
     let tiles = shuffle([...letters, ...distract]);
@@ -300,7 +300,7 @@ export function renderBattle({ story, zone, arc }, ctx) {
       clear(tileRow);
       tiles.forEach((ch, idx) => {
         if (ch === null) { tileRow.append(el('div', { class: 'tile tile--used', 'aria-hidden': 'true' })); return; }
-        tileRow.append(el('button', { class: 'tile', type: 'button', 'aria-label': ch, onClick: (e) => onTile(ch, idx, e.currentTarget) }, ch));
+        tileRow.append(el('button', { class: 'tile' + (ch.length > 1 ? ' is-digraph' : ''), type: 'button', 'aria-label': ch, onClick: (e) => onTile(ch, idx, e.currentTarget) }, ch));
       });
     }
     function onTile(ch, idx, tile) {

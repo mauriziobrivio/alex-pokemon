@@ -10,6 +10,7 @@ import { PLAYER_NAME, pokemonById, ZONES } from '../data.js';
 import { getStarterId, getSettings, setSettings, resetAll, caughtCount } from '../game.js';
 import * as quests from '../quests.js';
 import * as music from '../music.js';
+import { openProgress } from '../progress.js';
 import { confetti, sparkleBurst, centerOf, haloRing, driftSparkles } from '../fx.js';
 
 let homeGreeted = false; // one gentle home nudge per session (resets on page reload)
@@ -43,10 +44,14 @@ export function renderHome(_params, ctx) {
       icon('pokedex', 'btn__icon'), 'Pokédex'),
   );
 
-  // Play & Learn corner — the standalone mini-games destination (grows over time).
+  // Play & Learn corner + My Room — the two calm, his-own destinations (Room is the
+  // persistent place he decorates; its icon is his own buddy, "where my buddy lives").
+  const roomIcon = starter ? (() => { const s = spriteImg(starter); s.classList.add('btn__icon'); return s; })() : icon('star', 'btn__icon');
   const playLearn = el('div', { class: 'home__playlearn' },
     el('button', { class: 'btn btn--big btn--games', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('games'); } },
-      icon('games', 'btn__icon'), 'Play & Learn'));
+      icon('games', 'btn__icon'), 'Play & Learn'),
+    el('button', { class: 'btn btn--big btn--room', type: 'button', onClick: () => { audio.play(sfx.pop()); ctx.go('room'); } },
+      roomIcon, 'My Room'));
 
   // A calm way back to Story Mode (the chooser is the front door — pick the Rainbow
   // or Wish-Star journey; free-play is reached from there). Additive — nothing removed.
@@ -180,7 +185,7 @@ function buildGearAndPanel(root) {
         el('button', { class: 'btn btn--ghost', type: 'button', onClick: toggleMusicMute }, 'Mute'),
       ),
       el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => audio.speak(clip.homeWelcome()) }, icon('replay'), ' Replay voice'),
-      el('div', { class: 'panel__row' }, el('span', {}, `Pokémon caught: ${caughtCount()}`)),
+      el('button', { class: 'btn btn--ghost', type: 'button', onClick: () => { panel.remove(); openProgress(root); } }, 'See Alex\'s progress'),
       resetBtn,
       el('button', { class: 'btn', type: 'button', onClick: () => panel.remove() }, 'Done'),
     );

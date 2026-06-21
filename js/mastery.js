@@ -90,6 +90,14 @@ export const unlockedLetters = () => LETTERS.slice(0, unlockedCount);
 export const unlockedLetterSet = () => new Set(unlockedLetters());
 export const getLetterBox = (ch) => letterBoxes[ch] || 0;
 
+// Letters Alex knows well enough to READ unprompted (Box >= 2 = "getting it" or
+// mastered) — the readable set for the "Read it yourself" milestone (Part 1).
+export const READABLE_BOX = 2;
+export const comfortableLetters = () => unlockedLetters().filter((c) => getLetterBox(c) >= READABLE_BOX);
+export const comfortableLetterSet = () => new Set(comfortableLetters());
+// A snapshot of the letter Leitner for the grown-up Progress view (Part 2).
+export const letterSnapshot = () => { const o = {}; for (const ch of LETTERS) o[ch] = getLetterBox(ch); return { boxes: o, unlocked: unlockedCount }; };
+
 export function recordLetter(ch, firstTryCorrect) {
   const cur = letterBoxes[ch] || 1;
   if (firstTryCorrect) {

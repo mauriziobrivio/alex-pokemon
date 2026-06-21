@@ -7,11 +7,13 @@ import * as audio from '../../audio.js';
 import { clip } from '../../voices.js';
 import { sfx } from '../../sfx.js';
 import * as music from '../../music.js';
+import { readyToRead } from './readit.js';
 
 // The corner grows by appending here (+ registering each scene in main.js).
 // A tile shows either a named UI icon (`icon`) or a mini motif row (`motifs`).
 const GAMES = [
   { id: 'game-subitize', name: 'Quick Count', icon: 'game-subitize' },
+  { id: 'game-tenmore', name: 'Ten & More', icon: 'game-subitize' }, // teens as "ten and some more" (bespoke ic-game-tenmore.png optional later)
   { id: 'game-whatnext', name: 'What Comes Next', icon: 'game-whatnext' },
   { id: 'game-soundmatch', name: 'Sound Match', icon: 'game-soundmatch' },
   { id: 'game-pattern', name: 'Pattern Play', // tile = a tiny ●★● pattern (bespoke ic-game-pattern.png optional later)
@@ -27,12 +29,18 @@ export function renderGames(_params, ctx) {
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': 'Back home',
     onClick: () => { audio.play(sfx.pop()); ctx.go('home'); } }, icon('back'));
 
+  // "Read it yourself" (Part 1) — the independent-reading milestone. It LEADS the
+  // corner, but only once Alex is ready (mastery-gated; never pushed early).
+  const games = readyToRead()
+    ? [{ id: 'game-readit', name: 'Read It!', icon: 'build-word', lead: true }, ...GAMES]
+    : GAMES;
+
   const grid = el('div', { class: 'games__grid' });
-  GAMES.forEach((g) => {
+  games.forEach((g) => {
     const art = g.motifs
       ? el('span', { class: 'art ic game-card__icon game-card__pattern', 'aria-hidden': 'true' }, ...g.motifs.map((src) => stickerImg(src, 'game-card__patterncell')))
       : icon(g.icon, 'game-card__icon');
-    grid.append(el('button', { class: 'game-card', type: 'button', 'aria-label': g.name,
+    grid.append(el('button', { class: 'game-card' + (g.lead ? ' game-card--lead' : ''), type: 'button', 'aria-label': g.name,
       onClick: () => { audio.play(sfx.pop()); ctx.go(g.id); } },
       art, el('span', { class: 'game-card__name' }, g.name)));
   });

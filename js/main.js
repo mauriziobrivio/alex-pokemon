@@ -26,13 +26,17 @@ import { renderSoundMatch } from './scenes/games/soundmatch.js';
 import { renderMyWords } from './scenes/games/mywords.js';
 import { renderStickers } from './scenes/games/stickerscene.js';
 import { renderPattern } from './scenes/games/pattern.js';
+import { renderReadIt } from './scenes/games/readit.js';
+import { renderRoom } from './scenes/room.js';
+import { renderTenMore } from './scenes/games/tenmore.js';
 
 const app = document.getElementById('app');
 const scenes = {
   starter: renderStarter, story: renderStory, home: renderHome, worldmap: renderWorldmap, catch: renderCatch,
   pokedex: renderPokedex, train: renderTrain, battle: renderBattle,
   games: renderGames, 'game-subitize': renderSubitize, 'game-whatnext': renderWhatNext, 'game-soundmatch': renderSoundMatch,
-  'game-pattern': renderPattern, 'game-mywords': renderMyWords, 'game-stickers': renderStickers,
+  'game-pattern': renderPattern, 'game-readit': renderReadIt, 'game-mywords': renderMyWords, 'game-stickers': renderStickers,
+  'game-tenmore': renderTenMore, room: renderRoom,
 };
 
 let epoch = 0;

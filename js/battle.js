@@ -4,7 +4,7 @@
 // no-dead-end). Three Leitner-driven question types (compare / match / blend).
 
 import * as mastery from './mastery.js';
-import { CVC_WORDS, wordBuildable, ROSTER, sameSound, LEGENDARY_IDS } from './data.js';
+import { CVC_WORDS, wordBuildable, graphemes, ROSTER, sameSound, LEGENDARY_IDS } from './data.js';
 
 // Tunables. His Pokémon has hearts now; a wrong answer costs one. The wild's HP is
 // a little higher so battles are a real exchange (misses extend them), not a fixed
@@ -89,7 +89,7 @@ export function makeBlend() {
 export function recordQuestion(q, firstTry) {
   if (q.type === 'compare') { mastery.record(q.a, firstTry, 2); mastery.record(q.b, firstTry, 2); }
   else if (q.type === 'match') { q.kind === 'letter' ? mastery.recordLetter(q.target, firstTry) : mastery.record(q.target, firstTry); }
-  else if (q.type === 'blend') { for (const ch of q.word) mastery.recordLetter(ch, firstTry); }
+  else if (q.type === 'blend') { for (const g of graphemes(q.word)) mastery.recordLetter(g, firstTry); } // a digraph is one sound
 }
 
 // One of each type per battle, shuffled — variety + guaranteed coverage, WILD_MAX_HP hits to win.

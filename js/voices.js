@@ -75,6 +75,17 @@ export const clip = {
   whichRhyme: () => url('which-rhyme.mp3'),            // "Which ones rhyme?" (rhyme variant — backlog)
   whatsNext: () => url('whats-next.mp3'),              // Pattern Play: "What comes next?"
 
+  // --- "Ten and more" — teens as a concept (Ch.4, Part 5) ---
+  // Carriers; the remainder + teen number clips play around them:
+  // [tenAnd] [number(rem)] [moreMakes] … then [number(teen)] on the correct tap.
+  tenAnd: () => url('ten-and.mp3'),                    // "Ten… and"
+  moreMakes: () => url('more-makes.mp3'),              // "more… makes…?"
+
+  // --- "Read it yourself" — the independent-reading milestone (Ch.4, Part 1) ---
+  canYouRead: () => url('can-you-read.mp3'),           // "Can you read this word, Alex?"
+  youRead: () => url('you-read.mp3'),                  // the proud eruption: "You READ it! You're reading, Alex!"
+  firstRead: () => url('first-read.mp3'),              // the keepsake: "Alex read his very first word!"
+
   // --- Phase 9: My Words (review wall) ---
   myWords: () => url('my-words.mp3'),                  // "Here are all the words you built! Tap one to read it."
 

@@ -11,6 +11,10 @@ import { ROSTER, LETTER_SOUND } from '../../data.js';
 import { isCaught } from '../../game.js';
 import { gameShell, wrongTap, win, shuffle, gateAnswers } from './_common.js';
 
+// A name's initial SOUND. Kept name-INITIAL-letter based (not digraph-aware): the
+// digraphs unlock last, and re-keying e.g. Charizard under /ch/ would hide it from
+// Sound Match's /k/ pairs for most of the game. Digraph letters simply have no
+// name-pairs here, so they're gracefully absent from Sound Match (no dead-end).
 const firstSound = (name) => { const c = (name[0] || '').toLowerCase(); return LETTER_SOUND[c] || c; };
 
 // sound-key -> roster Pokémon whose name begins with that sound (built once).
