@@ -1142,3 +1142,57 @@ html, body {
    Fit the pair within a single tile / slot / reading cell. */
 .tile.is-digraph, .word-slot.is-digraph { font-size: clamp(24px, 5.4vw, 38px); letter-spacing: -1px; }
 .readit__letter.is-digraph { font-size: clamp(30px, 7vw, 50px); letter-spacing: -1px; }
+
+/* ====================================================================
+   Brief 026 — Story Quest (the ordered told path: route + mission stops + team). */
+.story__journeyveil { position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,236,196,0.20), rgba(255,210,150,0.08)); } /* a warm golden journey wash */
+.story__route { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.story__route svg { display: block; width: 100%; height: 100%; }
+
+/* the mission stops threaded along the route */
+.quest-stop { position: absolute; transform: translate(-50%, -50%); width: clamp(52px, 11%, 80px); aspect-ratio: 1;
+  min-height: 0; padding: 0; border: none; background: none; display: grid; place-items: center; cursor: pointer; z-index: 3; }
+.quest-stop__dot { width: 64%; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center;
+  font-size: clamp(14px, 3.2vw, 21px); font-weight: 900; color: #6a4a1e; border: 3px solid #fff; box-shadow: var(--shadow); }
+.quest-stop__label { position: absolute; bottom: -3px; left: 50%; transform: translateX(-50%); white-space: nowrap;
+  font-size: clamp(10px, 2.1vw, 13px); font-weight: 800; color: #fff; background: rgba(106,74,30,0.72); padding: 1px 7px; border-radius: 999px; }
+.quest-stop--done .quest-stop__dot { background: #ffd86a; }                                  /* lit — found */
+.quest-stop--current .quest-stop__dot { background: #fff3c4; box-shadow: 0 0 0 4px rgba(255,213,74,0.85), var(--shadow); } /* the active mission */
+.quest-stop--locked .quest-stop__dot { background: rgba(255,255,255,0.72); color: rgba(106,74,30,0.5); } /* waits softly */
+.quest-stop--locked .quest-stop__label { opacity: 0.6; }
+.quest-stop__pulse { position: absolute; width: 66%; aspect-ratio: 1; border-radius: 50%; border: 3px solid rgba(255,213,74,0.9);
+  animation: invitePulse 2s ease-in-out infinite; pointer-events: none; }
+.quest-stop:active { transform: translate(-50%, -50%) scale(0.92); }
+
+/* the team of 3 traveling along (corner of the map) */
+.quest-team { position: absolute; left: 2%; bottom: 2%; display: flex; gap: 2px; z-index: 3;
+  background: rgba(255,248,231,0.72); border-radius: 14px; padding: 3px 5px; box-shadow: var(--shadow); }
+.quest-team__one { width: clamp(30px, 7vw, 44px); height: clamp(30px, 7vw, 44px); }
+
+/* team-pick (after the opening) — tap three friends to bring along (errorless) */
+.team-pick__panel { width: min(560px, 94%); max-height: 86vh; overflow-y: auto; }
+.team-pick__count { text-align: center; font-weight: 800; color: var(--ink-soft); }
+.team-pick__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 10px; }
+.team-pick__cell { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px; border: 4px solid transparent;
+  border-radius: 16px; background: #fff; cursor: pointer; box-shadow: var(--shadow); }
+.team-pick__cell .sprite { width: clamp(56px, 13vw, 78px); height: clamp(56px, 13vw, 78px); }
+.team-pick__cell.is-chosen { border-color: var(--sunny); background: rgba(255,213,74,0.28); }
+.team-pick__name { font-size: 11px; font-weight: 800; color: var(--ink-soft); }
+.team-pick__go:disabled { opacity: 0.5; }
+
+/* "Who will you send?" type-strategy picker (in a quest battle) */
+.send-pick { display: flex; gap: clamp(10px, 3vw, 22px); flex-wrap: wrap; justify-content: center; }
+.send-cell { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 10px;
+  border: 4px solid #fff; border-radius: 18px; background: rgba(255,248,231,0.92); cursor: pointer; box-shadow: var(--shadow); }
+.send-cell .sprite { width: clamp(70px, 17vw, 108px); height: clamp(70px, 17vw, 108px); }
+.send-cell__name { font-size: 13px; font-weight: 800; color: var(--ink); }
+.send-cell__type { width: 26px; height: 26px; }
+.send-cell.is-strong { border-color: var(--meadow); box-shadow: 0 0 0 4px rgba(143,207,90,0.55), var(--shadow); }
+.send-cell__strong { position: absolute; top: -8px; right: -8px; background: var(--meadow); color: #fff; font-size: 11px; font-weight: 900;
+  padding: 2px 8px; border-radius: 999px; box-shadow: var(--shadow); }
+.send-cell:active { transform: scale(0.96); }
+.combatant__type { position: absolute; top: 4px; right: 4px; width: 28px; height: 28px; } /* the wild's type, so the matchup is legible */
+
+/* beat cutscene — a warm gradient fallback when the per-mission image isn't dropped in yet */
+.cutscene--beat { background: radial-gradient(circle at 50% 40%, rgba(255,247,228,0.98), rgba(255,226,180,0.97) 55%, rgba(255,208,168,0.98)); }

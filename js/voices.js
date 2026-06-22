@@ -112,6 +112,11 @@ export const clip = {
   dadaReunion: () => url('dada-reunion.mp3'),          // climax: "You found all my words… and you found me!"
   dadaEnding: () => url('dada-ending.mp3'),            // ending: "Now — let me read to you."
   dadaMore: () => url('dada-more.mp3'),                // gentle progress: "Keep following my voice, find my words!"
+
+  // --- Story Quest (brief 026): team-of-3 pick + type-strategy battle lines ---
+  pickTeam: () => url('pick-team.mp3'),                // "Pick three friends to bring on your adventure!"
+  whoFights: () => url('who-fights.mp3'),              // type-battle: "Who will you send, Alex?"
+  greatPick: () => url('great-pick.mp3'),              // "Great pick! That one's super strong!"
 };
 
 export const PRAISE_COUNT = 4;

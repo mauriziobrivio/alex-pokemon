@@ -11,7 +11,7 @@ import { sfx } from '../sfx.js';
 import { isTeen, pokemonById, ZONES, sameSound, graphemes } from '../data.js';
 import { tenFrame } from '../tenframe.js';
 import { getPokedex, addBond, getStarterId, getLossStreak, recordBattleLoss, clearBattleLosses } from '../game.js';
-import { earn } from '../story.js';
+import { earn, tokenCta as ctaForArc } from '../story.js';
 import { canEvolve, triggerEvolution } from '../evolve.js';
 import { sparkleBurst, confetti, centerOf, driftSparkles } from '../fx.js';
 import { typeBadge } from '../typeicon.js';
@@ -22,9 +22,10 @@ import { gateAnswers, replayButton } from '../attention.js';
 
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
-export function renderBattle({ story, zone, arc }, ctx) {
+export function renderBattle({ story, zone, arc, quest, tier, foeType, team }, ctx) {
   const root = el('div', { class: 'scene battle', style: { backgroundImage: "url('assets/screens/bg-lab.png')" } });
   const storyArc = arc || 'rainbow'; // which Story arc this chapter belongs to (token + return)
+  const questTeam = (team && team.length ? team : (getStarterId() ? [getStarterId()] : [])).filter(Boolean); // the 3 he brings (Story Quest)
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': story ? 'Back to the adventure' : 'Back home',
     onClick: () => { audio.play(sfx.pop()); ctx.go(story ? 'story' : 'home', story ? { arc: storyArc } : undefined); } }, icon('back')); // always a safe exit; deferred work is epoch-guarded
   const stage = el('div', { class: 'battle__stage' });
@@ -36,6 +37,7 @@ export function renderBattle({ story, zone, arc }, ctx) {
   let buddyId = null;
   let wild = null;
   let wildHp = 0;
+  let wildMax = 0;         // the wild's starting HP (the bar denominator) — scales with the quest tier
   let playerHp = 0;        // hearts — a wrong answer costs one; 0 = "tuckered out" (Battle 2.0)
   let busy = false;
   let token = 0;
@@ -85,25 +87,66 @@ export function renderBattle({ story, zone, arc }, ctx) {
   }
 
   // ---------- Stage ----------
-  function startBattle() {
-    bump();
-    clear(tray);            // remove the buddy picker immediately so it can't be re-tapped
-    wild = battle.pickWild();
+  // A fresh foe. In a Story Quest, its TYPE is set by the mission (so the right team
+  // pick matters) and its HP scales with the difficulty tier (1→5). The anti-spiral
+  // floor still eases the wild after a losing streak — never stuck.
+  function newWild() {
+    wild = quest && foeType ? battle.pickWildOfType(foeType) : battle.pickWild();
     const wildZone = ZONES.find((z) => wild.zones.includes(z.id)) || ZONES[0]; // not the Story chapter `zone` param
     root.style.backgroundImage = `url('${wildZone.background}')`;
-    // Anti-spiral wellbeing floor: after a losing streak the wild starts quietly
-    // weaker, so he's never stuck — it reverts the moment he wins (clearBattleLosses).
-    wildHp = getLossStreak() >= battle.SPIRAL_THRESHOLD ? battle.SPIRAL_EASE_HP : battle.WILD_MAX_HP;
+    wildMax = quest ? Math.max(battle.SPIRAL_EASE_HP, 3 + (tier || 1)) : battle.WILD_MAX_HP; // tier 1→5 ⇒ 4→8 HP
+    wildHp = getLossStreak() >= battle.SPIRAL_THRESHOLD ? battle.SPIRAL_EASE_HP : wildMax;
+  }
+  // Entry: a Story Quest battle lets Alex choose WHICH of his 3 to send (type
+  // strategy); everything else goes straight in with the chosen buddy.
+  function startBattle() {
+    bump();
+    clear(tray);            // remove any picker immediately so it can't be re-tapped
+    newWild();
+    if (quest) { showSendPicker(); return; }
+    runBattle();
+  }
+  function runBattle() {
+    const myToken = bump();
     playerHp = battle.PLAYER_MAX_HP;
     bag = [];
     lastTarget = null;
     const buddy = pokemonById(buddyId);
-    superEff = !!(buddy && battle.isSuperEffective(buddy.types, wild.types)); // gentle hint for this matchup
+    superEff = !!(buddy && battle.isSuperEffective(buddy.types, wild.types)); // a good type pick → bigger hits
     saidSuper = false;
     renderStage();
-    const myToken = token;
     ctx.after(500, () => { if (myToken === token) audio.playSequence([clip.battleStart(), clip.name(wild.id)]); }); // audio-first: announce the wild
     ctx.after(1700, () => { if (myToken === token) nextTurn(); });
+  }
+
+  // ---------- Quest: "Who will you send?" (type-strategy, errorless) ----------
+  // The wild is shown; Alex taps which of his 3 to send. A super-effective pick
+  // glows + Dada cheers it — but a weak pick still wins (just slower). Never scolds.
+  function showSendPicker() {
+    const myToken = bump();
+    clear(stage); clear(tray);
+    stage.append(el('div', { class: 'battle__field', 'aria-hidden': 'true' }));
+    const wildWrap = el('div', { class: 'combatant combatant--wild' });
+    wildEl = spriteImg(wild); wildEl.classList.add('combatant__sprite');
+    wildWrap.append(el('div', { class: 'combatant__name' }, wild.name), wildEl, el('div', { class: 'combatant__platform', 'aria-hidden': 'true' }));
+    if (wild.types && wild.types[0]) wildWrap.append(typeBadge(wild.types[0], 'combatant__type'));
+    stage.append(wildWrap);
+
+    tray.append(el('div', { class: 'q-prompt' }, 'Who will you send?'));
+    const grid = el('div', { class: 'send-pick' });
+    const ids = questTeam.length ? questTeam : Object.keys(getPokedex()).map(Number).slice(0, 3);
+    ids.forEach((id) => {
+      const p = pokemonById(id); if (!p) return;
+      const strong = battle.isSuperEffective(p.types, wild.types);
+      const cell = el('button', { class: 'send-cell' + (strong ? ' is-strong' : ''), type: 'button',
+        'aria-label': p.name + (strong ? ', super strong here' : ''),
+        onClick: () => { audio.play(sfx.pop()); buddyId = id; if (strong) audio.speak(clip.greatPick()); runBattle(); } });
+      cell.append(spriteImg(p), el('span', { class: 'send-cell__name' }, p.name), typeBadge((p.types || [])[0] || 'normal', 'send-cell__type'));
+      if (strong) cell.append(el('span', { class: 'send-cell__strong', 'aria-hidden': 'true' }, 'strong!'));
+      grid.append(cell);
+    });
+    tray.append(grid);
+    ctx.after(500, () => { if (myToken === token) audio.playSequence([clip.battleStart(), clip.name(wild.id), clip.whoFights()]); });
   }
 
   function renderStage() {
@@ -121,7 +164,7 @@ export function renderBattle({ story, zone, arc }, ctx) {
     updateHp();
     renderHearts();
   }
-  function updateHp() { if (hpFill) hpFill.style.width = `${Math.max(0, (wildHp / battle.WILD_MAX_HP) * 100)}%`; }
+  function updateHp() { if (hpFill) hpFill.style.width = `${Math.max(0, (wildHp / (wildMax || battle.WILD_MAX_HP)) * 100)}%`; }
 
   // Hearts (emoji-free CSS/SVG). `broke` animates the heart that was just lost.
   const heartSvg = '<svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true"><path d="M12 21s-7-4.6-9.3-9C1.2 8.6 2.8 5.6 5.9 5.6c1.9 0 3.2 1.2 4.1 2.5 .9-1.3 2.2-2.5 4.1-2.5 3.1 0 4.7 3 3.2 6.4C19 16.4 12 21 12 21z" fill="currentColor"/></svg>';
@@ -203,7 +246,9 @@ export function renderBattle({ story, zone, arc }, ctx) {
       audio.play(sfx.catch());
       wildEl.classList.add('is-hit');
       ctx.after(380, () => wildEl && wildEl.classList.remove('is-hit'));
-      wildHp -= charged ? 2 : 1;
+      // a charged (blend) hit is bigger; a super-effective type pick DOUBLES it — a
+      // good pick is faster/juicier, a weak pick still lands (slower, never zero).
+      wildHp -= (charged ? 2 : 1) * (superEff ? 2 : 1);
       updateHp();
       if (superEff) { superHitFx(c); if (!saidSuper) { saidSuper = true; audio.speak(clip.superEffective()); } else audio.speak(clip.praise(rnd(PRAISE_COUNT))); }
       else audio.speak(clip.praise(rnd(PRAISE_COUNT)));
@@ -369,7 +414,7 @@ export function renderBattle({ story, zone, arc }, ctx) {
     const overlay = el('div', { class: 'win' });
     const sprite = spriteImg(p); sprite.classList.add('win__sprite');
     // Story chapter: the win earns this zone's feather and returns to the journey.
-    const tokenCta = storyArc === 'wishstar' ? 'Find the wish-star!' : 'Find the rainbow feather!';
+    const tokenCta = ctaForArc(storyArc); // arc-aware (brief 026 Part D) — no arc shows another's wording
     const actions = story
       ? el('div', { class: 'win__actions' },
           el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); earn(storyArc, zone); ctx.go('story', { earned: zone, arc: storyArc }); } }, tokenCta))
@@ -385,9 +430,11 @@ export function renderBattle({ story, zone, arc }, ctx) {
     root.append(overlay);
   }
 
-  // Story chapter: Alex's starter steps up and the battle begins straight away;
-  // free-play opens the buddy picker as always.
-  if (story) { buddyId = getStarterId(); startBattle(); }
+  // Story Quest: choose the foe + the "who will you send?" picker (type strategy).
+  // Other story chapters: Alex's starter steps up straight away. Free-play: the
+  // buddy picker as always.
+  if (quest) startBattle();
+  else if (story) { buddyId = getStarterId(); startBattle(); }
   else showBuddyPicker();
   return root;
 }

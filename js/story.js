@@ -55,35 +55,40 @@ export const ARCS = {
     ],
   },
 
-  // Story Mode 2.0 — "Saving Professor Dada" (brief 024): a REAL narrative, not a
-  // collection. A friendly lab *whoosh* swept Dada to the world's edge and
-  // scattered his WORDS. Alex journeys zone by zone; each chapter recovers one of
-  // Dada's words → Dada says it back (his whisper growing stronger) → the next
-  // glowing stepping-stone of the path toward him lights. The words ARE the path.
-  // Climax: the last word ('dad') returns his full voice → the reunion. Warm,
-  // brave, a little wistful → triumphantly happy. NEVER scary (Dada is safe + happy).
+  // Story Mode 2.0 — "Saving Professor Dada", rebuilt as a STORY QUEST (brief 026):
+  // a told tale in chapters ALONG A PATH (a route, not a free board), with a story
+  // BEAT (picture + narration) playing out between each mission, a TEAM of 3 Alex
+  // brings, type-strategy battles, and a difficulty curve that climbs (tier 1→5).
+  // A friendly lab *whoosh* swept Dada to the world's edge + scattered his WORDS;
+  // each mission recovers one (his voice grows whisper→whole) and inks the path
+  // onward. Climax: the last word ('dad') returns his full voice → the reunion →
+  // Dad reads to Alex. NEVER scary (Dada is safe + happy throughout). This is the
+  // TEMPLATE for all future stories: ordered `chapters` (missions) + `beats`.
   savedada: {
     id: 'savedada',
-    type: 'narrative',
-    earnedKey: 'dadaWords',            // recovered chapter zones (= words found)
+    type: 'quest',
+    earnedKey: 'dadaWords',            // recovered missions (in order) = words found = path progress
     finaleSeenKey: 'savedDadaSeen',    // the ENDING cutscene seen (the arc completed, once)
     openingKey: 'savedDadaOpened',     // the opening cutscene seen (once)
     midpointKey: 'savedDadaMid',       // the "I can see you!" glimpse shown (once)
-    midpointAfter: 5,                  // the glimpse beat after this many words (~halfway of 10)
-    // Literacy-leaning (we're gathering words): build-word ×5, pattern ×2, plus
-    // catch/count/battle. Each `word` is a real CVC word Dada says back (the
-    // word-*.mp3 clips already exist, in Dada's voice). The final word is 'dad'.
+    midpointAfter: 6,                  // the glimpse beat after mission 6 (the grove battle)
+    teamKey: 'questTeam',              // the team of 3 he brings (Pokémon ids)
+    // The ordered 10-mission path — from home OUT to the world's edge, rising as it
+    // goes. Each mission: a zone + an activity Alex knows + a difficulty `tier` (1→5)
+    // + the `word` it recovers (Dada says it back, voice growing) + a story `beat`
+    // (the picture-moment after the win). Battle missions may name a `foeType` so the
+    // right team pick matters (type-strategy). Literacy-forward (build-word + read).
     chapters: [
-      { zone: 'meadow', kind: 'build-word', word: 'sun' },
-      { zone: 'forest', kind: 'catch', word: 'dog' },
-      { zone: 'beach', kind: 'build-word', word: 'cat' },
-      { zone: 'mountain', kind: 'pattern', word: 'hat' },
-      { zone: 'desert', kind: 'build-word', word: 'hen' },
-      { zone: 'volcano', kind: 'battle', word: 'big' },
-      { zone: 'snowfield', kind: 'count', word: 'run' },
-      { zone: 'grove', kind: 'build-word', word: 'fun' },
-      { zone: 'cave', kind: 'pattern', word: 'hug' },
-      { zone: 'ocean', kind: 'build-word', word: 'dad' }, // the climax: the word "dad" → full voice → reunion
+      { zone: 'meadow',    kind: 'catch',      tier: 1, word: 'sun', beat: 'The first word glimmers back!' },
+      { zone: 'forest',    kind: 'build-word', tier: 1, word: 'dog', beat: 'Forest friends cheer him on.' },
+      { zone: 'beach',     kind: 'battle',     tier: 2, word: 'cat', beat: 'A little stronger — he sets off across the water.' },
+      { zone: 'mountain',  kind: 'count',      tier: 2, word: 'hat', beat: 'From the peak, he spots the far edge.' },
+      { zone: 'desert',    kind: 'build-word', tier: 3, word: 'hen', beat: 'A sandstorm clears to reveal the way onward.' },
+      { zone: 'grove',     kind: 'battle',     tier: 3, word: 'big', beat: 'I can see you, Alex! Keep coming!' },           // midpoint glimpse
+      { zone: 'cave',      kind: 'readit',     tier: 4, word: 'fun', beat: 'Glowing crystals light the path; his voice nearly whole.' },
+      { zone: 'volcano',   kind: 'battle',     tier: 4, word: 'run', foeType: 'fire', beat: 'He crosses the warm pass — almost there.' },
+      { zone: 'snowfield', kind: 'battle',     tier: 5, word: 'hug', beat: 'The last frozen stretch to the edge.' },
+      { zone: 'ocean',     kind: 'battle',     tier: 5, word: 'dad', beat: "Dada's full voice returns — you reach him!" }, // the climax
     ],
   },
 };
@@ -137,8 +142,34 @@ export const openingSeen = (arc) => !!read(arcById(arc).openingKey, false);
 export const markOpeningSeen = (arc) => write(arcById(arc).openingKey, true);
 export const midpointSeen = (arc) => !!read(arcById(arc).midpointKey, false);
 export const markMidpointSeen = (arc) => write(arcById(arc).midpointKey, true);
-export const midpointDue = (arc) => arcType(arc) === 'narrative' && !midpointSeen(arc)
+export const midpointDue = (arc) => isQuest(arc) && !midpointSeen(arc)
   && earnedCount(arc) >= (arcById(arc).midpointAfter || 5) && !allChaptersDone(arc);
+
+// --- Story Quest (brief 026) — the ordered-path arc (savedada is the first) ---
+// A Story Quest = ordered `chapters` (missions) + story `beats`. Missions complete
+// IN ORDER (the path enforces it), so `earnedCount` doubles as the next index. This
+// is the reusable template for every future story.
+export const isQuest = (arc) => arcType(arc) === 'quest';
+export const missionAt = (arc, i) => chaptersOf(arc)[i] || null;
+export const missionIndexOf = (arc, zone) => chaptersOf(arc).findIndex((m) => m.zone === zone);
+export const nextMissionIndex = (arc) => earnedCount(arc);          // completed-in-order → next index
+export const currentMission = (arc) => missionAt(arc, nextMissionIndex(arc));
+// A mission's state on the map: 'done' · 'current' (the active one) · 'locked' (ahead).
+export const missionState = (arc, i) => { const d = nextMissionIndex(arc); return i < d ? 'done' : i === d ? 'current' : 'locked'; };
+export const tierOf = (arc, zone) => (chapterFor(arc, zone) || {}).tier || 1;
+export const foeTypeOf = (arc, zone) => (chapterFor(arc, zone) || {}).foeType || null;
+export const beatOf = (arc, zone) => (chapterFor(arc, zone) || {}).beat || '';
+
+// The team of 3 Alex brings on the quest (Pokémon ids), chosen after the opening beat.
+export const getTeam = (arc) => read(arcById(arc).teamKey || 'questTeam', []);
+export const setTeam = (arc, ids) => write(arcById(arc).teamKey || 'questTeam', (ids || []).slice(0, 3));
+// "Committed a team" — normally 3, but gracefully ≥1 (a brand-new player with fewer
+// than 3 caught brings what he has). >=1 (not ===3) avoids a re-render loop when the
+// team auto-fills with under three.
+export const hasTeam = (arc) => getTeam(arc).length >= 1;
+
+// The win-card CTA, per arc (brief 026 Part D — no arc ever shows another's wording).
+export const tokenCta = (arc) => isQuest(arc) ? 'Onward!' : arc === 'wishstar' ? 'Find the wish-star!' : 'Find the rainbow feather!';
 
 // --- Backward-compatible rainbow aliases (arc-1 byte-equivalence) ---
 export const CHAPTERS = ARCS.rainbow.chapters;

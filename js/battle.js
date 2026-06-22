@@ -41,6 +41,13 @@ export function pickWild() {
   return spawnable[Math.floor(Math.random() * spawnable.length)];
 }
 
+// A wild of a specific type — for Story Quest type-battles (e.g. a Fire foe at the
+// volcano, so bringing Water actually matters). Falls back to any if none found.
+export function pickWildOfType(type) {
+  const pool = ROSTER.filter((p) => p.zones.length && !LEGENDARY_IDS.has(p.id) && (p.types || []).includes(type));
+  return pool.length ? pool[Math.floor(Math.random() * pool.length)] : pickWild();
+}
+
 export function numberChoices(t, count) {
   const set = new Set([t]);
   const cands = [];

@@ -17,7 +17,7 @@ import { tenFrame } from '../tenframe.js';
 import { isCaught, recordCatch, markFoil } from '../game.js';
 import { openPack } from '../cards.js';
 import { typeBadges } from '../typeicon.js';
-import { earn } from '../story.js';
+import { earn, tokenCta as ctaForArc } from '../story.js';
 import * as quests from '../quests.js';
 import * as music from '../music.js';
 import { confetti, sparkleBurst, centerOf, haloRing } from '../fx.js';
@@ -273,7 +273,7 @@ export function renderCatch({ zoneId, story, from, arc }, ctx) {
     // Story chapter: one catch IS the goal — earn this zone's token and return to
     // the journey (the Pokémon is already recorded). Free-play: the usual outing.
     const toFeather = () => { earn(storyArc, zoneId); ctx.go('story', { earned: zoneId, arc: storyArc }); };
-    const tokenCta = storyArc === 'wishstar' ? 'Find the wish-star!' : 'Find the rainbow feather!';
+    const tokenCta = ctaForArc(storyArc); // arc-aware (brief 026 Part D) — no arc shows another's wording
     const overlay = el('div', { class: 'caught' });
     const sprite = spriteImg(pokemon);
     sprite.classList.add('caught__sprite');

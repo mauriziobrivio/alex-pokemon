@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v34';
+const CACHE = 'dada-academy-v35';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -71,6 +71,8 @@ for (const f of ['story-intro', 'feather-found', 'story-more', 'story-finale']) 
 for (const f of ['choose-adventure', 'wish-intro', 'wish-star-found', 'make-a-wish', 'wish-more', 'jirachi-finale']) CORE.push(`./audio/dada/${f}.mp3`);
 // Story Mode 2.0 (Saving Professor Dada) narration.
 for (const f of ['dada-call', 'dada-grow-1', 'dada-grow-2', 'dada-grow-3', 'dada-glimpse', 'dada-reunion', 'dada-ending', 'dada-more']) CORE.push(`./audio/dada/${f}.mp3`);
+// Story Quest (brief 026): the team-of-3 pick + type-strategy battle lines.
+for (const f of ['pick-team', 'who-fights', 'great-pick']) CORE.push(`./audio/dada/${f}.mp3`);
 CORE.push('./sprites/250.png'); // Ho-Oh — the finale star (precache the set-piece sprite)
 // Starter evolution lines' sprites (1-6, 25-26) so the first evolutions show offline.
 for (const id of [1, 2, 3, 4, 5, 6, 25, 26]) CORE.push(`./sprites/${id}.png`);

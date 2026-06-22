@@ -12,6 +12,7 @@ import { sfx } from '../../sfx.js';
 import { CVC_WORDS, wordBuildable, graphemes } from '../../data.js';
 import * as mastery from '../../mastery.js';
 import { getWords, recordWordRead, firstReadDone, markFirstReadDone } from '../../game.js';
+import { earn, tokenCta } from '../../story.js';
 import { confetti, sparkleBurst, centerOf, haloRing, driftSparkles } from '../../fx.js';
 import { gameShell } from './_common.js';
 
@@ -22,17 +23,23 @@ export const readableWords = () => { const ok = mastery.comfortableLetterSet(); 
 export const READY_WORDS_BUILT = 4;
 export const readyToRead = () => getWords().length >= READY_WORDS_BUILT && readableWords().length > 0;
 
-export function renderReadIt(_params, ctx) {
-  const { root, panel, setPrompt } = gameShell(ctx, 'game-readit');
+export function renderReadIt(params, ctx) {
+  // In a Story Quest, this is the "read-it" mission: the first independent read earns
+  // the zone's word and returns to the journey. In free-play it loops ("read another").
+  const story = params && params.story;
+  const storyArc = (params && params.arc) || 'rainbow';
+  const storyZone = params && params.zone;
+  const { root, panel, setPrompt } = gameShell(ctx, 'game-readit',
+    story ? { onBack: () => ctx.go('story', { arc: storyArc }), backLabel: 'Back to the adventure' } : {});
   let last = null, token = 0;
 
   function round() {
     const myToken = ++token;
     const pool = readableWords();
-    // Safety: only ever show a word Alex can decode. The corner tile is mastery-gated,
-    // so this is normally non-empty; if ever reached un-gated, return gently (no
-    // undecodable word, never stuck).
-    if (!pool.length) { ctx.go('games'); return; }
+    // Safety: only ever show a word Alex can decode. The mission/tile is mastery-gated,
+    // so this is normally non-empty; if ever reached un-gated, return gently — to the
+    // journey in story mode, to the corner in free-play (never stuck on an undecodable word).
+    if (!pool.length) { story ? ctx.go('story', { arc: storyArc }) : ctx.go('games'); return; }
     let word = pool[Math.floor(Math.random() * pool.length)];
     for (let g = 0; word === last && pool.length > 1 && g < 6; g++) word = pool[Math.floor(Math.random() * pool.length)];
     last = word;
@@ -85,12 +92,17 @@ export function renderReadIt(_params, ctx) {
   }
 
   function showProud(word, first) {
+    // Story mission: the read earns this zone's word and returns to the journey.
+    // Free-play: loop to another word.
+    const onContinue = story
+      ? () => { audio.play(sfx.pop()); audio.clearVoice(); overlay.remove(); earn(storyArc, storyZone); ctx.go('story', { earned: storyZone, arc: storyArc }); }
+      : () => { audio.play(sfx.pop()); audio.clearVoice(); overlay.remove(); round(); };
     const overlay = el('div', { class: 'readit-proud' + (first ? ' is-first' : '') },
       el('div', { class: 'readit-proud__card' },
         el('div', { class: 'readit-proud__badge' }, first ? 'Your very first word!' : 'You read it!'),
         el('div', { class: 'readit-proud__word' }, word),
         el('div', { class: 'readit-proud__msg' }, "You're reading, Alex!"),
-        el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); audio.clearVoice(); overlay.remove(); round(); } }, 'Read another!'),
+        el('button', { class: 'btn btn--big', type: 'button', onClick: onContinue }, story ? tokenCta(storyArc) : 'Read another!'),
       ));
     root.append(overlay);
   }
