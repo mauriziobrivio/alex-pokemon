@@ -157,10 +157,13 @@ export const midpointDue = (arc) => isQuest(arc) && !midpointSeen(arc)
 export const isQuest = (arc) => arcType(arc) === 'quest';
 export const missionAt = (arc, i) => chaptersOf(arc)[i] || null;
 export const missionIndexOf = (arc, zone) => chaptersOf(arc).findIndex((m) => m.zone === zone);
-export const nextMissionIndex = (arc) => earnedCount(arc);          // completed-in-order → next index
+// The first mission (in order) NOT yet earned. Robust to ANY earned set — so legacy
+// or out-of-order data can never strand the player on an already-done "current".
+export const nextMissionIndex = (arc) => { const ms = chaptersOf(arc); for (let i = 0; i < ms.length; i++) if (!hasEarned(arc, ms[i].zone)) return i; return ms.length; };
 export const currentMission = (arc) => missionAt(arc, nextMissionIndex(arc));
-// A mission's state on the map: 'done' · 'current' (the active one) · 'locked' (ahead).
-export const missionState = (arc, i) => { const d = nextMissionIndex(arc); return i < d ? 'done' : i === d ? 'current' : 'locked'; };
+// A mission's state on the map: 'done' iff its zone is earned · 'current' = the first
+// non-earned · else 'locked' (ahead).
+export const missionState = (arc, i) => { const m = missionAt(arc, i); if (m && hasEarned(arc, m.zone)) return 'done'; return i === nextMissionIndex(arc) ? 'current' : 'locked'; };
 export const tierOf = (arc, zone) => (chapterFor(arc, zone) || {}).tier || 1;
 export const foeTypeOf = (arc, zone) => (chapterFor(arc, zone) || {}).foeType || null;
 export const beatOf = (arc, zone) => (chapterFor(arc, zone) || {}).beat || '';
@@ -175,6 +178,29 @@ export const hasTeam = (arc) => getTeam(arc).length >= 1;
 
 // The win-card CTA, per arc (brief 026 Part D — no arc ever shows another's wording).
 export const tokenCta = (arc) => isQuest(arc) ? 'Onward!' : arc === 'wishstar' ? 'Find the wish-star!' : 'Find the rainbow feather!';
+
+// Reset a quest arc's progress (earned missions + team + cutscene flags) → back to mission 1.
+export function resetQuestProgress(arc) {
+  const a = arcById(arc);
+  write(a.earnedKey, []);
+  write(a.teamKey || 'questTeam', []);
+  if (a.openingKey) write(a.openingKey, false);
+  if (a.midpointKey) write(a.midpointKey, false);
+  if (a.finaleSeenKey) write(a.finaleSeenKey, false);
+}
+// One-time migration: the Saving-Dada arc became a STORY QUEST (brief 026) — a wholly
+// different experience from the old free-tap collect-arc, whose leftover `dadaWords`
+// would make the story start partway in (and could strand the player on a legacy,
+// out-of-order "current" mission). Clear it ONCE so every existing player gets the
+// real story from mission 1. Fresh players have nothing to clear. Runs once (flag).
+export function ensureQuestFresh(arc) {
+  if (!isQuest(arc)) return false;
+  const FLAG = (arcById(arc).id || arc) + 'QuestReady';
+  if (read(FLAG, false)) return false;
+  resetQuestProgress(arc);
+  write(FLAG, true);
+  return true;
+}
 
 // --- Backward-compatible rainbow aliases (arc-1 byte-equivalence) ---
 export const CHAPTERS = ARCS.rainbow.chapters;

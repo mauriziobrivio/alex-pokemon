@@ -332,6 +332,7 @@ function questPathSvg(arcId) {
 }
 
 function renderQuest(arcId, params, ctx) {
+  story.ensureQuestFresh(arcId); // one-time: clear any pre-quest progress so the story starts at mission 1
   const v = ARC_VIEW[arcId];
   const root = el('div', { class: `scene story story--quest ${v.mapClass}`.trim() });
   music.play('home');
