@@ -1199,3 +1199,26 @@ html, body {
 
 /* Brief 027 — the grateful Charmander in the cave beat (its tail just relit). */
 .cutscene__char--mascot { position: absolute; bottom: 2%; right: 13%; width: clamp(70px, 15vw, 124px); filter: drop-shadow(0 6px 16px rgba(255,140,40,0.4)); }
+
+/* ====================================================================
+   Drop-in art polish (the founder's saved beat/cover images): when a bespoke
+   full-bleed image is present it carries the whole scene, so the fallback PNG
+   overlays step aside and the text is lifted for legibility. */
+
+/* Chooser cards — the cover becomes the card backdrop (gradient + glyph = fallback). */
+.adventure-card { position: relative; overflow: hidden; }
+.adventure-card__cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+.adventure-card > :not(.adventure-card__cover) { position: relative; z-index: 1; } /* text above the cover */
+.adventure-card.has-cover::after { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: linear-gradient(90deg, rgba(12,8,3,0.58), rgba(12,8,3,0.22) 52%, rgba(12,8,3,0.05)); } /* scrim for text */
+.adventure-card.has-cover .adventure-card__art { display: none; }                 /* the cover IS the art */
+.adventure-card.has-cover .adventure-card__title,
+.adventure-card.has-cover .adventure-card__sub,
+.adventure-card.has-cover .adventure-card__count { color: #fff8e7; text-shadow: 0 2px 8px rgba(0,0,0,0.65); }
+
+/* Cutscenes (opening · beats · reunion · ending) — a present backdrop is the whole
+   scene; hide the overlaid character PNGs (incl. the cave Charmander) and turn the
+   caption into a legible band over the art. */
+.cutscene--has-bg .cutscene__char { display: none; }
+.cutscene--has-bg .cutscene__caption { background: linear-gradient(to top, rgba(12,8,3,0.62), rgba(12,8,3,0.18) 72%, transparent); }
+.cutscene--has-bg .cutscene__title { color: #fff8e7; text-shadow: 0 2px 10px rgba(0,0,0,0.7); }

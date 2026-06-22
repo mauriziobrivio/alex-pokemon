@@ -41,6 +41,8 @@
 !/assets/screens/scene-jirachi-finale.png
 !/assets/screens/scene-saving-dada-opening.png
 !/assets/screens/scene-saving-dada-reunion.png
+!/assets/screens/scene-savedada-beat-*.png
+!/assets/screens/cover-*.png
 !/assets/characters
 /assets/characters/*
 !/assets/characters/alex

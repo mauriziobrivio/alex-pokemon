@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v36';
+const CACHE = 'dada-academy-v37';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -22,6 +22,13 @@ const CORE = [
   './assets/screens/screen-worldmap.png', './assets/screens/scene-starter-select.png',
   './assets/screens/bg-evolution.png',
   './assets/screens/scene-finale-rainbow.png', './assets/screens/scene-jirachi-finale.png', // the grand finale hero images (full-bleed)
+  // Saving-Dada story art (brief 027 drop-ins, full-bleed): the chooser cover, the
+  // opening + reunion backdrops, and the 6 delivered per-mission beat scenes.
+  './assets/screens/cover-savedada.png',
+  './assets/screens/scene-saving-dada-opening.png', './assets/screens/scene-saving-dada-reunion.png',
+  './assets/screens/scene-savedada-beat-meadow.png', './assets/screens/scene-savedada-beat-forest.png',
+  './assets/screens/scene-savedada-beat-beach.png', './assets/screens/scene-savedada-beat-mountain.png',
+  './assets/screens/scene-savedada-beat-grove.png', './assets/screens/scene-savedada-beat-cave.png',
   './assets/backgrounds/bg-meadow.png', './assets/backgrounds/bg-forest.png',
   './assets/backgrounds/bg-beach.png', './assets/backgrounds/bg-mountain.png',
   './assets/backgrounds/bg-desert.png', './assets/backgrounds/bg-volcano.png',

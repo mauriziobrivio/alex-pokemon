@@ -134,13 +134,17 @@ function renderChooser(ctx) {
   const card = (arcId, subtitle, preview, headline) => {
     const v = ARC_VIEW[arcId];
     const done = story.earnedCount(arcId), total = story.totalChapters(arcId);
-    return el('button', { class: `adventure-card adventure-card--${arcId}` + (headline ? ' adventure-card--headline' : ''), type: 'button', 'aria-label': v.title,
+    const cover = charImg(`assets/screens/cover-${arcId}.png`, 'adventure-card__cover', ''); // optional drop-in cover (hides if absent)
+    const btn = el('button', { class: `adventure-card adventure-card--${arcId}` + (headline ? ' adventure-card--headline' : ''), type: 'button', 'aria-label': v.title,
       onClick: () => { audio.play(sfx.pop()); ctx.go('story', { arc: arcId }); } },
-      charImg(`assets/screens/cover-${arcId}.png`, 'adventure-card__cover', ''), // optional drop-in cover (hides if absent)
+      cover,
       el('span', { class: 'adventure-card__art' }, preview),
       el('span', { class: 'adventure-card__title' }, v.title),
       el('span', { class: 'adventure-card__sub' }, subtitle),
       el('span', { class: 'adventure-card__count', 'aria-hidden': 'true' }, `${done} / ${total}`));
+    // when the cover art loads, it becomes the card's backdrop (the gradient + glyph are the fallback)
+    cover.addEventListener('load', () => btn.classList.add('has-cover'));
+    return btn;
   };
 
   const explore = el('button', { class: 'btn btn--ghost story__explore', type: 'button',
@@ -503,7 +507,10 @@ function renderQuest(arcId, params, ctx) {
 // end). Never scary.
 function cutscene(root, ctx, { cls, bg, art, title, lines, cta, onDone }) {
   const overlay = el('div', { class: `cutscene ${cls || ''}`.trim() });
-  if (bg) overlay.append(charImg(bg, 'cutscene__bg', ''));
+  // When a bespoke full-bleed backdrop is present it IS the whole scene (it already
+  // contains the cast) — so on load, suppress the character-PNG overlays (those are
+  // the FALLBACK for when there's no art). On error the bg hides itself + the cast shows.
+  if (bg) { const bgImg = charImg(bg, 'cutscene__bg', ''); bgImg.addEventListener('load', () => overlay.classList.add('cutscene--has-bg')); overlay.append(bgImg); }
   const stage = el('div', { class: 'cutscene__stage' },
     ...(art || []).map((a) => charImg(a.src, `cutscene__char ${a.cls || ''}`.trim(), a.alt || '')));
   const caption = el('div', { class: 'cutscene__caption' });
