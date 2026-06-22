@@ -1196,3 +1196,6 @@ html, body {
 
 /* beat cutscene — a warm gradient fallback when the per-mission image isn't dropped in yet */
 .cutscene--beat { background: radial-gradient(circle at 50% 40%, rgba(255,247,228,0.98), rgba(255,226,180,0.97) 55%, rgba(255,208,168,0.98)); }
+
+/* Brief 027 — the grateful Charmander in the cave beat (its tail just relit). */
+.cutscene__char--mascot { position: absolute; bottom: 2%; right: 13%; width: clamp(70px, 15vw, 124px); filter: drop-shadow(0 6px 16px rgba(255,140,40,0.4)); }

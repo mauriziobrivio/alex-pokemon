@@ -463,26 +463,29 @@ function renderQuest(arcId, params, ctx) {
 
   function pointNext() { const cur = story.currentMission(arcId); if (cur) ctx.after(300, () => { if (ctx.alive()) audio.speak(clip.suggest(cur.zone)); }); }
 
-  // The story beat after a mission win: a full-screen picture + Dada says the
-  // recovered word (voice growing) + the moment's caption. Then the path inks on.
+  // The story beat after a mission win (brief 027): a full-screen picture + Dada
+  // (the storyteller, his voice growing) says the recovered word, then NARRATES the
+  // moment — a person + a problem the activity just solved. Then the path inks on.
   function showBeat(zone) {
-    const i = story.missionIndexOf(arcId, zone);
     const word = story.wordFor(arcId, zone);
-    const tier = story.voiceTier(arcId);
     confetti(root); audio.play(sfx.catch());
     const prog = root.querySelector('.story__route');
     if (prog) { const c = centerOf(prog, root); haloRing(root, c.x, c.y, { size: 220, color: v.haloColor, dur: 900 }); driftSparkles(root, c.x, c.y, 8); }
-    // mission 6 (midpoint): the word recovers, then the "I can see you!" glimpse IS the beat
-    if (story.midpointDue(arcId)) { audio.speak(clip.word(word)); showGlimpse(arcId, root, ctx, pointNext); return; }
+    // mission 6 (grove, midpoint): recover the word + narrate Aurie joining, then the glimpse IS the beat
+    if (story.midpointDue(arcId)) { audio.speakSequence([clip.word(word), clip.beat(zone)]); showGlimpse(arcId, root, ctx, pointNext); return; }
+    // the cast in the picture: Mama + Alex, plus a grateful Charmander in the cave
+    // beat when Alex has met one (his reading just relit its tail).
+    const art = [
+      { src: 'assets/characters/mama/mama-cheering.png', cls: 'cutscene__char--mama' },
+      { src: 'assets/characters/alex/alex-cheering.png', cls: 'cutscene__char--alex' },
+    ];
+    if (zone === 'cave' && getPokedex()[4]) art.push({ src: 'sprites/4.png', cls: 'cutscene__char--mascot', alt: 'Charmander' });
     cutscene(root, ctx, {
       cls: 'cutscene--beat',
-      bg: `assets/screens/scene-savedada-beat-${i + 1}.png`, // optional drop-in; CSS gradient fallback
-      art: [
-        { src: 'assets/characters/mama/mama-cheering.png', cls: 'cutscene__char--mama' },
-        { src: 'assets/characters/alex/alex-cheering.png', cls: 'cutscene__char--alex' },
-      ],
+      bg: `assets/screens/scene-savedada-beat-${zone}.png`, // optional drop-in, named per zone; CSS gradient fallback
+      art,
       title: story.beatOf(arcId, zone),
-      lines: [() => clip.word(word), () => clip.dadaGrow(tier + 1)],
+      lines: [() => clip.word(word), () => clip.beat(zone)], // the recovered word, then Dada narrates the moment
       cta: 'Onward!',
       onDone: pointNext,
     });

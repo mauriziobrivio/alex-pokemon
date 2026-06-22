@@ -78,17 +78,22 @@ export const ARCS = {
     // + the `word` it recovers (Dada says it back, voice growing) + a story `beat`
     // (the picture-moment after the win). Battle missions may name a `foeType` so the
     // right team pick matters (type-strategy). Literacy-forward (build-word + read).
+    // The beats are a TOLD story (brief 027): every stop is a person + a problem,
+    // and the activity is what solves it — narrated by Dada (the storyteller). A
+    // recurring cast: Mom (points the way), Aurie (Alex's friend, a friendly rival →
+    // ally, beats 3/6/10), the rescued forest friend (beats 2 → 5), the chilly
+    // Charmander (cave). `beat` = the on-screen caption; the spoken line is dada-beat-<zone>.
     chapters: [
-      { zone: 'meadow',    kind: 'catch',      tier: 1, word: 'sun', beat: 'The first word glimmers back!' },
-      { zone: 'forest',    kind: 'build-word', tier: 1, word: 'dog', beat: 'Forest friends cheer him on.' },
-      { zone: 'beach',     kind: 'battle',     tier: 2, word: 'cat', beat: 'A little stronger — he sets off across the water.' },
-      { zone: 'mountain',  kind: 'count',      tier: 2, word: 'hat', beat: 'From the peak, he spots the far edge.' },
-      { zone: 'desert',    kind: 'build-word', tier: 3, word: 'hen', beat: 'A sandstorm clears to reveal the way onward.' },
-      { zone: 'grove',     kind: 'battle',     tier: 3, word: 'big', beat: 'I can see you, Alex! Keep coming!' },           // midpoint glimpse
-      { zone: 'cave',      kind: 'readit',     tier: 4, word: 'fun', beat: 'Glowing crystals light the path; his voice nearly whole.' },
-      { zone: 'volcano',   kind: 'battle',     tier: 4, word: 'run', foeType: 'fire', beat: 'He crosses the warm pass — almost there.' },
-      { zone: 'snowfield', kind: 'battle',     tier: 5, word: 'hug', beat: 'The last frozen stretch to the edge.' },
-      { zone: 'ocean',     kind: 'battle',     tier: 5, word: 'dad', beat: "Dada's full voice returns — you reach him!" }, // the climax
+      { zone: 'meadow',    kind: 'catch',      tier: 1, word: 'sun', beat: '"Follow Dad\'s words!" — Mom points the way.' },
+      { zone: 'forest',    kind: 'build-word', tier: 1, word: 'dog', beat: 'You freed the tangled little Pokémon!' },
+      { zone: 'beach',     kind: 'battle',     tier: 2, word: 'cat', beat: 'You out-battled Aurie — "He went out to sea!"' },
+      { zone: 'mountain',  kind: 'count',      tier: 2, word: 'hat', beat: 'You gathered the letters — there\'s Dad, far off!' },
+      { zone: 'desert',    kind: 'build-word', tier: 3, word: 'hen', beat: 'Your forest friend led you through the sandstorm!' },
+      { zone: 'grove',     kind: 'battle',     tier: 3, word: 'big', beat: 'Aurie joins you: "Let\'s find your dad!"' },     // midpoint glimpse
+      { zone: 'cave',      kind: 'readit',     tier: 4, word: 'fun', beat: 'You read the words — Charmander\'s tail relit the cave!' },
+      { zone: 'volcano',   kind: 'battle',     tier: 4, word: 'run', foeType: 'fire', beat: 'Water cleared the wall of warm fire!' },
+      { zone: 'snowfield', kind: 'battle',     tier: 5, word: 'hug', beat: 'Through the blizzard — Dad\'s voice calls you on!' },
+      { zone: 'ocean',     kind: 'battle',     tier: 5, word: 'dad', beat: 'You reach Dad — and everyone cheers!' },         // the climax
     ],
   },
 };

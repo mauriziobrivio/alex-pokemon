@@ -117,6 +117,11 @@ export const clip = {
   pickTeam: () => url('pick-team.mp3'),                // "Pick three friends to bring on your adventure!"
   whoFights: () => url('who-fights.mp3'),              // type-battle: "Who will you send, Alex?"
   greatPick: () => url('great-pick.mp3'),              // "Great pick! That one's super strong!"
+
+  // --- Saving-Dada beats as a TOLD story (brief 027): Dada narrates each moment,
+  // warm + vivid (Mom · Aurie · the rescued friend · the chilly Charmander). One per
+  // mission zone; spoken after the recovered word. Dad's whisper → whole across them. ---
+  beat: (zone) => url(`dada-beat-${zone}.mp3`),
 };
 
 export const PRAISE_COUNT = 4;

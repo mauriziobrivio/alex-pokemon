@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v35';
+const CACHE = 'dada-academy-v36';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -73,6 +73,8 @@ for (const f of ['choose-adventure', 'wish-intro', 'wish-star-found', 'make-a-wi
 for (const f of ['dada-call', 'dada-grow-1', 'dada-grow-2', 'dada-grow-3', 'dada-glimpse', 'dada-reunion', 'dada-ending', 'dada-more']) CORE.push(`./audio/dada/${f}.mp3`);
 // Story Quest (brief 026): the team-of-3 pick + type-strategy battle lines.
 for (const f of ['pick-team', 'who-fights', 'great-pick']) CORE.push(`./audio/dada/${f}.mp3`);
+// Brief 027 — Saving-Dada beats as a told story: one narration per mission zone.
+for (const z of ['meadow', 'forest', 'beach', 'mountain', 'desert', 'grove', 'cave', 'volcano', 'snowfield']) CORE.push(`./audio/dada/dada-beat-${z}.mp3`);
 CORE.push('./sprites/250.png'); // Ho-Oh — the finale star (precache the set-piece sprite)
 // Starter evolution lines' sprites (1-6, 25-26) so the first evolutions show offline.
 for (const id of [1, 2, 3, 4, 5, 6, 25, 26]) CORE.push(`./sprites/${id}.png`);
