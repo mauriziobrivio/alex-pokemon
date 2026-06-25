@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v38';
+const CACHE = 'dada-academy-v39';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -29,6 +29,8 @@ const CORE = [
   './assets/screens/scene-savedada-beat-meadow.png', './assets/screens/scene-savedada-beat-forest.png',
   './assets/screens/scene-savedada-beat-beach.png', './assets/screens/scene-savedada-beat-mountain.png',
   './assets/screens/scene-savedada-beat-grove.png', './assets/screens/scene-savedada-beat-cave.png',
+  './assets/screens/scene-savedada-beat-desert.png', './assets/screens/scene-savedada-beat-volcano.png',
+  './assets/screens/scene-savedada-beat-snowfield.png',
   './assets/backgrounds/bg-meadow.png', './assets/backgrounds/bg-forest.png',
   './assets/backgrounds/bg-beach.png', './assets/backgrounds/bg-mountain.png',
   './assets/backgrounds/bg-desert.png', './assets/backgrounds/bg-volcano.png',

@@ -477,7 +477,7 @@ function renderQuest(arcId, params, ctx) {
     const prog = root.querySelector('.story__route');
     if (prog) { const c = centerOf(prog, root); haloRing(root, c.x, c.y, { size: 220, color: v.haloColor, dur: 900 }); driftSparkles(root, c.x, c.y, 8); }
     // mission 6 (grove, midpoint): recover the word + narrate Aurie joining, then the glimpse IS the beat
-    if (story.midpointDue(arcId)) { audio.speakSequence([clip.word(word), clip.beat(zone)]); showGlimpse(arcId, root, ctx, pointNext); return; }
+    if (story.midpointDue(arcId)) { audio.speakSequence([clip.word(word), clip.beat(zone)]); showGlimpse(arcId, root, ctx, pointNext, `assets/screens/scene-savedada-beat-${zone}.png`); return; }
     // the cast in the picture: Mama + Alex, plus a grateful Charmander in the cave
     // beat when Alex has met one (his reading just relit its tail).
     const art = [
@@ -547,10 +547,11 @@ function showOpening(arcId, root, ctx, onDone) {
 
 // The middle turn (~halfway): Alex GLIMPSES Dada far across the world, waving; his
 // voice is stronger now. Anticipation renews.
-function showGlimpse(arcId, root, ctx, onDone) {
+function showGlimpse(arcId, root, ctx, onDone, bg) {
   story.markMidpointSeen(arcId);
   cutscene(root, ctx, {
     cls: 'cutscene--glimpse',
+    bg, // the midpoint mission's beat art (Aurie joins), when present; else the cast PNGs below carry it
     art: [
       { src: 'assets/characters/dada/dada-encouraging.png', cls: 'cutscene__char--far', alt: 'Professor Dada, waving from afar' },
       { src: 'assets/characters/alex/alex-ready.png', cls: 'cutscene__char--alex' },
