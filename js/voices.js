@@ -122,6 +122,17 @@ export const clip = {
   // warm + vivid (Mom · Aurie · the rescued friend · the chilly Charmander). One per
   // mission zone; spoken after the recovered word. Dad's whisper → whole across them. ---
   beat: (zone) => url(`dada-beat-${zone}.mp3`),
+
+  // --- "Save Mama!" — Story Quest #2 (brief 029). Dada narrates THIS story too (the
+  // single active voice / storyteller); Aunt Kaitlin + Mama + the grateful friends are
+  // visual-only. Arc-scoped beats (mama-beat-<slug>, keyed per chapter since zones
+  // repeat) + its own cutscene lines + the choose-your-path prompt. Placeholders. ---
+  mamaBeat: (slug) => url(`mama-beat-${slug}.mp3`),   // one per mission moment (the trail of Mama's kindness)
+  mamaOpening: () => url('mama-opening.mp3'),         // Aunt Kaitlin comes for Alex: "Let's follow her kindness home."
+  mamaGlimpse: () => url('mama-glimpse.mp3'),         // midpoint: "There's Mama, waving — almost there!"
+  mamaReunion: () => url('mama-reunion.mp3'),         // climax: Mama's arms + Kaitlin + every friend cheering
+  mamaEnding: () => url('mama-ending.mp3'),           // ending: home together, the best hug of all
+  whichWay: () => url('which-way.mp3'),               // the fork: "Which way, Alex? Over the mountain… or along the river?"
 };
 
 export const PRAISE_COUNT = 4;

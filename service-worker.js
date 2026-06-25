@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v40';
+const CACHE = 'dada-academy-v41';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -84,6 +84,14 @@ for (const f of ['dada-call', 'dada-grow-1', 'dada-grow-2', 'dada-grow-3', 'dada
 for (const f of ['pick-team', 'who-fights', 'great-pick']) CORE.push(`./audio/dada/${f}.mp3`);
 // Brief 027 — Saving-Dada beats as a told story: one narration per mission zone.
 for (const z of ['meadow', 'forest', 'beach', 'mountain', 'desert', 'grove', 'cave', 'volcano', 'snowfield']) CORE.push(`./audio/dada/dada-beat-${z}.mp3`);
+// Brief 029 — "Save Mama!" Story Quest #2: the four cutscenes + the fork prompt + one
+// beat per mission moment (Dada narrates; Kaitlin/Mama are visual-only). The two new
+// recovered words (pal, mom) warm at runtime like the other word clips.
+for (const f of ['mama-opening', 'mama-glimpse', 'mama-reunion', 'mama-ending', 'which-way']) CORE.push(`./audio/dada/${f}.mp3`);
+for (const s of ['meadow', 'forest', 'beach', 'mountain', 'river', 'desert', 'snowfield', 'volcano', 'twilight', 'bridge']) CORE.push(`./audio/dada/mama-beat-${s}.mp3`);
+// NOTE: the Save-Mama art (cover-savemama, scene-saving-mama-opening/reunion, and the
+// scene-savemama-beat-<slug> scenes) gets precached when the founder drops it in (the
+// savedada pattern — brief 027/v37). Until then the quest plays on the gradient fallback.
 CORE.push('./sprites/250.png'); // Ho-Oh — the finale star (precache the set-piece sprite)
 // Starter evolution lines' sprites (1-6, 25-26) so the first evolutions show offline.
 for (const id of [1, 2, 3, 4, 5, 6, 25, 26]) CORE.push(`./sprites/${id}.png`);

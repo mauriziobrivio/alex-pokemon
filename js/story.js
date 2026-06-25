@@ -96,6 +96,51 @@ export const ARCS = {
       { zone: 'ocean',     kind: 'battle',     tier: 5, word: 'dad', beat: 'You reach Dad — and everyone cheers!' },         // the climax
     ],
   },
+
+  // Story Quest #2 — "Save Mama!" (brief 029): Alex sets off to FIND Mama, who has
+  // gone across the islands to help. Aunt Kaitlin comes for him — "I know my sister;
+  // she leaves kindness everywhere. Let's follow it home." So the whole quest is Alex
+  // following the TRAIL of Mama's kindness: at each stop a friend Mama already helped
+  // is waiting, and now helps Alex onward. Mama is ALWAYS one step ahead — glimpsed,
+  // waving, safe + happy throughout (the same hard warm guard as Dad). Two things make
+  // it its own story: (1) Mama is characterised by her ABSENCE — the kindness she left
+  // (the PYP "caring" trait, as a game); (2) the HERO beat is NUMERIC — counting the
+  // teens (11–20, ten-frame) to cross the Lantern Bridge home (Dad's quest crowned
+  // reading; Mama's crowns number sense, Alex's 11–20 gap). The ONE new mechanic is a
+  // choose-your-path FORK at mission 4 (`kind:'fork'` + two branches that reconverge).
+  // Dada narrates this too (the single active voice); Kaitlin + Mama + friends are
+  // visual-only (in the beat art). Mirrors `savedada` with its OWN keys (fully
+  // independent + separately resettable). Per-chapter `img` slug (zones repeat) +
+  // arc-scoped beat audio (mama-beat-<slug>).
+  savemama: {
+    id: 'savemama',
+    type: 'quest',
+    earnedKey: 'mamaSteps',            // recovered stops (in order) = path progress
+    finaleSeenKey: 'savedMamaSeen',    // the ENDING cutscene seen (arc completed, once)
+    openingKey: 'savedMamaOpened',     // the opening (Kaitlin comes for Alex) seen (once)
+    midpointKey: 'savedMamaMid',       // the "there's Mama!" glimpse shown (once)
+    midpointAfter: 7,                  // the glimpse after mission 7 (the volcano) — Mama close now
+    teamKey: 'questTeamMama',          // its OWN team of 3 (independent of savedada)
+    pathKey: 'mamaPath',               // the choose-your-path fork pick ('mountain' | 'river')
+    chapters: [
+      { zone: 'meadow',    kind: 'catch',      tier: 1, word: 'sun', img: 'meadow',  beat: 'Aunt Kaitlin took your hand — "Let\'s follow Mama\'s kindness home!"' },
+      { zone: 'forest',    kind: 'count',      tier: 1, word: 'fun', img: 'forest',  beat: 'A friend by Mama\'s berry-piles showed you the way onward!' },
+      { zone: 'beach',     kind: 'build-word', tier: 2, word: 'hug', img: 'beach',   beat: 'You built Mama\'s sandy word — "That\'s her handwriting!"' },
+      // THE FORK (brief 029's new mechanic): two branches, same tier, both lead onward.
+      // The chosen branch plays its beat; the other waits "another day". Earns `fork`.
+      { zone: 'fork', kind: 'fork', tier: 2, label: 'Which way?', img: 'fork',
+        branches: {
+          mountain: { kind: 'count',      word: 'top', img: 'mountain', beat: 'Up the mountain — you spotted Mama, waving from far ahead!' },
+          river:    { kind: 'build-word', word: 'tip', img: 'river',    beat: 'Along the river — the fireflies\' word lit the way on!' },
+        } },
+      { zone: 'desert',    kind: 'battle',     tier: 3, word: 'pat', img: 'desert',  beat: 'A playful guardian let you pass — "Her brave boy is here!"' },
+      { zone: 'snowfield', kind: 'build-word', tier: 3, word: 'kit', img: 'snowfield', beat: 'A little one in Mama\'s own scarf led you through the snow!' },
+      { zone: 'volcano',   kind: 'battle',     tier: 4, word: 'run', foeType: 'fire', img: 'volcano', beat: 'Water parted the warm fire — and there\'s Mama, closer now!' },  // midpoint glimpse
+      { zone: 'grove',     kind: 'catch',      tier: 4, word: 'pal', label: 'Twilight Grove', img: 'twilight', beat: 'In the glowing grove, you made one tender new friend.' },
+      { zone: 'bridge',    kind: 'count',      tier: 5, word: 'ten', label: 'Lantern Bridge', img: 'bridge', teens: true, beat: 'You counted the lanterns home — and Mama turned, and saw you!' }, // HERO: teens 11–20
+      { zone: 'reunion',   kind: 'battle',     tier: 5, word: 'mom', label: 'Mama!', img: 'reunion', beat: 'You reached Mama — and everyone cheered!' },                       // the climax
+    ],
+  },
 };
 
 export const DEFAULT_ARC = 'rainbow';
@@ -176,14 +221,31 @@ export const setTeam = (arc, ids) => write(arcById(arc).teamKey || 'questTeam', 
 // team auto-fills with under three.
 export const hasTeam = (arc) => getTeam(arc).length >= 1;
 
+// --- Choose-your-path FORK (brief 029) — Save Mama's one new mechanic ---
+// A chapter with `kind:'fork'` offers two `branches` (e.g. mountain | river) that
+// reconverge at the next mission. The pick is stored per arc (`pathKey`); there is no
+// wrong path (both same tier, both lead onward). `getPath` is null until he chooses.
+export const forkChapter = (arc) => chaptersOf(arc).find((c) => c.kind === 'fork') || null;
+export const forkIndex = (arc) => chaptersOf(arc).findIndex((c) => c.kind === 'fork');
+export const getPath = (arc) => (arcById(arc).pathKey ? read(arcById(arc).pathKey, null) : null);
+export const setPath = (arc, branch) => { if (arcById(arc).pathKey) write(arcById(arc).pathKey, branch); };
+// The chosen branch object (falls back to the first branch so a beat never renders blank).
+export const chosenBranch = (arc) => {
+  const f = forkChapter(arc); if (!f || !f.branches) return null;
+  return f.branches[getPath(arc)] || Object.values(f.branches)[0] || null;
+};
+
 // The win-card CTA, per arc (brief 026 Part D — no arc ever shows another's wording).
 export const tokenCta = (arc) => isQuest(arc) ? 'Onward!' : arc === 'wishstar' ? 'Find the wish-star!' : 'Find the rainbow feather!';
 
-// Reset a quest arc's progress (earned missions + team + cutscene flags) → back to mission 1.
+// Reset a quest arc's progress (earned missions + team + fork pick + cutscene flags)
+// → back to mission 1. Per-key guarded, so it's safe for any arc (collect-arcs lack
+// team/opening/path keys). Touches ONLY this arc — never the collection or other arcs.
 export function resetQuestProgress(arc) {
   const a = arcById(arc);
   write(a.earnedKey, []);
   write(a.teamKey || 'questTeam', []);
+  if (a.pathKey) write(a.pathKey, null);
   if (a.openingKey) write(a.openingKey, false);
   if (a.midpointKey) write(a.midpointKey, false);
   if (a.finaleSeenKey) write(a.finaleSeenKey, false);

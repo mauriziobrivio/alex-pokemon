@@ -23,7 +23,7 @@ import * as music from '../music.js';
 
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
-export function renderTrain({ story, zone, kind, arc }, ctx) {
+export function renderTrain({ story, zone, kind, arc, teens }, ctx) {
   const root = el('div', { class: 'scene train', style: { backgroundImage: "url('assets/backgrounds/bg-meadow.png')" } });
   const storyArc = arc || 'rainbow'; // which Story arc this chapter belongs to (token + return)
   const back = el('button', { class: 'btn btn--back', type: 'button', 'aria-label': story ? 'Back to the adventure' : 'Back home',
@@ -197,7 +197,9 @@ export function renderTrain({ story, zone, kind, arc }, ctx) {
   function startFeed() {
     const myToken = bump();
     clear(panel);
-    const target = pickCountTarget();
+    // `teens` (the Save-Mama Lantern-Bridge HERO beat) forces an 11–20 target so the
+    // ten-frame scaffold always shows — the numeracy peak. Otherwise the usual mix.
+    const target = teens ? 11 + Math.floor(Math.random() * 10) : pickCountTarget();
     const pile = target + 3 + Math.floor(Math.random() * 3); // always MORE than needed (target+3..+5)
     let count = 0;
     let locked = false;

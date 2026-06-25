@@ -28,6 +28,10 @@ export const ZONES = [
   { id: 'ocean', name: 'Ocean Depths', background: 'assets/backgrounds/bg-ocean.png' }, // Phase 7
 ];
 export const zoneById = (id) => ZONES.find((z) => z.id === id) || ZONES[0];
+// A TRUE membership test (zoneById falls back to ZONES[0], so it can't answer "is this
+// a real zone?"). Story Quests use synthetic stops (fork/bridge/reunion) with no
+// zone-/suggest- clip — guard those with this so no 404 fires.
+export const zoneExists = (id) => ZONES.some((z) => z.id === id);
 
 // Ocean Depths (Phase 7) — the deep-water / fully-aquatic species live here; the
 // Beach stays shore/surface. An expert-curated, explicit list (not a pure type
