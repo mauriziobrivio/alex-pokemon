@@ -1222,3 +1222,7 @@ html, body {
 .cutscene--has-bg .cutscene__char { display: none; }
 .cutscene--has-bg .cutscene__caption { background: linear-gradient(to top, rgba(12,8,3,0.62), rgba(12,8,3,0.18) 72%, transparent); }
 .cutscene--has-bg .cutscene__title { color: #fff8e7; text-shadow: 0 2px 10px rgba(0,0,0,0.7); }
+
+/* Brief 028 — "Play it again!" on a completed adventure (a warm invitation, never a nag). */
+.story__replay { margin-top: 8px; background: linear-gradient(95deg, #ffd54a, #ff9e5a); color: var(--ink); }
+.story__replay-icon { width: 1.25em; height: 1.25em; margin-right: 2px; }

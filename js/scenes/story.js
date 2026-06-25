@@ -161,6 +161,17 @@ function renderChooser(ctx) {
   return root;
 }
 
+// "Play it again!" — restart a COMPLETED adventure from the very beginning (brief 028).
+// `resetQuestProgress` clears ONLY this arc's earned set + team + opening/midpoint/
+// finale flags — the Pokédex, bonds, foils, stickers, the room, and the other two
+// adventures are all untouched. Shown only when the arc is finished.
+function playAgainButton(arcId, ctx) {
+  return el('button', { class: 'btn btn--big story__replay', type: 'button', 'aria-label': 'Play this adventure again',
+    onClick: () => { audio.play(sfx.pop()); story.resetQuestProgress(arcId); delete greeted[arcId]; ctx.go('story', { arc: arcId }); } },
+    icon('replay', 'story__replay-icon'), ' Play it again!');
+}
+const arcDone = (arcId) => story.allChaptersDone(arcId) && story.finaleSeen(arcId);
+
 // ====================================================================
 // COLLECT-ARC journey (rainbow, wishstar) — the free "tap any zone" board.
 // ====================================================================
@@ -195,6 +206,7 @@ function renderJourney(arcId, params, ctx) {
     onClick: () => { audio.play(sfx.pop()); ctx.go('story'); } }, icon('back'), ' Adventures');
 
   root.append(v.progress(arcId), el('h1', { class: 'story__title' }, v.title), map, cast, back);
+  if (arcDone(arcId)) root.append(playAgainButton(arcId, ctx)); // a finished journey can start over
 
   function tapZone(z) {
     audio.play(sfx.pop());
@@ -290,7 +302,7 @@ function showFinale(arcId, root, ctx) {
     reveal.append(
       v.progress(arcId),
       el('div', { class: 'finale__title' }, friend ? `${friend.name} came to say hello!` : 'A beautiful friend has come!'),
-      el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); } }, 'Yay!'),
+      el('button', { class: 'btn btn--big', type: 'button', onClick: () => { audio.play(sfx.pop()); overlay.remove(); ctx.go('story', { arc: arcId }); } }, 'Yay!'), // → the completed journey, where "Play it again!" awaits
     );
   };
 
@@ -373,6 +385,7 @@ function renderQuest(arcId, params, ctx) {
     onClick: () => { audio.play(sfx.pop()); ctx.go('story'); } }, icon('back'), ' Adventures');
 
   root.append(el('h1', { class: 'story__title' }, v.title), map, cast, back);
+  if (arcDone(arcId)) root.append(playAgainButton(arcId, ctx)); // a finished quest can start over
 
   // --- tapping a stop ---
   function tapStop(m, i, state) {
@@ -605,6 +618,6 @@ function showEnding(arcId, root, ctx) {
     title: 'Home together',
     lines: [() => clip.dadaEnding()],
     cta: 'The End',
-    onDone: () => {},
+    onDone: () => ctx.go('story', { arc: arcId }), // back to the (now complete) journey → "Play it again!" awaits
   });
 }
