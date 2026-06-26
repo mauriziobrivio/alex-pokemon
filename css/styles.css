@@ -937,6 +937,9 @@ html, body {
 @keyframes cut-pop { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 .cutscene--reunion { background: radial-gradient(circle at 50% 38%, rgba(255,250,235,0.98), rgba(255,232,180,0.97) 50%, rgba(255,210,160,0.98)); }
 .cutscene--ending { background: radial-gradient(circle at 50% 40%, rgba(255,244,222,0.98), rgba(255,224,190,0.97) 55%, rgba(246,214,196,0.98)); }
+/* The glimpse stands on its own (gradient + the parent's PNG + caption) — no beat image
+   anymore (brief 031), so make its warm backdrop explicit like the other set-pieces. */
+.cutscene--glimpse { background: radial-gradient(circle at 50% 38%, rgba(255,247,228,0.98), rgba(255,226,182,0.97) 55%, rgba(255,210,170,0.98)); }
 /* the warm caption bar (title + continue) */
 .cutscene__caption { position: relative; z-index: 2; flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: clamp(10px, 2.4vh, 20px);
   padding: clamp(16px, 3vh, 28px) 6% calc(clamp(18px, 4vh, 34px) + env(safe-area-inset-bottom)); }

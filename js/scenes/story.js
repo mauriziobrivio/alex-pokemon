@@ -617,8 +617,11 @@ function renderQuest(arcId, params, ctx) {
     const prog = root.querySelector('.story__route');
     if (prog) { const c = centerOf(prog, root); haloRing(root, c.x, c.y, { size: 220, color: v.haloColor, dur: 900 }); driftSparkles(root, c.x, c.y, 8); }
     const lines = [() => clip.word(word), () => v.beatClip(slug)]; // the recovered word, then Dada narrates the moment
-    // midpoint: recover the word + narrate, then the glimpse IS the beat (uses this beat's art)
-    if (story.midpointDue(arcId)) { audio.speakSequence(lines.map((fn) => fn())); showGlimpse(arcId, root, ctx, pointNext, v.beatImg(slug)); return; }
+    // At the midpoint this beat (e.g. Aurie at the grove) gets its OWN screen — its
+    // bespoke image + its own caption + narration — and the glimpse ("I can see you,
+    // Alex!") plays on its Next, on the warm gradient with the parent's PNG. So Aurie
+    // gets his moment, Dad gets his, image+caption always match, and neither is black.
+    const atMidpoint = story.midpointDue(arcId);
     cutscene(root, ctx, {
       cls: 'cutscene--beat',
       bg: v.beatImg(slug), // optional drop-in (per-chapter slug); CSS gradient fallback
@@ -626,7 +629,7 @@ function renderQuest(arcId, params, ctx) {
       title,
       lines,
       cta: 'Onward!',
-      onDone: pointNext,
+      onDone: atMidpoint ? () => showGlimpse(arcId, root, ctx, pointNext) : pointNext,
     });
   }
 
@@ -645,7 +648,16 @@ function cutscene(root, ctx, { cls, bg, art, title, lines, cta, onDone }) {
   // When a bespoke full-bleed backdrop is present it IS the whole scene (it already
   // contains the cast) — so on load, suppress the character-PNG overlays (those are
   // the FALLBACK for when there's no art). On error the bg hides itself + the cast shows.
-  if (bg) { const bgImg = charImg(bg, 'cutscene__bg', ''); bgImg.addEventListener('load', () => overlay.classList.add('cutscene--has-bg')); overlay.append(bgImg); }
+  if (bg) {
+    const bgImg = charImg(bg, 'cutscene__bg', '');
+    const markBg = () => overlay.classList.add('cutscene--has-bg');
+    // A precached/cached image is often already `complete` before this listener
+    // attaches, so `load` never fires — check `complete` first (else the fallback
+    // character PNGs aren't suppressed → duplicate cast, and the caption scrim is
+    // missing). `naturalWidth` excludes a broken/404 image (charImg hides that).
+    if (bgImg.complete && bgImg.naturalWidth) markBg(); else bgImg.addEventListener('load', markBg);
+    overlay.append(bgImg);
+  }
   const stage = el('div', { class: 'cutscene__stage' },
     ...(art || []).map((a) => charImg(a.src, `cutscene__char ${a.cls || ''}`.trim(), a.alt || '')));
   const caption = el('div', { class: 'cutscene__caption' });
@@ -669,11 +681,13 @@ function showOpening(arcId, root, ctx, onDone) {
 }
 
 // The middle turn (~halfway): Alex GLIMPSES the parent far across the world, waving —
-// closer now. Anticipation renews. `bg` = the midpoint mission's beat art when present.
-function showGlimpse(arcId, root, ctx, onDone, bg) {
+// closer now. Anticipation renews. Plays AFTER the midpoint beat (brief 031), on the
+// warm gradient with the parent's PNG — no beat image (image+caption always match);
+// `cut.glimpse` carries no `bg`, so the CSS gradient fallback shows (never black).
+function showGlimpse(arcId, root, ctx, onDone) {
   story.markMidpointSeen(arcId);
   const c = ARC_VIEW[arcId].cut.glimpse;
-  cutscene(root, ctx, { cls: 'cutscene--glimpse', bg, art: c.art, title: c.title, lines: [c.line], cta: c.cta, onDone });
+  cutscene(root, ctx, { cls: 'cutscene--glimpse', bg: c.bg, art: c.art, title: c.title, lines: [c.line], cta: c.cta, onDone });
 }
 
 // The climax: Alex reaches the parent — the biggest, warmest moment. The LAST recovered
