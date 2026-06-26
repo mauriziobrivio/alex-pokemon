@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v43';
+const CACHE = 'dada-academy-v44';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -40,6 +40,10 @@ const CORE = [
   './assets/characters/dada/dada-greeting.png', './assets/characters/dada/dada-cheering.png',
   './assets/characters/mama/mama-greeting.png', './assets/characters/mama/mama-cheering.png',
   './assets/characters/alex/alex-ready.png', './assets/characters/alex/alex-throwing.png',
+  // story-mode cutscene + map cast (fallback poses) — the glimpse's far-parent, the
+  // beat/reunion/ending fallback casts, the quest-map companion (brief 031).
+  './assets/characters/dada/dada-encouraging.png', './assets/characters/dada/dada-presenting.png',
+  './assets/characters/mama/mama-presenting.png', './assets/characters/alex/alex-cheering.png',
   './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png',
   './audio/sfx/pop.mp3', './audio/sfx/soft.mp3', './audio/sfx/wobble.mp3',
   './audio/sfx/whoosh.mp3', './audio/sfx/catch.mp3', './audio/sfx/sparkle.mp3',

@@ -56,14 +56,21 @@
 /assets/characters/alex/*
 !/assets/characters/alex/alex-ready.png
 !/assets/characters/alex/alex-throwing.png
+!/assets/characters/alex/alex-cheering.png
 !/assets/characters/dada
 /assets/characters/dada/*
 !/assets/characters/dada/dada-greeting.png
 !/assets/characters/dada/dada-cheering.png
+!/assets/characters/dada/dada-encouraging.png
+!/assets/characters/dada/dada-presenting.png
 !/assets/characters/mama
 /assets/characters/mama/*
 !/assets/characters/mama/mama-greeting.png
 !/assets/characters/mama/mama-cheering.png
+!/assets/characters/mama/mama-presenting.png
+# ^ the story-mode cutscene + map cast (fallback poses): the glimpse's far-parent,
+#   the beat/reunion/ending fallback casts, and the quest-map companion. Were 404 on
+#   Pages (brief 031 live-check caught it — the gradient glimpse needs the far-Dad PNG).
 # UI icons + reward stickers (brief 6) — the live app uses these. Forward-ready:
 # when Operations drops the cut PNGs in, they commit automatically.
 !/assets/ui
