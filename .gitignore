@@ -5,6 +5,10 @@
 # Local dev tooling (not part of the shipped app)
 .claude/
 
+# Voice masters — the raw single-take recordings (~34 MB of .m4a source, brief 030).
+# Operations cuts these into the named clips in audio/dada/; the masters stay local.
+/Recordings/
+
 # This repo is PUBLIC (GitHub Pages). Keep it to ONLY the shipped app — the
 # planning docs and unused/future art stay local. (Decision: Phase 0.)
 /_docs/

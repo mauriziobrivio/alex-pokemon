@@ -6,7 +6,7 @@
 // is cached at runtime on first use, so the game becomes fully offline as Alex
 // plays. Bump CACHE when any precached file changes.
 
-const CACHE = 'dada-academy-v41';
+const CACHE = 'dada-academy-v42';
 
 const CORE = [
   './', './index.html', './manifest.json', './css/styles.css',
@@ -103,7 +103,8 @@ const WORDS = ['sat', 'tap', 'pin', 'nap', 'pat', 'tip', 'sit', 'tin', 'pit', 'p
   'dog', 'log', 'fog', 'big', 'dig', 'pig', 'sun', 'fun', 'run', 'bun', 'bug', 'hug',
   'mug', 'rug', 'bed', 'leg', 'lip', 'hot', 'pot', 'top', 'mop', 'hop', 'cup', 'cut',
   'bat', 'bad', 'bag', 'fan', 'fin', 'gap', 'lab', 'lad', 'nut', 'tub', 'bin', 'fit',
-  'ship', 'shop', 'chip', 'chop', 'this', 'then', 'ring', 'sing']; // + the digraph words (Ch.4 Part 6)
+  'ship', 'shop', 'chip', 'chop', 'this', 'then', 'ring', 'sing', // + the digraph words (Ch.4 Part 6)
+  'pal', 'mom']; // + the Save-Mama story words (brief 029/030 — Dad's real voice, precache for offline parity)
 for (const w of WORDS) CORE.push(`./audio/dada/word-${w}.mp3`);
 // Brief 7: the on-style UI icons + reward stickers now exist — precache them so the
 // real art is offline-first (and the fallback chip never shows on a cached device).
